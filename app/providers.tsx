@@ -13,7 +13,7 @@ import {
   trustWallet,
   ledgerWallet,
 } from "@rainbow-me/rainbowkit/wallets";
-import { sepolia, klaytnBaobab } from "wagmi/chains";
+import { liskSepolia, lisk } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 
@@ -30,9 +30,11 @@ const config = getDefaultConfig({
     },
   ],
   chains: [
-    sepolia,
-    klaytnBaobab,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [sepolia] : []),
+    liskSepolia,
+    lisk,
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true"
+      ? [liskSepolia]
+      : []),
   ],
   ssr: true,
 });
@@ -52,7 +54,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             borderRadius: "large",
           })}
           modalSize="compact"
-          initialChain={sepolia}
+          initialChain={liskSepolia}
         >
           {children}
         </RainbowKitProvider>
