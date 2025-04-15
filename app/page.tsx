@@ -7,8 +7,10 @@ import {
   useAccount,
   // useEstimateGas,
   useWatchContractEvent,
-  useWriteContract,
+  // useWriteContract,
+  useWalletClient,
 } from "wagmi";
+import { ethers } from "ethers";
 import { Minth_abi, Minth_address } from "./utils/var";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -20,11 +22,13 @@ import axios from "axios";
 
 export default function Home() {
   const //
+
+    { data: walletClient } = useWalletClient(),
     [image, setImage] = useState<File | null>(null),
     [imageUrl, setImageUrl] = useState<string | null>(null),
     [stage, setStage] = useState<string | null>(null),
     { address, isConnected } = useAccount(),
-    { writeContractAsync } = useWriteContract(),
+    // { writeContractAsync } = useWriteContract(),
     pinata = new PinataSDK({
       pinataJwt: process.env.NEXT_PUBLIC_JWT,
       pinataGateway: process.env.NEXT_PUBLIC_gate,
@@ -80,25 +84,35 @@ export default function Home() {
       }
     },
     Minth = async () => {
+      if (!walletClient) return;
       console.log(address, isConnected);
       if (imageUrl || image) {
         console.log("> minting!");
         setStage("minting");
         const NFT = await pinImage();
-        await writeContractAsync({
-          abi: Minth_abi,
-          address: Minth_address,
-          functionName: "safeMint",
-          // @ts-ignore
-          args: [`ipfs://${NFT.IpfsHash}`],
-        })
-          .then((tx) => {
-            console.log("> submitted at", tx);
-            setStage("mining");
-          })
-          .catch((e) => {
-            console.log(e.message | e.shortMessage);
-          });
+
+        try {
+          setStage("mining");
+
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          const signer = await provider.getSigner();
+          const contract = new ethers.Contract(
+            Minth_address,
+            Minth_abi,
+            signer
+          );
+
+          const tx = await contract.safeMint(`ipfs://${NFT?.IpfsHash}`);
+          console.log("> submitted at", tx.hash);
+
+          await tx.wait(); // Wait for confirmation
+
+          setStage("completed");
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (e: any) {
+          console.error(e.message || e.shortMessage || e);
+          setStage("error");
+        }
       } else {
         alert("upload and image or enter a valid url");
         // @ts-ignore
