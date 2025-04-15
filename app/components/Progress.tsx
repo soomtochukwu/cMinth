@@ -15,10 +15,10 @@ const Progress = ({
   //
   useEffect(() => {
     console.log(currentStage);
-    if (!stages.includes(currentStage) && currentStage) {
-      alert("invalid stage");
-      throw new Error("invalid stage");
-    }
+    // if (!stages.includes(currentStage) && currentStage) {
+    //   alert("invalid stage");
+    //   throw new Error("invalid stage");
+    // }
     const //
       progressBar: HTMLElement = document.getElementById(
         "progressBar"

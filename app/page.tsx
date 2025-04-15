@@ -1,16 +1,16 @@
-"use client";
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+"use client";
+
+import * as React from "react";
+
 import { useEffect, useState } from "react";
 import {
   useAccount,
   // useEstimateGas,
   useWatchContractEvent,
-  // useWriteContract,
-  useWalletClient,
+  useWriteContract,
 } from "wagmi";
-import { ethers } from "ethers";
 import { Minth_abi, Minth_address } from "./utils/var";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -19,16 +19,16 @@ import { PinataSDK } from "pinata";
 import Link from "next/link";
 import Progress from "./components/Progress";
 import axios from "axios";
+import DrawModal from "./components/DrawModal";
 
 export default function Home() {
   const //
-
-    { data: walletClient } = useWalletClient(),
     [image, setImage] = useState<File | null>(null),
+    [isModalOpen, setModalOpen] = useState(false),
     [imageUrl, setImageUrl] = useState<string | null>(null),
     [stage, setStage] = useState<string | null>(null),
     { address, isConnected } = useAccount(),
-    // { writeContractAsync } = useWriteContract(),
+    { writeContractAsync } = useWriteContract(),
     pinata = new PinataSDK({
       pinataJwt: process.env.NEXT_PUBLIC_JWT,
       pinataGateway: process.env.NEXT_PUBLIC_gate,
@@ -84,35 +84,25 @@ export default function Home() {
       }
     },
     Minth = async () => {
-      if (!walletClient) return;
       console.log(address, isConnected);
       if (imageUrl || image) {
         console.log("> minting!");
         setStage("minting");
         const NFT = await pinImage();
-
-        try {
-          setStage("mining");
-
-          const provider = new ethers.BrowserProvider(window.ethereum);
-          const signer = await provider.getSigner();
-          const contract = new ethers.Contract(
-            Minth_address,
-            Minth_abi,
-            signer
-          );
-
-          const tx = await contract.safeMint(`ipfs://${NFT?.IpfsHash}`);
-          console.log("> submitted at", tx.hash);
-
-          await tx.wait(); // Wait for confirmation
-
-          setStage("completed");
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (e: any) {
-          console.error(e.message || e.shortMessage || e);
-          setStage("error");
-        }
+        await writeContractAsync({
+          abi: Minth_abi,
+          address: Minth_address,
+          functionName: "safeMint",
+          // @ts-ignore
+          args: [`ipfs://${NFT.IpfsHash}`],
+        })
+          .then((tx) => {
+            console.log("> submitted at", tx);
+            setStage("mining");
+          })
+          .catch((e) => {
+            console.log(e.message | e.shortMessage);
+          });
       } else {
         alert("upload and image or enter a valid url");
         // @ts-ignore
@@ -135,7 +125,7 @@ export default function Home() {
     onLogs(nft) {
       console.log("NFT minted", nft);
       setStage("minted");
-      alert("YOUR NFT WILL APPEAR IN YOUR");
+      alert("YOUR NFT WILL APPEAR IN YOUR WALLET");
       setTimeout(() => {
         setStage(null);
       }, 3000);
@@ -154,21 +144,46 @@ export default function Home() {
       imgPre.style.height = "100%";
     }
   }, [image]);
+
+  useEffect(() => {
+    if (!isModalOpen) document.getElementById("inn")?.click();
+  }, [isModalOpen]);
   return (
     <div className="h-screen">
-      <div className="backdrop-blur-md text-center md:fixed w-full font-bold p-6 text-2xl md:text-5xl font-sans">
-        <Link href={"/"}>Welcome to Minth</Link>
+      <div className="backdrop-blur-md text-center md:fixed w-full font-bold p-6  font-sans">
+        <Link href={"/"} className="text-2xl md:text-5xl">
+          Welcome to Minth
+        </Link>
         <div className="font-extralight text-xs md:text-sm ">
           ...Turn your fav. images into NFTs 😃
         </div>
+        <div className="fixed right-0 -mt-16 mr-6">
+          <ConnectButton
+            chainStatus={{ smallScreen: "icon", largeScreen: "icon" }}
+            accountStatus={{
+              smallScreen: "avatar",
+              largeScreen: "avatar",
+            }}
+            showBalance={{
+              smallScreen: false,
+              largeScreen: false,
+            }}
+          />
+        </div>
       </div>
+
       <div className="flex flex-col md:flex-row md:h-full p-3 h-fit justify-center items-center  md:space-x-7 *:mt-7">
         {/* left pane */}
         <div className="flex dark bg-gray-100 border flex-col justify-center items-center space-y-7 md:min-w-96 md:min-h-96 rounded-xl shadow-gray-600 shadow-2xl  p-5">
+          <DrawModal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+            <h2 className="text-xl font-bold mb-4">Hello from Modal!</h2>
+            <p>This is some modal content.</p>
+          </DrawModal>
           <div className="w-full">
             <div className="text-center">Upload Images</div>
             <input
               type="file"
+              id="inn"
               className="dark w-full bg-gray-100 active:scale-95 p-3 shadow-gray-600 shadow-inner rounded-md"
               accept="image"
               onInput={(e) => {
@@ -191,6 +206,17 @@ export default function Home() {
                 setImage(file);
               }}
             />
+            <br />
+            <br />
+
+            <div className="text-center">Or</div>
+            <br />
+            <button
+              onClick={() => setModalOpen(true)}
+              className="w-full bg-gray-700 text-white px-4 py-2 rounded"
+            >
+              Draw and upload your own NFT(s)
+            </button>
           </div>
           {/*  */}
           <div className="text-center">Or</div>
@@ -238,9 +264,7 @@ export default function Home() {
               }}
             />
           </div>
-          <div id="">
-            <ConnectButton chainStatus={"icon"} accountStatus={"avatar"} />
-          </div>
+
           <button
             onClick={async () => {
               if (!imageUrl) {
@@ -277,7 +301,7 @@ export default function Home() {
         </div>
 
         {/* right pane */}
-        <div className="tr dark bg-gray-100 flex justify-center items-center shadow-gray-600 shadow-2xl md:min-w-96 md:min-h-96 w-fit border rounded-xl">
+        <div className="tr dark bg-gray-100 flex justify-center items-center shadow-gray-600 shadow-2xl md:min-w-96 md:min-h-96 w-fit border rounded-xl max-w-2xl">
           <div className=" absolute ">
             <pre>
               {imageUrl
@@ -293,14 +317,12 @@ export default function Home() {
               className="z-10 rounded-2xl mh"
               alt="Preview"
               src={imageUrl}
-              // width={500}
-              // height={500}
             ></img>
           ) : null}
         </div>
-
-        {/*  */}
       </div>
+
+      {/*  */}
     </div>
   );
 }
