@@ -149,7 +149,13 @@ export default function Home() {
     if (!isModalOpen) document.getElementById("inn")?.click();
   }, [isModalOpen]);
   return (
-    <div className="h-screen">
+    <div
+      className="h-screen"
+      onClick={() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        isModalOpen ? setModalOpen(false) : null;
+      }}
+    >
       <div className="backdrop-blur-md text-center md:fixed w-full font-bold p-6  font-sans">
         <Link href={"/"} className="text-2xl md:text-5xl">
           Welcome to Minth
