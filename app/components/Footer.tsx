@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Minth_address } from "../utils/var";
 
 const Footer = () => {
   return (
@@ -28,9 +29,7 @@ const Footer = () => {
 
       <Link
         target="meetMe"
-        href={
-          "https://sepolia.etherscan.io/address/0x884c8cC437bD61C7d7Ed04720F60d657E0eCdbE3#code"
-        }
+        href={`https://sepolia-blockscout.lisk.com/address/${Minth_address}?tab=contract`}
       >
         The smart contract 🧩
       </Link>
