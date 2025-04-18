@@ -180,14 +180,11 @@ let draw = (e) => {
   };
 
 function bg() {
-  for (let i = 0; i < rayc.length; i++) {
-    rayc[i].clean();
-  }
   if (cc.title == "Light mood") {
     line.clearRect(0, 0, window.innerWidth, window.innerHeight);
     cc.src = "img/Dark.png";
     cc.title = "Dark mood";
-    can.style.backgroundColor = "wheat";
+    can.style.backgroundColor = "white";
     line.strokeStyle = "black";
     line.strokeStyle = v;
 
@@ -203,6 +200,9 @@ function bg() {
     line.strokeStyle = v;
 
     three();
+  }
+  for (let i = 0; i < rayc.length; i++) {
+    rayc[i].clean();
   }
 }
 let rect = () => {
