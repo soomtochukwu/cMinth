@@ -9,7 +9,10 @@ export default function DrawModal({ isOpen, onClose, children }) {
   useEffect(() => {
     // @ts-ignore
     const handleEsc = (e) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        document.body.style.overflow = "visible";
+        onClose();
+      }
     };
 
     if (isOpen) {
@@ -24,7 +27,28 @@ export default function DrawModal({ isOpen, onClose, children }) {
   if (!isOpen) return null;
 
   return (
-    <div className="w-5/6 h-5/6 left-10 fixed z-10 shadow-2xl">
+    <div
+      id="dc"
+      onLoad={() => {
+        document.body.style.overflow = "hidden";
+        // @ts-ignore
+        document.getElementById("dc").style.left =
+          (document.body.offsetWidth -
+            // @ts-ignore
+            document.getElementById("dc").offsetWidth) /
+            2 +
+          "px";
+        //
+        // @ts-ignore
+        document.getElementById("dc").style.top =
+          (document.body.offsetHeight -
+            // @ts-ignore
+            document.getElementById("dc").offsetHeight) /
+            2 +
+          "px";
+      }}
+      className="w-5/6 h-5/6 left-10 fixed z-30 shadow-2xl overflow-hidden"
+    >
       <iframe
         src="/Canvas/draw.html"
         frameBorder="3"

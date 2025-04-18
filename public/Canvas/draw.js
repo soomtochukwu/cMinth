@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-array-constructor */
+
 let on = false,
   saveR = [],
   st,
@@ -70,8 +71,8 @@ class cleaned {
 let onn = (e) => {
     if (tt) {
       // line.fillStyle = ic.value;
-      // words.push(new word(load, e.layerX, e.layerY, ic.value));
-      ray.push(new word(load, e.layerX, e.layerY, ic.value));
+      // words.push(new word(load, e.clientX, e.clientY, ic.value));
+      ray.push(new word(load, e.clientX, e.clientY, ic.value));
       setTimeout(() => {
         ray.pop();
       }, 10);
@@ -79,8 +80,8 @@ let onn = (e) => {
     }
 
     console.log("log >> Draw");
-    let x = Math.floor(e.layerX),
-      y = Math.floor(e.layerY);
+    let x = Math.floor(e.clientX),
+      y = Math.floor(e.clientY);
     line.beginPath();
     line.strokeStyle = v;
     line.lineTo(x, y);
@@ -98,6 +99,57 @@ let onn = (e) => {
     // st = false;
     st = ray.length;
     three();
+  },
+  touch = (e) => {
+    // console.log("touch", e);
+    if (tt) {
+      // line.fillStyle = ic.value;
+      // words.push(new word(load, e.clientX, e.clientY, ic.value));
+      ray.push(
+        new word(load, e.touches[0].clientX, e.touches[0].clientY, ic.value)
+      );
+      setTimeout(() => {
+        ray.pop();
+      }, 10);
+      tt = false;
+    }
+
+    console.log("log >> Draw");
+    let x = Math.floor(e.touches[0].clientX),
+      y = Math.floor(e.touches[0].clientY);
+    line.beginPath();
+    line.strokeStyle = v;
+    line.lineTo(x, y);
+    // line.lineTo(x+1, y+1);
+    line.lineWidth = rc.value;
+    on = true;
+
+    ray.push(new liner(x, y));
+    ray[ray.length - 1].log(x, y);
+
+    touchmove(e);
+  },
+  touchend = (e) => {
+    off();
+  },
+  touchmove = (e) => {
+    // console.log("touch", e);
+
+    if (on) {
+      let x = Math.floor(e.touches[0].clientX),
+        y = Math.floor(e.touches[0].clientY),
+        x1 = x,
+        y1 = y;
+      /*  logX.push(x);
+                logY.push(y); */
+
+      ray[ray.length - 1].log(x, y);
+
+      line.lineTo(x, y);
+      // line.lineTo(x, y);
+      // line.lineTo(x+1, y+1);
+      line.stroke();
+    }
   };
 can.width = window.innerWidth;
 can.height = window.innerHeight;
@@ -106,8 +158,8 @@ line.strokeStyle = "white";
 
 let draw = (e) => {
     if (on) {
-      let x = Math.floor(e.layerX),
-        y = Math.floor(e.layerY),
+      let x = Math.floor(e.clientX),
+        y = Math.floor(e.clientY),
         x1 = x,
         y1 = y;
       /*  logX.push(x);
@@ -176,8 +228,8 @@ let rect = () => {
   fin = false;
 function erase2(e) {
   if (permit == true) {
-    span.style.left = e.layerX - span.offsetWidth / 2 + "px";
-    span.style.top = e.layerY - span.offsetHeight / 2 + "px";
+    span.style.left = e.clientX - span.offsetWidth / 2 + "px";
+    span.style.top = e.clientY - span.offsetHeight / 2 + "px";
   } else {
     permit = false;
   }

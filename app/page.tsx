@@ -150,10 +150,15 @@ export default function Home() {
   }, [isModalOpen]);
   return (
     <div
-      className="h-screen"
+      className="h-screen overflow-hidden"
       onClick={() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        isModalOpen ? setModalOpen(false) : null;
+        isModalOpen
+          ? (() => {
+              setModalOpen(false);
+              document.body.style.overflow = "visible";
+            })()
+          : null;
       }}
     >
       <div className="backdrop-blur-md text-center md:fixed w-full font-bold p-6  font-sans">
