@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React from "react";
-import { Minth_abi } from "../utils/var";
+
+"use client";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { Minth_abi, Minth_address } from "../utils/var";
 import { Function, Input } from "./_components/components";
 
 const Page = () => {
   return (
     <div className="w-full flex flex-col text-center items-center">
+      <ConnectButton></ConnectButton>
       {Minth_abi.map((field) => {
         return (
           <>
@@ -24,7 +27,13 @@ const Page = () => {
                       })
                     : null}
                 </div>
-                <Function name={field.name} />
+
+                <Function
+                  abi={field}
+                  name={field.name}
+                  address={Minth_address}
+                  args={field.inputs as []}
+                />
               </div>
             ) : null}
           </>
