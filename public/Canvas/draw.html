@@ -13,7 +13,8 @@
 
 <body onload="set(0)" onkeypress="(shortcuts(event))">
     <span id="span" onmousedown="box()" onmouseup="down()" onmousemove="final(event)"></span>
-    <input id="download" type="image" src="img/down.png" title="SavE" onclick="save()" />
+    <input id="download" type="image" src="img/down.png" title="SavE"
+        onclick="save(); alert('Are you done?, click outside the canvas or press ESC')" />
 
     <div title="Change Line Width (- or +)" class="controll">
         <input type="range" name="" id="rc" range="20" step=".1" value="7.5" max="20" min="0.4" oninput="change()" />
@@ -26,21 +27,16 @@
     <img src="img/playF.png" alt="redo foward" onclick="playF(0)" class="playF" title="Play redo" />
 
     <div class="controll">
-        <img src="img/light.png" id="cc" title="Light Mood" onclick="bg()" />
+        <img src="img/light.png" id="cc" title="Light mode" onclick="bg()" />
     </div>
 
     <div class="controll" title="Don't 4get 2 select font size" onclick="text()">
         A
     </div>
-    <button id="span2" title="Double Click" ondblclick="cl()">
-        ClearScreen
+    <button id="span2" title="Double Click" ondblclick="cl()" ontouchstart="confirm('Clear canvas? ')?cl() : null">
+        Clear canvas
     </button>
-    <div id="done">Are you done?, save your work
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
-            <path d="M480-80 200-360l56-56 184 183v-647h80v647l184-184 56 57L480-80Z" />
-        </svg>,
-        click outside the canvas and press ESC
-    </div>
+
 
     <div title="Change color 🎨" class="controll">
         <input type="color" name="" id="ic" value="#db910f" oninput="color()" />

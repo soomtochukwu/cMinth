@@ -17,6 +17,7 @@ let on = false,
   span2 = document.getElementById("span2"),
   cc = document.getElementById("cc"),
   line = can.getContext("2d"),
+  darkTheme = true,
   /*  logX = new Array, logY = new Array, */ ray = new Array(),
   rayc = new Array(),
   w,
@@ -183,10 +184,12 @@ function bg() {
   for (let i = 0; i < rayc.length; i++) {
     rayc[i].clean();
   }
-  if (cc.title == "Light mood") {
+  if (darkTheme) {
+    console.log(cc.title);
     line.clearRect(0, 0, window.innerWidth, window.innerHeight);
     cc.src = "img/Dark.png";
-    cc.title = "Dark mood";
+    cc.title = "Dark mode";
+    darkTheme = false;
     can.style.backgroundColor = "white";
     line.strokeStyle = "black";
     line.strokeStyle = v;
@@ -196,23 +199,25 @@ function bg() {
     for (let i = 0; i < rayc.length; i++) {
       rayc[i].clean();
     }
+    console.log(cc.title);
     line.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    darkTheme = true;
     cc.src = "img/light.png";
     can.style.backgroundColor = "black";
-    cc.title = "Light mood";
+    cc.title = "Light mode";
     line.strokeStyle = v;
 
     three();
   }
 }
-let rect = () => {
-    line.fillStyle = can.style.backgroundColor;
+let rect = (color) => {
+    line.fillStyle = color;
     line.rect(0, 0, can.width, can.height);
     line.fill();
   },
   two = () => {
     line.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    rect("wheat");
+    rect("white");
     for (let i = 0; i < ray.length; i++) {
       ray[i].rct();
     }
