@@ -211,20 +211,20 @@ function bg() {
   }
 }
 let rect = (color) => {
-    line.fillStyle = color;
+    // line.fillStyle = color;
     line.rect(0, 0, can.width, can.height);
     line.fill();
   },
   two = () => {
     line.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    rect("white");
+    // rect("white");
     for (let i = 0; i < ray.length; i++) {
       ray[i].rct();
     }
   },
   three = () => {
     line.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    rect("black");
+    // rect("black");
     for (let i = 0; i < ray.length; i++) {
       ray[i].rct();
     }
@@ -294,7 +294,7 @@ let color = () => {
     span2.style.top = can.height - span2.offsetHeight + "px";
 
     download.style.left = can.width / 2 - download.offsetWidth / 2 + "px";
-    span2.style.top = can.height - download.offsetHeight + "px";
+    // span2.style.top = can.height - download.offsetHeight + "px";
 
     document.body.style.height = can.height + "px";
     document.body.style.width = can.width + "px";

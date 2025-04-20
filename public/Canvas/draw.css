@@ -46,7 +46,8 @@ input {
 }
 
 #span2 {
-    color: rgb(255, 162, 0);
+    color: rgb(200, 200, 200);
+    font-size: 1em;
 }
 
 #span {
@@ -67,7 +68,6 @@ button {
 }
 
 #download {
-    background-color: rgba(39, 39, 39, 0.295);
     position: fixed;
     color: red;
     /* top: 0; */
@@ -92,7 +92,7 @@ button {
     /* border-width: 0; */
     font-size: 2em;
     font-weight: bold;
-    color: rgb(255, 162, 0);
+    color: #878787;
     padding: .4em;
 }
 
@@ -112,6 +112,14 @@ button {
     position: fixed;
     left: 30vw;
     width: 3vw;
+}
+
+.time,
+.time2,
+.save,
+.playB,
+.playF {
+    padding: 1.5em;
 }
 
 .playF {

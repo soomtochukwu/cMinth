@@ -13,7 +13,7 @@
 
 <body onload="set(0)" onkeypress="(shortcuts(event))">
     <span id="span" onmousedown="box()" onmouseup="down()" onmousemove="final(event)"></span>
-    <input id="download" type="image" src="img/down.png" title="SavE"
+    <input id="download" class="save" type="image" src="img/down.png" title="SavE"
         onclick="save(); alert('Are you done?, click outside the canvas or press ESC')" />
 
     <div title="Change Line Width (- or +)" class="controll">
@@ -39,7 +39,7 @@
 
 
     <div title="Change color 🎨" class="controll">
-        <input type="color" name="" id="ic" value="#db910f" oninput="color()" />
+        <input type="color" name="" id="ic" value="#878787" oninput="color()" />
     </div>
     <canvas id="canvas" onmousedown="onn(event)" onmouseup="off()" onmousemove="draw(event); erase2(event)"
         ontouchstart="touch(event)" ontouchend="touchend(event)" ontouchmove="touchmove(event)">
