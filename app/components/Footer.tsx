@@ -29,7 +29,7 @@ const Footer = () => {
 
       <Link
         target="meetMe"
-        href={`https://sepolia-blockscout.lisk.com/address/${Minth_address}?tab=contract`}
+        href={`https://celo-alfajores.blockscout.com/token/${Minth_address}`}
       >
         The smart contract 🧩
       </Link>
