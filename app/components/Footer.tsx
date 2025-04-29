@@ -16,7 +16,7 @@ const Footer = () => {
       <Link
         target="meetMe"
         className="flex"
-        href={"http://github.com/soomtochukwu/"}
+        href={"https://github.com/soomtochukwu/cMinth/"}
       >
         Github{"    "}
         <Image
