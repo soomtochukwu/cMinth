@@ -1,25 +1,29 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Menu, X, Home, Search, Plus } from "lucide-react"
-import { WalletConnect } from "@/components/wallet-connect"
-import { useWalletStore } from "@/store/wallet-store"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Menu, X, Home, Search, Plus } from "lucide-react";
+import { useAccount } from "wagmi";
+import { web3Config } from "@/lib/config/web3.config";
+import { ConnectKitButton } from "connectkit";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
   { href: "/marketplace", label: "Marketplace", icon: Search },
   { href: "/create", label: "Create", icon: Plus },
-]
+];
 
 export function Navigation() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const pathname = usePathname()
-  const { isConnected } = useWalletStore()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const { status } = useAccount({
+    config: web3Config,
+  });
 
   return (
     <motion.nav
@@ -36,7 +40,10 @@ export function Navigation() {
               <span className="text-white font-bold text-lg">C</span>
             </div>
             <span className="text-xl font-bold text-white">CreatorVerse</span>
-            <Badge variant="secondary" className="bg-purple-500/20 text-purple-300 border-purple-500/30 text-xs">
+            <Badge
+              variant="secondary"
+              className="bg-purple-500/20 text-purple-300 border-purple-500/30 text-xs"
+            >
               Beta
             </Badge>
           </Link>
@@ -44,8 +51,8 @@ export function Navigation() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
 
               return (
                 <Link key={item.href} href={item.href}>
@@ -64,13 +71,25 @@ export function Navigation() {
                     {item.label}
                   </Button>
                 </Link>
-              )
+              );
             })}
           </div>
 
           {/* Desktop Wallet Connect */}
           <div className="hidden md:block">
-            <WalletConnect />
+            <ConnectKitButton
+              showBalance
+              showAvatar={true}
+              customTheme={{
+                "--ck-connectbutton-background":
+                  "linear-gradient(to right, #9333ea, #0891b2)",
+                "--ck-connectbutton-hover-background":
+                  "linear-gradient(to right, #7e22ce, #0e7490)",
+                "--ck-connectbutton-active-background":
+                  "linear-gradient(to right, #7e22ce, #0e7490)",
+                "--ck-connectbutton-color": "white",
+              }}
+            />{" "}
           </div>
 
           {/* Mobile Menu Button */}
@@ -80,7 +99,11 @@ export function Navigation() {
             className="md:hidden p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {isMobileMenuOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
           </Button>
         </div>
 
@@ -96,8 +119,8 @@ export function Navigation() {
         >
           <div className="py-4 space-y-4">
             {navItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
 
               return (
                 <Link key={item.href} href={item.href}>
@@ -117,15 +140,27 @@ export function Navigation() {
                     {item.label}
                   </Button>
                 </Link>
-              )
+              );
             })}
 
             <div className="pt-4 border-t border-slate-800">
-              <WalletConnect />
+              <ConnectKitButton
+                showBalance
+                showAvatar={true}
+                customTheme={{
+                  "--ck-connectbutton-background":
+                    "linear-gradient(to right, #9333ea, #0891b2)",
+                  "--ck-connectbutton-hover-background":
+                    "linear-gradient(to right, #7e22ce, #0e7490)",
+                  "--ck-connectbutton-active-background":
+                    "linear-gradient(to right, #7e22ce, #0e7490)",
+                  "--ck-connectbutton-color": "white",
+                }}
+              />{" "}
             </div>
           </div>
         </motion.div>
       </div>
     </motion.nav>
-  )
+  );
 }

@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "@/components/navigation";
 import { Toaster } from "react-hot-toast";
+import Web3Provider from "./web3.providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,18 +23,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navigation />
-        {children}
-        <Toaster
-          position="bottom-right"
-          toastOptions={{
-            style: {
-              background: "#1e293b",
-              color: "#fff",
-              border: "1px solid #475569",
-            },
-          }}
-        />
+        <Web3Provider>
+          <Navigation />
+          {children}
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: "#1e293b",
+                color: "#fff",
+                border: "1px solid #475569",
+              },
+            }}
+          />
+        </Web3Provider>
       </body>
     </html>
   );
