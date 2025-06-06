@@ -1,28 +1,36 @@
-"use client"
+"use client";
 
-import { motion, AnimatePresence } from "framer-motion"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Music, ImageIcon } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Music, ImageIcon } from "lucide-react";
 
 interface NFTPreviewProps {
-  formData: any
-  uploadedFiles: { main?: File; artwork?: File }
-  isVisible: boolean
+  formData: any;
+  uploadedFiles: { main?: File; artwork?: File };
+  isVisible: boolean;
 }
 
-export function NFTPreview({ formData, uploadedFiles, isVisible }: NFTPreviewProps) {
+export function NFTPreview({
+  formData,
+  uploadedFiles,
+  isVisible,
+}: NFTPreviewProps) {
   if (!isVisible) {
     return (
       <Card className="bg-slate-900/50 backdrop-blur-sm border-slate-700/50 h-fit">
         <CardContent className="p-8 text-center">
           <div className="text-6xl mb-4">🎨</div>
-          <h3 className="text-xl font-semibold text-slate-300 mb-2">NFT Preview</h3>
-          <p className="text-slate-400">Complete the form to see your NFT preview</p>
+          <h3 className="text-xl font-semibold text-slate-300 mb-2">
+            NFT Preview
+          </h3>
+          <p className="text-slate-400">
+            Complete the form to see your NFT preview
+          </p>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -45,7 +53,10 @@ export function NFTPreview({ formData, uploadedFiles, isVisible }: NFTPreviewPro
             <div className="aspect-square rounded-xl overflow-hidden bg-slate-800/50 relative">
               {uploadedFiles.artwork ? (
                 <img
-                  src={URL.createObjectURL(uploadedFiles.artwork) || "/placeholder.svg"}
+                  src={
+                    URL.createObjectURL(uploadedFiles.artwork) ||
+                    "/placeholder.svg"
+                  }
                   alt="NFT Preview"
                   className="w-full h-full object-cover"
                 />
@@ -74,8 +85,12 @@ export function NFTPreview({ formData, uploadedFiles, isVisible }: NFTPreviewPro
             {/* NFT Details */}
             <div className="space-y-4">
               <div>
-                <h3 className="text-xl font-semibold text-white">{formData.title || "Untitled NFT"}</h3>
-                <p className="text-slate-400 text-sm mt-1">{formData.description || "No description provided"}</p>
+                <h3 className="text-xl font-semibold text-white">
+                  {formData.title || "Untitled NFT"}
+                </h3>
+                <p className="text-slate-400 text-sm mt-1">
+                  {formData.description || "No description provided"}
+                </p>
               </div>
 
               {/* Creator Info */}
@@ -83,12 +98,16 @@ export function NFTPreview({ formData, uploadedFiles, isVisible }: NFTPreviewPro
                 <Avatar className="w-8 h-8">
                   <AvatarImage src="/placeholder.svg?height=32&width=32" />
                   <AvatarFallback className="bg-purple-600 text-white text-sm">
-                    {formData.creator ? formData.creator.charAt(0).toUpperCase() : "?"}
+                    {formData.creator
+                      ? formData.creator.charAt(0).toUpperCase()
+                      : "?"}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="text-xs text-slate-400">Creator</p>
-                  <p className="text-sm font-medium text-white">{formData.creator || "Unknown Creator"}</p>
+                  <p className="text-sm font-medium text-white">
+                    {formData.creator || "Unknown Creator"}
+                  </p>
                 </div>
               </div>
 
@@ -96,9 +115,14 @@ export function NFTPreview({ formData, uploadedFiles, isVisible }: NFTPreviewPro
               {formData.price && (
                 <div className="bg-slate-800/30 rounded-lg p-4">
                   <p className="text-sm text-slate-400 mb-1">Price</p>
-                  <p className="text-2xl font-bold text-white">{formData.price} ETH</p>
+                  <p className="text-2xl font-bold text-white">
+                    {formData.price} LSK
+                  </p>
                   <p className="text-sm text-slate-400">
-                    ≈ ${(Number.parseFloat(formData.price || "0") * 2500).toLocaleString()}
+                    ≈ $
+                    {(
+                      Number.parseFloat(formData.price || "0") * 0.42
+                    ).toLocaleString()}
                   </p>
                 </div>
               )}
@@ -108,11 +132,17 @@ export function NFTPreview({ formData, uploadedFiles, isVisible }: NFTPreviewPro
                 <div>
                   <p className="text-sm text-slate-400 mb-2">Tags</p>
                   <div className="flex flex-wrap gap-2">
-                    {formData.tags.split(",").map((tag: string, index: number) => (
-                      <Badge key={index} variant="outline" className="border-slate-600 text-slate-300 text-xs">
-                        {tag.trim()}
-                      </Badge>
-                    ))}
+                    {formData.tags
+                      .split(",")
+                      .map((tag: string, index: number) => (
+                        <Badge
+                          key={index}
+                          variant="outline"
+                          className="border-slate-600 text-slate-300 text-xs"
+                        >
+                          {tag.trim()}
+                        </Badge>
+                      ))}
                   </div>
                 </div>
               )}
@@ -121,5 +151,5 @@ export function NFTPreview({ formData, uploadedFiles, isVisible }: NFTPreviewPro
         </Card>
       </motion.div>
     </AnimatePresence>
-  )
+  );
 }

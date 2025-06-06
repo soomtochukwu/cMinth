@@ -129,7 +129,7 @@ export default function LandingPage() {
             <FeatureCard
               icon={<PenTool className="w-8 h-8" />}
               title="On-The-Go"
-              description="Create (draw or paint) your own NFT right on the market place -- mint and sell it at a higher royalty rate."
+              description="Design and mint your own NFT directly on the marketplace. Showcase your creativity and earn more with higher royalties."
               gradient="from-gray-900 to-gray-100"
             />
             <FeatureCard

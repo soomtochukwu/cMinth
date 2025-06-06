@@ -31,6 +31,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -76,4 +77,8 @@
 /* Custom focus styles */
 .focus-visible\:ring-purple-500:focus-visible {
   --tw-ring-color: rgb(139 92 246);
+}
+
+* {
+  font-family: 'Courier New', Courier, monospace;
 }

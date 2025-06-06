@@ -36,8 +36,8 @@ export default function RootLayout({
               },
             }}
           />
+          <Footer />
         </Web3Provider>
-        <Footer />
       </body>
     </html>
   );

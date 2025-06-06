@@ -16,14 +16,15 @@ import {
 } from "@/components/ui/select";
 import { FileUpload } from "@/components/file-upload";
 import { NFTPreview } from "@/components/nft-preview";
-import { useForm } from "react-hook-form";
-import { useWalletStore } from "@/store/wallet-store";
+import { Controller, useForm } from "react-hook-form";
+// import { useWalletStore } from "@/store/wallet-store";
 import { useNFTStore } from "@/store/nft-store";
 import { AnimatedBackground } from "@/components/animated-background";
 import { Sparkles, Upload, Eye, Zap } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
 import { web3Config } from "@/lib/config/web3.config";
+import { PinataSDK } from "pinata";
 
 interface NFTFormData {
   title: string;
@@ -34,6 +35,21 @@ interface NFTFormData {
   type: "audio" | "art";
 }
 
+type _newNFT = {
+  id: string;
+  title: string;
+  description: string;
+  creator: string;
+  price: number;
+  image: string;
+  audio: string | undefined;
+  type: "audio" | "art";
+  tags: string[];
+  createdAt: string;
+  tokenId: number;
+  owner: string;
+};
+
 const steps = [
   { id: 1, title: "Upload Files", icon: Upload },
   { id: 2, title: "Add Details", icon: Eye },
@@ -41,83 +57,148 @@ const steps = [
 ];
 
 export default function CreatePage() {
-  const { status } = useAccount({ config: web3Config });
-  const [currentStep, setCurrentStep] = useState(1);
-  const [uploadedFiles, setUploadedFiles] = useState<{
-    main?: File;
-    artwork?: File;
-  }>({});
-  const [isUploading, setIsUploading] = useState(false);
-  const [isMinting, setIsMinting] = useState(false);
+  const //
+    { status, isConnected } = useAccount({ config: web3Config }),
+    [currentStep, setCurrentStep] = useState(1),
+    [uploadedFiles, setUploadedFiles] = useState<{
+      main?: File;
+      artwork?: File;
+    }>({}),
+    [isUploading, setIsUploading] = useState(false),
+    [isMinting, setIsMinting] = useState(false),
+    { addNFT } = useNFTStore(),
+    {
+      register,
+      handleSubmit,
+      watch,
+      control,
+      formState: { errors },
+    } = useForm<NFTFormData>(),
+    //
+    formData = watch(),
+    //
+    handleFileUpload = (files: { main?: File; artwork?: File }) => {
+      setUploadedFiles(files);
+      if (files.main) {
+        setCurrentStep(2);
+      }
+    },
+    pinata = new PinataSDK({
+      pinataJwt: process.env.NEXT_PUBLIC_JWT,
+      pinataGateway: process.env.NEXT_PUBLIC_GATE,
+    }),
+    pinFile = async (artWork: File | undefined, cover: File | undefined) => {
+      // pin cover
+      // pin nft
+      // return both hashes as an array of strings
+      return [
+        await (async () => {
+          const pin = await pinata.upload.public.file(
+            new File(
+              [artWork as Blob],
+              `${artWork?.name.slice(artWork?.name.lastIndexOf("."))}`,
+              {
+                type: "image/plain",
+              }
+            )
+          );
+          await console.log(pin);
+          return pin.cid;
+        })(),
+        await (async () => {
+          const pin = await pinata.upload.public.file(
+            new File(
+              [cover as Blob],
+              `${cover?.name.slice(cover?.name.lastIndexOf("."))}`,
+              {
+                type: "image/plain",
+              }
+            )
+          );
+          await console.log(pin);
+          return pin.cid;
+        })(),
+      ];
+    },
+    pinMetadata = async (fileHashes: string[], newNFT: _newNFT) => {
+      // construct metadata
 
-  const { isConnected } = useWalletStore();
-  const { addNFT } = useNFTStore();
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<NFTFormData>();
-
-  const formData = watch();
-
-  const handleFileUpload = (files: { main?: File; artwork?: File }) => {
-    setUploadedFiles(files);
-    if (files.main) {
-      setCurrentStep(2);
-    }
-  };
-
-  const onSubmit = async (data: NFTFormData) => {
-    if (!isConnected) {
-      toast.error("Please connect your wallet first");
-      return;
-    }
-
-    if (!uploadedFiles.main) {
-      toast.error("Please upload a file first");
-      return;
-    }
-
-    setIsMinting(true);
-
-    try {
-      // Simulate IPFS upload and minting
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      const newNFT = {
-        id: Date.now().toString(),
-        title: data.title,
-        description: data.description,
-        creator: data.creator,
-        price: Number.parseFloat(data.price),
-        image: uploadedFiles.artwork
-          ? URL.createObjectURL(uploadedFiles.artwork)
-          : "/placeholder.svg?height=400&width=400",
-        audio:
-          data.type === "audio"
-            ? URL.createObjectURL(uploadedFiles.main)
-            : undefined,
-        type: data.type,
-        tags: data.tags.split(",").map((tag) => tag.trim()),
-        createdAt: new Date().toISOString(),
-        tokenId: Math.floor(Math.random() * 10000),
-        owner: "0x1234...5678",
+      const metadata = {
+        id: newNFT.id,
+        title: newNFT.title,
+        description: newNFT.description,
+        image: `ipfs://${fileHashes[1]}`,
+        creator: newNFT.creator,
+        price: newNFT.price,
+        ...(newNFT.type === "audio"
+          ? { audio: `ipfs://${fileHashes[0]}` }
+          : {}),
+        type: newNFT.type,
+        tags: newNFT.tags,
+        createdAt: newNFT.createdAt,
+        tokenId: newNFT.tokenId,
+        owner: newNFT.owner,
       };
+      // pin metadata
+    },
+    //
+    onSubmit = async (data: NFTFormData) => {
+      if (!isConnected) {
+        toast.error("Please connect your wallet first");
+        return;
+      }
 
-      addNFT(newNFT);
-      toast.success("NFT minted successfully! 🎉");
+      if (!uploadedFiles.main) {
+        toast.error("Please upload a file first");
+        return;
+      }
 
-      // Reset form
-      setCurrentStep(1);
-      setUploadedFiles({});
-    } catch (error) {
-      toast.error("Failed to mint NFT. Please try again.");
-    } finally {
-      setIsMinting(false);
-    }
-  };
+      setIsMinting(true);
+
+      try {
+        // Simulate IPFS upload and minting
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+
+        const newNFT = {
+          id: Date.now().toString(),
+          title: data.title,
+          description: data.description,
+          creator: data.creator,
+          price: Number.parseFloat(data.price),
+          image: uploadedFiles.artwork
+            ? URL.createObjectURL(uploadedFiles.artwork)
+            : "/placeholder.svg?height=400&width=400",
+          audio:
+            data.type === "audio"
+              ? URL.createObjectURL(uploadedFiles.main)
+              : undefined,
+          type: data.type,
+          tags: data.tags.split(",").map((tag) => tag.trim()),
+          createdAt: new Date().toISOString(),
+          tokenId: Math.floor(Math.random() * 10000),
+          owner: "0x1234...5678",
+        };
+        console.log(uploadedFiles.artwork);
+        console.log(uploadedFiles.main);
+        //
+        // pin files and metadata
+        pinMetadata(
+          await pinFile(uploadedFiles.artwork, uploadedFiles.main),
+          newNFT
+        );
+
+        addNFT(newNFT);
+        toast.success("NFT minted successfully! 🎉");
+
+        // Reset form
+        setCurrentStep(1);
+        setUploadedFiles({});
+      } catch (error) {
+        toast.error("Failed to mint NFT. Please try again.");
+      } finally {
+        setIsMinting(false);
+      }
+    };
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
@@ -188,21 +269,29 @@ export default function CreatePage() {
                           isActive
                             ? "border-purple-500 bg-purple-500/20 text-purple-300"
                             : isCompleted
-                              ? "border-emerald-500 bg-emerald-500/20 text-emerald-300"
-                              : "border-slate-600 bg-slate-800/50 text-slate-400"
+                            ? "border-emerald-500 bg-emerald-500/20 text-emerald-300"
+                            : "border-slate-600 bg-slate-800/50 text-slate-400"
                         }
                       `}
                           >
                             <Icon className="w-5 h-5" />
                           </div>
                           <span
-                            className={`ml-2 font-medium ${isActive ? "text-purple-300" : isCompleted ? "text-emerald-300" : "text-slate-400"}`}
+                            className={`ml-2 font-medium ${
+                              isActive
+                                ? "text-purple-300"
+                                : isCompleted
+                                ? "text-emerald-300"
+                                : "text-slate-400"
+                            }`}
                           >
                             {step.title}
                           </span>
                           {index < steps.length - 1 && (
                             <div
-                              className={`w-8 h-0.5 mx-4 ${isCompleted ? "bg-emerald-500" : "bg-slate-600"}`}
+                              className={`w-8 h-0.5 mx-4 ${
+                                isCompleted ? "bg-emerald-500" : "bg-slate-600"
+                              }`}
                             />
                           )}
                         </div>
@@ -290,22 +379,38 @@ export default function CreatePage() {
 
                           <div className="grid grid-cols-2 gap-4">
                             <div>
-                              <Label htmlFor="type">Content Type *</Label>
-                              <Select {...register("type", { required: true })}>
-                                <SelectTrigger className="bg-slate-800/50 border-slate-600 text-white">
-                                  <SelectValue placeholder="Select type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="audio">Audio</SelectItem>
-                                  <SelectItem value="art">
-                                    Digital Art
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
+                              <Controller
+                                name="type"
+                                control={control}
+                                rules={{ required: "Type is required" }}
+                                render={({ field }) => (
+                                  <Select
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                  >
+                                    <SelectTrigger className="bg-slate-800/50 border-slate-600 text-white">
+                                      <SelectValue placeholder="Select type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="audio">
+                                        Audio
+                                      </SelectItem>
+                                      <SelectItem value="art">
+                                        Digital Art
+                                      </SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                )}
+                              />
+                              {errors.type && (
+                                <p className="text-red-400 text-sm mt-1">
+                                  {errors.type.message}
+                                </p>
+                              )}
                             </div>
 
                             <div>
-                              <Label htmlFor="price">Price (ETH) *</Label>
+                              <Label htmlFor="price">Price (LSK) *</Label>
                               <Input
                                 id="price"
                                 type="number"

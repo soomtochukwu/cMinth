@@ -3,13 +3,15 @@ import { AnimatedBackground } from "./animated-background";
 
 const Footer = () => {
   return (
-    <div className="flex z-20 flex-col items-center justify-center h-64 bg-gray-800 text-white">
-      {/* <AnimatedBackground /> */}
+    <div
+      className="flex flex-row items-center justify-between p-6 h-40  text-white backdrop-blur-sm"
+      style={{ zIndex: 1000, position: "relative" }}
+    >
       <div>Mazi</div>
       <div>Lansa</div>
       <div>Robert</div>
       <div>Ruth</div>
-      <div>Judith</div>
+      <div key={0.010101010101}>Judith</div>
     </div>
   );
 };

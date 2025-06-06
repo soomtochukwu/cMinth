@@ -1,57 +1,62 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
-import { Zap, Shield, Clock, CheckCircle } from "lucide-react"
-import toast from "react-hot-toast"
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Zap, Shield, Clock, CheckCircle } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface NFT {
-  id: string
-  title: string
-  creator: string
-  price: number
-  image: string
-  type: "audio" | "art"
+  id: string;
+  title: string;
+  creator: string;
+  price: number;
+  image: string;
+  type: "audio" | "art";
 }
 
 interface PurchaseModalProps {
-  nft: NFT
-  isOpen: boolean
-  onClose: () => void
+  nft: NFT;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
-  const [isPurchasing, setIsPurchasing] = useState(false)
-  const [purchaseComplete, setPurchaseComplete] = useState(false)
+  const [isPurchasing, setIsPurchasing] = useState(false);
+  const [purchaseComplete, setPurchaseComplete] = useState(false);
 
   const handlePurchase = async () => {
-    setIsPurchasing(true)
+    setIsPurchasing(true);
 
     try {
       // Simulate blockchain transaction
-      await new Promise((resolve) => setTimeout(resolve, 3000))
-      setPurchaseComplete(true)
-      toast.success("NFT purchased successfully! 🎉")
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      setPurchaseComplete(true);
+      toast.success("NFT purchased successfully! 🎉");
 
       setTimeout(() => {
-        onClose()
-        setPurchaseComplete(false)
-      }, 2000)
+        onClose();
+        setPurchaseComplete(false);
+      }, 2000);
     } catch (error) {
-      toast.error("Purchase failed. Please try again.")
+      toast.error("Purchase failed. Please try again.");
     } finally {
-      setIsPurchasing(false)
+      setIsPurchasing(false);
     }
-  }
+  };
 
-  const platformFee = nft.price * 0.1
-  const creatorEarnings = nft.price * 0.9
-  const gasEstimate = 0.005
+  const platformFee = nft.price * 0.1;
+  const creatorEarnings = nft.price * 0.9;
+  const gasEstimate = 0.005;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -79,7 +84,10 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
               </motion.div>
               <h3 className="text-2xl font-bold mb-2">Congratulations!</h3>
               <p className="text-slate-300">
-                You now own <span className="text-purple-300 font-semibold">{nft.title}</span>
+                You now own{" "}
+                <span className="text-purple-300 font-semibold">
+                  {nft.title}
+                </span>
               </p>
             </motion.div>
           ) : (
@@ -101,9 +109,14 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-white truncate">{nft.title}</h3>
+                      <h3 className="font-semibold text-white truncate">
+                        {nft.title}
+                      </h3>
                       <p className="text-slate-400 text-sm">by {nft.creator}</p>
-                      <Badge variant="secondary" className="bg-purple-500/20 text-purple-300 border-purple-500/30 mt-1">
+                      <Badge
+                        variant="secondary"
+                        className="bg-purple-500/20 text-purple-300 border-purple-500/30 mt-1"
+                      >
                         {nft.type === "audio" ? "Audio NFT" : "Digital Art"}
                       </Badge>
                     </div>
@@ -116,29 +129,39 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
                 <CardContent className="p-4 space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-slate-400">NFT Price</span>
-                    <span className="text-white font-medium">{nft.price} ETH</span>
+                    <span className="text-white font-medium">
+                      {nft.price} LSK
+                    </span>
                   </div>
 
                   <div className="flex justify-between items-center">
                     <span className="text-slate-400">Platform Fee (10%)</span>
-                    <span className="text-slate-400">{platformFee.toFixed(4)} ETH</span>
+                    <span className="text-slate-400">
+                      {platformFee.toFixed(4)} LSK
+                    </span>
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-400">Creator Earnings (90%)</span>
-                    <span className="text-emerald-400">{creatorEarnings.toFixed(4)} ETH</span>
+                    <span className="text-slate-400">
+                      Creator Earnings (90%)
+                    </span>
+                    <span className="text-emerald-400">
+                      {creatorEarnings.toFixed(4)} LSK
+                    </span>
                   </div>
 
                   <div className="flex justify-between items-center">
                     <span className="text-slate-400">Estimated Gas</span>
-                    <span className="text-slate-400">{gasEstimate} ETH</span>
+                    <span className="text-slate-400">{gasEstimate} LSK</span>
                   </div>
 
                   <Separator className="bg-slate-600" />
 
                   <div className="flex justify-between items-center">
                     <span className="text-white font-medium">Total</span>
-                    <span className="text-white font-bold text-lg">{(nft.price + gasEstimate).toFixed(4)} ETH</span>
+                    <span className="text-white font-bold text-lg">
+                      {(nft.price + gasEstimate).toFixed(4)} LSK
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -173,18 +196,19 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
                 ) : (
                   <>
                     <Zap className="w-5 h-5 mr-2" />
-                    Purchase for {nft.price} ETH
+                    Purchase for {nft.price} LSK
                   </>
                 )}
               </Button>
 
               <p className="text-xs text-slate-400 text-center">
-                By purchasing, you agree to our terms of service and confirm ownership transfer via blockchain.
+                By purchasing, you agree to our terms of service and confirm
+                ownership transfer via blockchain.
               </p>
             </motion.div>
           )}
         </AnimatePresence>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
