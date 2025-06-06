@@ -1,15 +1,21 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { Search, Grid, List } from "lucide-react"
-import { NFTCard } from "@/components/nft-card"
-import { useNFTStore } from "@/store/nft-store"
-import { AnimatedBackground } from "@/components/animated-background"
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Search, Grid, List } from "lucide-react";
+import { NFTCard } from "@/components/nft-card";
+import { useNFTStore } from "@/store/nft-store";
+import { AnimatedBackground } from "@/components/animated-background";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -19,7 +25,7 @@ const containerVariants = {
       staggerChildren: 0.1,
     },
   },
-}
+};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -32,22 +38,37 @@ const itemVariants = {
       damping: 10,
     },
   },
-}
+};
 
 export default function MarketplacePage() {
-  const { nfts, isLoading } = useNFTStore()
-  const [searchTerm, setSearchTerm] = useState("")
-  const [sortBy, setSortBy] = useState("newest")
-  const [filterBy, setFilterBy] = useState("all")
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const //
+    { nfts, isLoading } = useNFTStore(),
+    [searchTerm, setSearchTerm] = useState(""),
+    [sortBy, setSortBy] = useState("newest"),
+    [filterBy, setFilterBy] = useState("all"),
+    [viewMode, setViewMode] = useState<"grid" | "list">("grid"),
+    //
+    filteredNFTs = nfts.filter((nft) => {
+      const matchesSearch =
+        nft.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        nft.creator.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter = filterBy === "all" || nft.type === filterBy;
+      return matchesSearch && matchesFilter;
+    }),
+    [isMobile, setIsMobile] = useState(false);
 
-  const filteredNFTs = nfts.filter((nft) => {
-    const matchesSearch =
-      nft.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      nft.creator.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesFilter = filterBy === "all" || nft.type === filterBy
-    return matchesSearch && matchesFilter
-  })
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    isMobile ? setViewMode("list") : setViewMode("grid");
+  }, [isMobile]);
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
@@ -66,7 +87,8 @@ export default function MarketplacePage() {
               Discover Amazing NFTs
             </h1>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              Explore unique digital art and audio content from creators around the world
+              Explore unique digital art and audio content from creators around
+              the world
             </p>
           </motion.div>
 
@@ -107,8 +129,12 @@ export default function MarketplacePage() {
                   <SelectContent>
                     <SelectItem value="newest">Newest</SelectItem>
                     <SelectItem value="oldest">Oldest</SelectItem>
-                    <SelectItem value="price-low">Price: Low to High</SelectItem>
-                    <SelectItem value="price-high">Price: High to Low</SelectItem>
+                    <SelectItem value="price-low">
+                      Price: Low to High
+                    </SelectItem>
+                    <SelectItem value="price-high">
+                      Price: High to Low
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -134,7 +160,10 @@ export default function MarketplacePage() {
             </div>
 
             <div className="flex flex-wrap gap-2 mt-4">
-              <Badge variant="secondary" className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+              <Badge
+                variant="secondary"
+                className="bg-purple-500/20 text-purple-300 border-purple-500/30"
+              >
                 {filteredNFTs.length} NFTs found
               </Badge>
             </div>
@@ -144,7 +173,10 @@ export default function MarketplacePage() {
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="bg-slate-800/50 rounded-2xl p-4 animate-pulse">
+                <div
+                  key={i}
+                  className="bg-slate-800/50 rounded-2xl p-4 animate-pulse"
+                >
                   <div className="aspect-square bg-slate-700 rounded-xl mb-4"></div>
                   <div className="h-4 bg-slate-700 rounded mb-2"></div>
                   <div className="h-3 bg-slate-700 rounded w-2/3"></div>
@@ -157,7 +189,9 @@ export default function MarketplacePage() {
               initial="hidden"
               animate="visible"
               className={`grid gap-6 ${
-                viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"
+                viewMode === "grid"
+                  ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                  : "grid-cols-1"
               }`}
             >
               {filteredNFTs.map((nft, index) => (
@@ -169,14 +203,22 @@ export default function MarketplacePage() {
           )}
 
           {filteredNFTs.length === 0 && !isLoading && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-20">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center py-20"
+            >
               <div className="text-6xl mb-4">🎨</div>
-              <h3 className="text-2xl font-bold mb-2 text-slate-300">No NFTs found</h3>
-              <p className="text-slate-400">Try adjusting your search or filters</p>
+              <h3 className="text-2xl font-bold mb-2 text-slate-300">
+                No NFTs found
+              </h3>
+              <p className="text-slate-400">
+                Try adjusting your search or filters
+              </p>
             </motion.div>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }
