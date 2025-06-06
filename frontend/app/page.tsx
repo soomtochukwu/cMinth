@@ -1,13 +1,22 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { ArrowRight, Music, Palette, Zap, Shield, Globe, Users } from "lucide-react"
-import Link from "next/link"
-import { AnimatedBackground } from "@/components/animated-background"
-import { StatsSection } from "@/components/stats-section"
-import { FeatureCard } from "@/components/feature-card"
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  ArrowRight,
+  Music,
+  PenTool,
+  Palette,
+  Zap,
+  Shield,
+  Globe,
+  Users,
+} from "lucide-react";
+import Link from "next/link";
+import { AnimatedBackground } from "@/components/animated-background";
+import { StatsSection } from "@/components/stats-section";
+import { FeatureCard } from "@/components/feature-card";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -18,7 +27,7 @@ const containerVariants = {
       delayChildren: 0.2,
     },
   },
-}
+};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -31,7 +40,7 @@ const itemVariants = {
       damping: 10,
     },
   },
-}
+};
 
 export default function LandingPage() {
   return (
@@ -48,7 +57,7 @@ export default function LandingPage() {
         >
           <motion.div variants={itemVariants} className="mb-6">
             <span className="inline-block px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-medium backdrop-blur-sm">
-              🎵 Decentralized Creator Economy
+              🎵 Decentralized Creator Economy 🎭
             </span>
           </motion.div>
 
@@ -63,11 +72,15 @@ export default function LandingPage() {
             variants={itemVariants}
             className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed"
           >
-            The first decentralized platform where creators mint NFTs of their audio and art content with built-in
-            royalty splits. Own your creativity, monetize your passion.
+            The first decentralized platform where creators mint NFTs of their
+            audio and art content with built-in royalty splits. Own your
+            creativity, monetize your passion.
           </motion.p>
 
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+          >
             <Link href="/marketplace">
               <Button
                 size="lg"
@@ -107,11 +120,18 @@ export default function LandingPage() {
               Why Choose Our Platform?
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              Built for creators, by creators. Experience the future of digital content monetization.
+              Built for creators, by creators. Experience the future of digital
+              content monetization.
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <FeatureCard
+              icon={<PenTool className="w-8 h-8" />}
+              title="On-The-Go"
+              description="Create (draw or paint) your own NFT right on the market place -- mint and sell it at a higher royalty rate."
+              gradient="from-gray-900 to-gray-100"
+            />
             <FeatureCard
               icon={<Music className="w-8 h-8" />}
               title="Audio NFTs"
@@ -163,9 +183,12 @@ export default function LandingPage() {
           >
             <Card className="bg-gradient-to-r from-purple-900/50 to-cyan-900/50 border-purple-500/30 backdrop-blur-sm">
               <CardContent className="p-12">
-                <h3 className="text-3xl md:text-4xl font-bold mb-6 text-white">Ready to Monetize Your Creativity?</h3>
+                <h3 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+                  Ready to Monetize Your Creativity?
+                </h3>
                 <p className="text-xl text-slate-300 mb-8">
-                  Join thousands of creators who are already earning from their digital content.
+                  Join thousands of creators who are already earning from their
+                  digital content.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link href="/create">
@@ -193,5 +216,5 @@ export default function LandingPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

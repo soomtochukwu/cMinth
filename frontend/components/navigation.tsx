@@ -39,12 +39,12 @@ export function Navigation() {
             <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">C</span>
             </div>
-            <span className="text-xl font-bold text-white">CreatorVerse</span>
+            <span className="text-xl font-bold text-white">Cr8or</span>
             <Badge
               variant="secondary"
               className="bg-purple-500/20 text-purple-300 border-purple-500/30 text-xs"
             >
-              Beta
+              MVP
             </Badge>
           </Link>
 
