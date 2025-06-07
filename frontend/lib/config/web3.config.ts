@@ -4,13 +4,18 @@ import { cookieStorage, createConfig, createStorage, http, injected } from "wagm
 
 import { siteConfig } from "./site.config";
 
-export const projectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID || "";
+export const projectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID;
+
+if (!projectId) {
+  console.error("NEXT_PUBLIC_REOWN_PROJECT_ID is not defined in .env.local");
+  throw new Error("Web3 configuration failed: Missing project ID");
+}
+
 export const rpcUrl = "https://rpc.sepolia-api.lisk.com";
 
 // Create a custom storage implementation that prevents auto-connection
 const noAutoConnectStorage = createStorage({
   storage: cookieStorage,
-  // This key transformation effectively disables auto-connection
   key: "wagmi.manual-connect-only",
 });
 
@@ -26,7 +31,6 @@ export const web3Config = createConfig(
     appDescription: siteConfig.description,
     appUrl: siteConfig.url,
     appIcon: siteConfig.icon,
-
     ssr: true,
     storage: noAutoConnectStorage,
   })
