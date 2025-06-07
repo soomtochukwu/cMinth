@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Menu, X, Home, Search, Plus } from "lucide-react";
 import { useAccount } from "wagmi";
 import { web3Config } from "@/lib/config/web3.config";
-import { ConnectKitButton } from "connectkit";
+// import { ConnectKitButton } from "connectkit";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
@@ -77,19 +78,20 @@ export function Navigation() {
 
           {/* Desktop Wallet Connect */}
           <div className="hidden md:block">
-            <ConnectKitButton
-              showBalance
-              showAvatar={true}
-              customTheme={{
-                "--ck-connectbutton-background":
-                  "linear-gradient(to right, #9333ea, #0891b2)",
-                "--ck-connectbutton-hover-background":
-                  "linear-gradient(to right, #7e22ce, #0e7490)",
-                "--ck-connectbutton-active-background":
-                  "linear-gradient(to right, #7e22ce, #0e7490)",
-                "--ck-connectbutton-color": "white",
+            <ConnectButton
+              accountStatus={{
+                smallScreen: "avatar",
+                largeScreen: "address",
               }}
-            />{" "}
+              chainStatus={{
+                smallScreen: "none",
+                largeScreen: "none",
+              }}
+              showBalance={{
+                smallScreen: true,
+                largeScreen: true,
+              }}
+            />
           </div>
 
           {/* Mobile Menu Button */}
@@ -144,19 +146,20 @@ export function Navigation() {
             })}
 
             <div className="pt-4 border-t border-slate-800">
-              <ConnectKitButton
-                showBalance
-                showAvatar={true}
-                customTheme={{
-                  "--ck-connectbutton-background":
-                    "linear-gradient(to right, #9333ea, #0891b2)",
-                  "--ck-connectbutton-hover-background":
-                    "linear-gradient(to right, #7e22ce, #0e7490)",
-                  "--ck-connectbutton-active-background":
-                    "linear-gradient(to right, #7e22ce, #0e7490)",
-                  "--ck-connectbutton-color": "white",
+              <ConnectButton
+                accountStatus={{
+                  smallScreen: "avatar",
+                  largeScreen: "address",
                 }}
-              />{" "}
+                chainStatus={{
+                  smallScreen: "none",
+                  largeScreen: "none",
+                }}
+                showBalance={{
+                  smallScreen: true,
+                  largeScreen: true,
+                }}
+              />
             </div>
           </div>
         </motion.div>

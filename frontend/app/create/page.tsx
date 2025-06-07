@@ -59,7 +59,7 @@ const steps = [
 
 export default function CreatePage() {
   const //
-    { status, isConnected, address } = useAccount({ config: web3Config }),
+    { status, isConnected, address } = useAccount(),
     [currentStep, setCurrentStep] = useState(1),
     [uploadedFiles, setUploadedFiles] = useState<{
       main?: File;

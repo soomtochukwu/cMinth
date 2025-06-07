@@ -5,6 +5,7 @@ import { Navigation } from "@/components/navigation";
 import { Toaster } from "react-hot-toast";
 import Web3Provider from "./web3.providers";
 import Footer from "@/components/Footer";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "Cr8or - Decentralized Creator Monetization",
@@ -20,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Web3Provider>
+        <Providers>
           <Navigation />
           {children}
           <Toaster
@@ -34,7 +35,7 @@ export default function RootLayout({
             }}
           />
           <Footer />
-        </Web3Provider>
+        </Providers>
       </body>
     </html>
   );
