@@ -86,8 +86,9 @@ export default function CreatePage() {
     },
     { writeContractAsync } = useWriteContract(),
     pinata = new PinataSDK({
-      pinataJwt: `${process.env.PINATA_JWT}`,
-      pinataGateway: `${process.env.NEXT_PUBLIC_GATEWAY_URL}`,
+      pinataJwt:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJiMTE4M2NjMy1jNWEwLTQzN2MtYWYzOS1hM2NjZTkyZWU4OTEiLCJlbWFpbCI6Im9ud3VhanVlc2Vzb210b2NodWt3dUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiM2VkN2Q4NmZhY2UwYjBhNmYwMjgiLCJzY29wZWRLZXlTZWNyZXQiOiI2YmUzNzE5ZmNjZDkzMmVlYjA3MTYxNTJlOTc5ZGVlYmU2ODFiN2UyMmNjY2E5MjIwNjUwM2YzODk2MDY4ZTJmIiwiZXhwIjoxNzU4NjU0MTkzfQ.lqFjRJEdFDHvsLScrHkcDaWukoJcOQTdAEJyVmc6iOo",
+      pinataGateway: "coral-permanent-catshark-777.mypinata.cloud",
     }),
     pinFiles = async (
       artWork: File | undefined,

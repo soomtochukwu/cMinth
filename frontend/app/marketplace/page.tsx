@@ -42,7 +42,7 @@ const itemVariants = {
 
 export default function MarketplacePage() {
   const //
-    { nfts, isLoading } = useNFTStore(),
+    { nfts, isLoading, fetchNFTs } = useNFTStore(),
     [searchTerm, setSearchTerm] = useState(""),
     [sortBy, setSortBy] = useState("newest"),
     [filterBy, setFilterBy] = useState("all"),
@@ -55,9 +55,14 @@ export default function MarketplacePage() {
       const matchesFilter = filterBy === "all" || nft.type === filterBy;
       return matchesSearch && matchesFilter;
     }),
-    [isMobile, setIsMobile] = useState(false);
+    [isMobile, setIsMobile] = useState(false),
+    handleRefresh = async () => {
+      const freshNFTs = await fetchNFTs();
+      console.log("Got fresh NFTs:", freshNFTs);
+    };
 
   useEffect(() => {
+    handleRefresh();
     const checkMobile = () => {
       setIsMobile(window.matchMedia("(max-width: 768px)").matches);
     };
