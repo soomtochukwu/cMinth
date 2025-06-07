@@ -22,9 +22,10 @@ import { useNFTStore } from "@/store/nft-store";
 import { AnimatedBackground } from "@/components/animated-background";
 import { Sparkles, Upload, Eye, Zap } from "lucide-react";
 import toast from "react-hot-toast";
-import { useAccount } from "wagmi";
+import { useAccount, useWriteContract } from "wagmi";
 import { web3Config } from "@/lib/config/web3.config";
 import { PinataSDK } from "pinata";
+import { Cr8orAbi, Cr8orAddress } from "@/lib/var";
 
 interface NFTFormData {
   title: string;
@@ -58,7 +59,7 @@ const steps = [
 
 export default function CreatePage() {
   const //
-    { status, isConnected } = useAccount({ config: web3Config }),
+    { status, isConnected, address } = useAccount({ config: web3Config }),
     [currentStep, setCurrentStep] = useState(1),
     [uploadedFiles, setUploadedFiles] = useState<{
       main?: File;
@@ -83,63 +84,98 @@ export default function CreatePage() {
         setCurrentStep(2);
       }
     },
+    { writeContractAsync } = useWriteContract(),
     pinata = new PinataSDK({
       pinataJwt: process.env.NEXT_PUBLIC_JWT,
       pinataGateway: process.env.NEXT_PUBLIC_GATE,
     }),
-    pinFile = async (artWork: File | undefined, cover: File | undefined) => {
-      // pin cover
-      // pin nft
+    pinFiles = async (
+      artWork: File | undefined,
+      cover: File | undefined,
+      title: string
+    ) => {
       // return both hashes as an array of strings
       return [
-        await (async () => {
-          const pin = await pinata.upload.public.file(
+        // pin Art Work
+        (
+          await pinata.upload.public.file(
             new File(
               [artWork as Blob],
-              `${artWork?.name.slice(artWork?.name.lastIndexOf("."))}`,
+              `${title}${artWork?.name.slice(artWork.name.indexOf("."))}`,
               {
                 type: "image/plain",
               }
             )
-          );
-          await console.log(pin);
-          return pin.cid;
-        })(),
-        await (async () => {
-          const pin = await pinata.upload.public.file(
+          )
+        ).cid,
+        // pin Cover/thumbnail
+        (
+          await pinata.upload.public.file(
             new File(
               [cover as Blob],
-              `${cover?.name.slice(cover?.name.lastIndexOf("."))}`,
+              `${title}_cover${cover?.name.slice(cover.name.indexOf("."))}`,
               {
                 type: "image/plain",
               }
             )
-          );
-          await console.log(pin);
-          return pin.cid;
-        })(),
+          )
+        ).cid,
       ];
     },
     pinMetadata = async (fileHashes: string[], newNFT: _newNFT) => {
-      // construct metadata
-
-      const metadata = {
-        id: newNFT.id,
-        title: newNFT.title,
-        description: newNFT.description,
-        image: `ipfs://${fileHashes[1]}`,
-        creator: newNFT.creator,
-        price: newNFT.price,
-        ...(newNFT.type === "audio"
-          ? { audio: `ipfs://${fileHashes[0]}` }
-          : {}),
-        type: newNFT.type,
-        tags: newNFT.tags,
-        createdAt: newNFT.createdAt,
-        tokenId: newNFT.tokenId,
-        owner: newNFT.owner,
-      };
       // pin metadata
+      return (
+        await pinata.upload.public.file(
+          new File(
+            [
+              new Blob(
+                [
+                  // construct metadata
+                  JSON.stringify({
+                    id: newNFT.id,
+                    title: newNFT.title,
+                    description: newNFT.description,
+                    creator: newNFT.creator,
+                    price: newNFT.price,
+                    ...(newNFT.type === "audio"
+                      ? {
+                          image: `https://ipfs.io/ipfs/${fileHashes[1]}`,
+                          audio: `https://ipfs.io/ipfs/${fileHashes[0]}`,
+                        }
+                      : { image: `https://ipfs.io/ipfs/${fileHashes[0]}` }),
+                    type: newNFT.type,
+                    tags: newNFT.tags,
+                    createdAt: newNFT.createdAt,
+                    tokenId: newNFT.tokenId,
+                    owner: newNFT.owner,
+                  }),
+                ],
+                {
+                  type: "application/json",
+                }
+              ),
+            ],
+            `metadata_${newNFT.title}.json`,
+            {
+              type: "application/json",
+            }
+          )
+        )
+      ).cid;
+    },
+    //
+    mintNFT = async (metadataHash: string) => {
+      writeContractAsync({
+        address: Cr8orAddress,
+        abi: Cr8orAbi,
+        functionName: "mintNFT",
+        args: [
+          address as `0x${string}`,
+          `https://ipfs.io/ipfs/${metadataHash}`,
+        ],
+      }).then((res) => {
+        console.log("Transaction sent:", res);
+      });
     },
     //
     onSubmit = async (data: NFTFormData) => {
@@ -156,7 +192,7 @@ export default function CreatePage() {
       setIsMinting(true);
 
       try {
-        // Simulate IPFS upload and minting
+        // process form
         await new Promise((resolve) => setTimeout(resolve, 3000));
 
         const newNFT = {
@@ -178,13 +214,19 @@ export default function CreatePage() {
           tokenId: Math.floor(Math.random() * 10000),
           owner: "0x1234...5678",
         };
-        console.log(uploadedFiles.artwork);
-        console.log(uploadedFiles.main);
+        // console.log(uploadedFiles.artwork?.name);
+        // console.log(uploadedFiles.main.name);
         //
         // pin files and metadata
-        pinMetadata(
-          await pinFile(uploadedFiles.artwork, uploadedFiles.main),
-          newNFT
+        await mintNFT(
+          await pinMetadata(
+            await pinFiles(
+              uploadedFiles.main,
+              uploadedFiles.artwork,
+              newNFT.title
+            ),
+            newNFT
+          )
         );
 
         addNFT(newNFT);

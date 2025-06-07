@@ -2,7 +2,7 @@ export
     // 
     const
     // 
-    Cr8orAddress = "0x73511669fd4dE447feD18BB79bAFeAC93aB7F31f",
+    Cr8orAddress = "0xEd3397c44528856F491cFB537a3d1978D863E007",
     Cr8orAbi = [
         {
             "inputs": [

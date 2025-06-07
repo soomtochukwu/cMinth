@@ -1,3 +1,4 @@
+import { useReadContract } from "wagmi"
 import { create } from "zustand"
 
 interface NFT {
