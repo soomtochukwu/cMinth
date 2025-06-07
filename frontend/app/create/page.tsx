@@ -86,8 +86,8 @@ export default function CreatePage() {
     },
     { writeContractAsync } = useWriteContract(),
     pinata = new PinataSDK({
-      pinataJwt: process.env.NEXT_PUBLIC_JWT,
-      pinataGateway: process.env.NEXT_PUBLIC_GATE,
+      pinataJwt: `${process.env.PINATA_JWT}`,
+      pinataGateway: `${process.env.NEXT_PUBLIC_GATEWAY_URL}`,
     }),
     pinFiles = async (
       artWork: File | undefined,
@@ -134,6 +134,7 @@ export default function CreatePage() {
                   JSON.stringify({
                     id: newNFT.id,
                     title: newNFT.title,
+                    name: newNFT.title,
                     description: newNFT.description,
                     creator: newNFT.creator,
                     price: newNFT.price,
@@ -147,7 +148,17 @@ export default function CreatePage() {
                     tags: newNFT.tags,
                     createdAt: newNFT.createdAt,
                     tokenId: newNFT.tokenId,
-                    owner: newNFT.owner,
+                    owner: address,
+                    attributes: [
+                      {
+                        trait_type: "Name",
+                        value: newNFT.title,
+                      },
+                      {
+                        trait_type: "Owner",
+                        value: address,
+                      },
+                    ],
                   }),
                 ],
                 {

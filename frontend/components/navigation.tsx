@@ -84,8 +84,8 @@ export function Navigation() {
                 largeScreen: "address",
               }}
               chainStatus={{
-                smallScreen: "none",
-                largeScreen: "none",
+                smallScreen: "icon",
+                largeScreen: "icon",
               }}
               showBalance={{
                 smallScreen: true,
@@ -152,8 +152,8 @@ export function Navigation() {
                   largeScreen: "address",
                 }}
                 chainStatus={{
-                  smallScreen: "none",
-                  largeScreen: "none",
+                  smallScreen: "icon",
+                  largeScreen: "icon",
                 }}
                 showBalance={{
                   smallScreen: true,
