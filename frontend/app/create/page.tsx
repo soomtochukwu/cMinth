@@ -17,14 +17,12 @@ import {
 import { FileUpload } from "@/components/file-upload";
 import { NFTPreview } from "@/components/nft-preview";
 import { Controller, useForm } from "react-hook-form";
-// import { useWalletStore } from "@/store/wallet-store";
 import { useNFTStore } from "@/store/nft-store";
 import { AnimatedBackground } from "@/components/animated-background";
 import { Sparkles, Upload, Eye, Zap } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAccount, useWriteContract } from "wagmi";
-import { web3Config } from "@/lib/config/web3.config";
-import { PinataSDK } from "pinata";
+
 import { Cr8orAbi, Cr8orAddress } from "@/lib/var";
 
 interface NFTFormData {
@@ -75,121 +73,104 @@ export default function CreatePage() {
       control,
       formState: { errors },
     } = useForm<NFTFormData>(),
-    //
     formData = watch(),
-    //
+    { writeContractAsync } = useWriteContract(),
     handleFileUpload = (files: { main?: File; artwork?: File }) => {
       setUploadedFiles(files);
       if (files.main) {
         setCurrentStep(2);
       }
     },
-    { writeContractAsync } = useWriteContract(),
-    pinata = new PinataSDK({
-      pinataJwt:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJiMTE4M2NjMy1jNWEwLTQzN2MtYWYzOS1hM2NjZTkyZWU4OTEiLCJlbWFpbCI6Im9ud3VhanVlc2Vzb210b2NodWt3dUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiM2VkN2Q4NmZhY2UwYjBhNmYwMjgiLCJzY29wZWRLZXlTZWNyZXQiOiI2YmUzNzE5ZmNjZDkzMmVlYjA3MTYxNTJlOTc5ZGVlYmU2ODFiN2UyMmNjY2E5MjIwNjUwM2YzODk2MDY4ZTJmIiwiZXhwIjoxNzU4NjU0MTkzfQ.lqFjRJEdFDHvsLScrHkcDaWukoJcOQTdAEJyVmc6iOo",
-      pinataGateway: "coral-permanent-catshark-777.mypinata.cloud",
-    }),
     pinFiles = async (
-      artWork: File | undefined,
-      cover: File | undefined,
+      mainFile: File,
+      artworkFile: File | undefined,
       title: string
-    ) => {
-      // return both hashes as an array of strings
-      return [
-        // pin Art Work
-        (
-          await pinata.upload.public.file(
-            new File(
-              [artWork as Blob],
-              `${title}${artWork?.name.slice(artWork.name.indexOf("."))}`,
-              {
-                type: "image/plain",
-              }
-            )
-          )
-        ).cid,
-        // pin Cover/thumbnail
-        (
-          await pinata.upload.public.file(
-            new File(
-              [cover as Blob],
-              `${title}_cover${cover?.name.slice(cover.name.indexOf("."))}`,
-              {
-                type: "image/plain",
-              }
-            )
-          )
-        ).cid,
-      ];
+    ): Promise<string[]> => {
+      try {
+        const toastId = toast.loading("Uploading files to IPFS...");
+
+        const formData = new FormData();
+        formData.append("mainFile", mainFile);
+        formData.append("title", title);
+
+        if (artworkFile) {
+          formData.append("artworkFile", artworkFile);
+        }
+
+        const response = await fetch("/api/pinFiles", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to upload files");
+        }
+
+        const data = await response.json();
+        toast.dismiss(toastId);
+        return data.cids;
+      } catch (error) {
+        console.error("Error pinning files:", error);
+        throw new Error("Failed to upload files to IPFS");
+      }
     },
-    pinMetadata = async (fileHashes: string[], newNFT: _newNFT) => {
-      // pin metadata
-      return (
-        await pinata.upload.public.file(
-          new File(
-            [
-              new Blob(
-                [
-                  // construct metadata
-                  JSON.stringify({
-                    id: newNFT.id,
-                    title: newNFT.title,
-                    name: newNFT.title,
-                    description: newNFT.description,
-                    creator: newNFT.creator,
-                    price: newNFT.price,
-                    ...(newNFT.type === "audio"
-                      ? {
-                          image: `https://ipfs.io/ipfs/${fileHashes[1]}`,
-                          audio: `https://ipfs.io/ipfs/${fileHashes[0]}`,
-                        }
-                      : { image: `https://ipfs.io/ipfs/${fileHashes[0]}` }),
-                    type: newNFT.type,
-                    tags: newNFT.tags,
-                    createdAt: newNFT.createdAt,
-                    tokenId: newNFT.tokenId,
-                    owner: address,
-                    attributes: [
-                      {
-                        trait_type: "Name",
-                        value: newNFT.title,
-                      },
-                      {
-                        trait_type: "Owner",
-                        value: address,
-                      },
-                    ],
-                  }),
-                ],
-                {
-                  type: "application/json",
-                }
-              ),
-            ],
-            `metadata_${newNFT.title}.json`,
-            {
-              type: "application/json",
-            }
-          )
-        )
-      ).cid;
+    pinMetadata = async (
+      fileHashes: string[],
+      newNFT: _newNFT
+    ): Promise<string> => {
+      try {
+        const toastId = toast.loading("Uploading metadata to IPFS...");
+
+        const response = await fetch("/api/pinMetadata", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fileHashes,
+            nftData: {
+              ...newNFT,
+              owner: address,
+            },
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to upload metadata");
+        }
+
+        const data = await response.json();
+        toast.dismiss(toastId);
+
+        return data.cid;
+      } catch (error) {
+        console.error("Error pinning metadata:", error);
+        throw new Error("Failed to upload metadata to IPFS");
+      }
     },
-    //
-    mintNFT = async (metadataHash: string) => {
-      writeContractAsync({
-        address: Cr8orAddress,
-        abi: Cr8orAbi,
-        functionName: "mintNFT",
-        args: [
-          address as `0x${string}`,
-          `https://ipfs.io/ipfs/${metadataHash}`,
-        ],
-      }).then((res) => {
-        console.log("Transaction sent:", res);
-      });
+    mintNFT = async (metadataHash: string): Promise<void> => {
+      try {
+        const toastId = toast.loading("Minting NFT on blockchain...");
+
+        const result = await writeContractAsync({
+          address: Cr8orAddress,
+          abi: Cr8orAbi,
+          functionName: "mintNFT",
+          args: [
+            address as `0x${string}`,
+            `https://ipfs.io/ipfs/${metadataHash}`,
+          ],
+        });
+
+        console.log("Transaction sent:", result);
+        toast.dismiss(toastId);
+      } catch (error) {
+        console.error("Error minting NFT:", error);
+        throw new Error("Failed to mint NFT on blockchain");
+      }
     },
-    //
     onSubmit = async (data: NFTFormData) => {
       if (!isConnected) {
         toast.error("Please connect your wallet first");
@@ -197,17 +178,15 @@ export default function CreatePage() {
       }
 
       if (!uploadedFiles.main) {
-        toast.error("Please upload a file first");
+        toast.error("Please upload a main file first");
         return;
       }
 
       setIsMinting(true);
 
       try {
-        // process form
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-
-        const newNFT = {
+        // Create NFT object
+        const newNFT: _newNFT = {
           id: Date.now().toString(),
           title: data.title,
           description: data.description,
@@ -215,40 +194,60 @@ export default function CreatePage() {
           price: Number.parseFloat(data.price),
           image: uploadedFiles.artwork
             ? URL.createObjectURL(uploadedFiles.artwork)
-            : "/placeholder.svg?height=400&width=400",
+            : URL.createObjectURL(uploadedFiles.main),
           audio:
             data.type === "audio"
               ? URL.createObjectURL(uploadedFiles.main)
               : undefined,
           type: data.type,
-          tags: data.tags.split(",").map((tag) => tag.trim()),
+          tags: data.tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter(Boolean),
           createdAt: new Date().toISOString(),
           tokenId: Math.floor(Math.random() * 10000),
-          owner: "0x1234...5678",
+          owner: address || "0x0000...0000",
         };
-        // console.log(uploadedFiles.artwork?.name);
-        // console.log(uploadedFiles.main.name);
-        //
-        // pin files and metadata
-        await mintNFT(
-          await pinMetadata(
-            await pinFiles(
-              uploadedFiles.main,
-              uploadedFiles.artwork,
-              newNFT.title
-            ),
-            newNFT
-          )
+
+        // Upload files to IPFS
+        const fileHashes = await pinFiles(
+          uploadedFiles.main,
+          uploadedFiles.artwork,
+          newNFT.title
         );
 
-        addNFT(newNFT);
+        // Upload metadata to IPFS
+        const metadataHash = await pinMetadata(fileHashes, newNFT);
+
+        // Mint NFT on blockchain
+        await mintNFT(metadataHash);
+
+        // Update local store
+        addNFT({
+          ...newNFT,
+          // Update with IPFS URLs instead of blob URLs
+          image:
+            newNFT.type === "audio" && fileHashes[1]
+              ? `https://ipfs.io/ipfs/${fileHashes[1]}`
+              : `https://ipfs.io/ipfs/${fileHashes[0]}`,
+          audio:
+            newNFT.type === "audio"
+              ? `https://ipfs.io/ipfs/${fileHashes[0]}`
+              : undefined,
+        });
+
         toast.success("NFT minted successfully! 🎉");
 
         // Reset form
         setCurrentStep(1);
         setUploadedFiles({});
       } catch (error) {
-        toast.error("Failed to mint NFT. Please try again.");
+        console.error("Minting error:", error);
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Failed to mint NFT. Please try again."
+        );
       } finally {
         setIsMinting(false);
       }
@@ -433,6 +432,7 @@ export default function CreatePage() {
 
                           <div className="grid grid-cols-2 gap-4">
                             <div>
+                              <Label>Type *</Label>
                               <Controller
                                 name="type"
                                 control={control}
@@ -471,7 +471,10 @@ export default function CreatePage() {
                                 step="0.001"
                                 {...register("price", {
                                   required: "Price is required",
-                                  min: 0.001,
+                                  min: {
+                                    value: 0.001,
+                                    message: "Minimum price is 0.001 LSK",
+                                  },
                                 })}
                                 placeholder="0.1"
                                 className="bg-slate-800/50 border-slate-600 text-white"
@@ -511,7 +514,8 @@ export default function CreatePage() {
                                 !formData.title ||
                                 !formData.description ||
                                 !formData.creator ||
-                                !formData.price
+                                !formData.price ||
+                                !formData.type
                               }
                             >
                               Preview

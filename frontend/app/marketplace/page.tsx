@@ -72,6 +72,8 @@ export default function MarketplacePage() {
   }, []);
 
   useEffect(() => {
+    handleRefresh();
+
     isMobile ? setViewMode("list") : setViewMode("grid");
   }, [isMobile]);
 
