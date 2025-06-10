@@ -5,9 +5,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, Play, Eye } from "lucide-react";
+import { Heart, Play, Eye, Info } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useRates } from "@/hooks/use-rates";
+import Rates from "./Rates";
 
 interface NFT {
   id: string;
@@ -26,9 +28,10 @@ interface NFTCardProps {
 }
 
 export function NFTCard({ nft, viewMode = "grid" }: NFTCardProps) {
-  const [isLiked, setIsLiked] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
+  const //
+    [isLiked, setIsLiked] = useState(false),
+    [isHovered, setIsHovered] = useState(false),
+    { ethToDollar, lskToDollar, gettingRates, error } = useRates();
   if (viewMode === "list") {
     return (
       <motion.div
@@ -37,8 +40,8 @@ export function NFTCard({ nft, viewMode = "grid" }: NFTCardProps) {
       >
         <Card className="bg-slate-900/50 backdrop-blur-sm border-slate-700/50 hover:border-purple-500/50 transition-all duration-300">
           <CardContent className="p-6">
-            <div className="flex gap-6">
-              <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
+            <div className="flex items-center gap-6">
+              <div className="relative w-24 h-full rounded-xl overflow-hidden flex-shrink-0">
                 <img
                   src={nft.image || "/placeholder.svg"}
                   alt={nft.title}
@@ -67,17 +70,10 @@ export function NFTCard({ nft, viewMode = "grid" }: NFTCardProps) {
                   </Badge>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-2xl font-bold text-white">
-                      {nft.price} ETH
-                    </p>
-                    <p className="text-slate-400 text-sm">
-                      ≈ ${(nft.price * 2500).toLocaleString()}
-                    </p>
-                  </div>
+                <div className="flex flex-col sm:flex-row items-center justify-between">
+                  <Rates nftPrice={nft.price} />
 
-                  <div className="flex gap-2">
+                  <div className="flex w-full sm:w-auto space-x-4 justify-between">
                     <Button
                       variant="outline"
                       size="sm"
@@ -201,12 +197,7 @@ export function NFTCard({ nft, viewMode = "grid" }: NFTCardProps) {
             </div>
 
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xl font-bold text-white">{nft.price} LSK</p>
-                <p className="text-slate-400 text-xs">
-                  ≈ ${(nft.price * 0.42).toLocaleString()}
-                </p>
-              </div>
+              <Rates nftPrice={nft.price} />
             </div>
           </div>
         </CardContent>

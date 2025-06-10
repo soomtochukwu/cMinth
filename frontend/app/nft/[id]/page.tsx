@@ -24,6 +24,7 @@ import toast from "react-hot-toast";
 import { useAccount, useChainId, useConfig } from "wagmi";
 import { Cr8orAddress } from "@/lib/var";
 import Link from "next/link";
+import Rates from "@/components/Rates";
 
 export default function NFTDetailPage() {
   const //
@@ -191,7 +192,19 @@ export default function NFTDetailPage() {
                     </Avatar>
                     <div>
                       <p className="text-sm text-slate-400">Creator</p>
-                      <p className="font-semibold text-white">{nft.creator}</p>
+                      <p className="font-semibold text-white">
+                        <Link
+                          target="_blank"
+                          className="p-1 flex items-center gap-1"
+                          href={
+                            currentChain?.blockExplorers?.default.url +
+                            "/address/" +
+                            nft.owner
+                          }
+                        >
+                          {nft.creator} <ExternalLink className="w-3 h-3" />
+                        </Link>
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -205,12 +218,7 @@ export default function NFTDetailPage() {
                       <p className="text-sm text-slate-400 mb-1">
                         Current Price
                       </p>
-                      <p className="text-3xl font-bold text-white">
-                        {nft.price} LSK
-                      </p>
-                      <p className="text-sm text-slate-400">
-                        ≈ ${(nft.price * 0.42).toLocaleString()}
-                      </p>
+                      <Rates nftPrice={nft.price} />
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-slate-400 mb-1">Token ID</p>
@@ -253,7 +261,7 @@ export default function NFTDetailPage() {
                         Creator Earnings per Sale
                       </span>
                       <span className="text-purple-300 font-medium">
-                        {(nft.price * 0.9).toFixed(3)} LSK
+                        <Rates nftPrice={nft.price * 0.9} />
                       </span>
                     </div>
                   </div>

@@ -14,6 +14,10 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Shield, Clock, CheckCircle } from "lucide-react";
 import toast from "react-hot-toast";
+import { useRates } from "@/hooks/use-rates";
+import Rates from "./Rates";
+import { useWriteContract } from "wagmi";
+import { Cr8orAbi, Cr8orAddress } from "@/lib/var";
 
 interface NFT {
   id: string;
@@ -31,32 +35,40 @@ interface PurchaseModalProps {
 }
 
 export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
-  const [isPurchasing, setIsPurchasing] = useState(false);
-  const [purchaseComplete, setPurchaseComplete] = useState(false);
+  const //
+    [isPurchasing, setIsPurchasing] = useState(false),
+    [purchaseComplete, setPurchaseComplete] = useState(false),
+    { writeContractAsync } = useWriteContract(),
+    handlePurchase = async () => {
+      setIsPurchasing(true);
+      const result = await writeContractAsync({
+        address: Cr8orAddress,
+        abi: Cr8orAbi,
+        functionName: "buy",
+        args: [BigInt(nft.id)],
+        value: BigInt(nft.price * 1e18),
+      });
+      try {
+        // Simulate blockchain transaction
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        setPurchaseComplete(true);
+        toast.success("NFT purchased successfully! 🎉");
 
-  const handlePurchase = async () => {
-    setIsPurchasing(true);
-
-    try {
-      // Simulate blockchain transaction
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      setPurchaseComplete(true);
-      toast.success("NFT purchased successfully! 🎉");
-
-      setTimeout(() => {
-        onClose();
-        setPurchaseComplete(false);
-      }, 2000);
-    } catch (error) {
-      toast.error("Purchase failed. Please try again.");
-    } finally {
-      setIsPurchasing(false);
-    }
-  };
-
-  const platformFee = nft.price * 0.1;
-  const creatorEarnings = nft.price * 0.9;
-  const gasEstimate = 0.005;
+        setTimeout(() => {
+          onClose();
+          setPurchaseComplete(false);
+        }, 2000);
+      } catch (error) {
+        toast.error("Purchase failed. Please try again.");
+      } finally {
+        setIsPurchasing(false);
+      }
+    },
+    platformFee = nft.price * 0.1,
+    creatorEarnings = nft.price * 0.9,
+    gasEstimate = 0.005,
+    //
+    { ethToDollar, lskToDollar } = useRates();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -129,24 +141,22 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
                 <CardContent className="p-4 space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-slate-400">NFT Price</span>
-                    <span className="text-white font-medium">
-                      {nft.price} LSK
+                    <span className="text-white scale-75 inline-block origin-right font-medium">
+                      <Rates nftPrice={nft.price} />
                     </span>
                   </div>
 
                   <div className="flex justify-between items-center">
                     <span className="text-slate-400">Platform Fee (10%)</span>
-                    <span className="text-slate-400">
-                      {platformFee.toFixed(4)} LSK
+                    <span className="scale-75 inline-block origin-right text-slate-400">
+                      <Rates nftPrice={nft.price * 0.1} />
                     </span>
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-400">
-                      Creator Earnings (90%)
-                    </span>
-                    <span className="text-emerald-400">
-                      {creatorEarnings.toFixed(4)} LSK
+                    <span className="text-slate-400">Creator (90%)</span>
+                    <span className="scale-75 inline-block origin-right text-emerald-400">
+                      <Rates nftPrice={nft.price * 0.9} />
                     </span>
                   </div>
 
@@ -159,8 +169,8 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
 
                   <div className="flex justify-between items-center">
                     <span className="text-white font-medium">Total</span>
-                    <span className="text-white font-bold text-lg">
-                      {(nft.price + gasEstimate).toFixed(4)} LSK
+                    <span className="scale-75 inline-block origin-right text-white font-bold text-lg">
+                      <Rates nftPrice={nft.price + gasEstimate} />
                     </span>
                   </div>
                 </CardContent>
@@ -196,7 +206,12 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
                 ) : (
                   <>
                     <Zap className="w-5 h-5 mr-2" />
-                    Purchase for {nft.price} LSK
+                    Purchase for{" "}
+                    {Math.floor(
+                      ((nft.price + gasEstimate) * Number(ethToDollar)) /
+                        Number(lskToDollar)
+                    ).toLocaleString()}{" "}
+                    LSK
                   </>
                 )}
               </Button>

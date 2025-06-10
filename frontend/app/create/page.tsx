@@ -21,7 +21,12 @@ import { useNFTStore } from "@/store/nft-store";
 import { AnimatedBackground } from "@/components/animated-background";
 import { Sparkles, Upload, Eye, Zap } from "lucide-react";
 import toast from "react-hot-toast";
-import { useAccount, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useReadContract,
+  useWatchContractEvent,
+  useWriteContract,
+} from "wagmi";
 
 import { Cr8orAbi, Cr8orAddress } from "@/lib/var";
 
@@ -56,7 +61,22 @@ const steps = [
 ];
 
 export default function CreatePage() {
+  useWatchContractEvent({
+    abi: Cr8orAbi,
+    address: Cr8orAddress,
+    eventName: "NFTMinted",
+    onLogs: () => {},
+  });
   const //
+    nextID = String(
+      Number(
+        useReadContract({
+          address: Cr8orAddress,
+          functionName: "totalSupply",
+          abi: Cr8orAbi,
+        }).data
+      )
+    ),
     { status, isConnected, address } = useAccount(),
     [currentStep, setCurrentStep] = useState(1),
     [uploadedFiles, setUploadedFiles] = useState<{
@@ -131,7 +151,6 @@ export default function CreatePage() {
             fileHashes,
             nftData: {
               ...newNFT,
-              owner: address,
             },
           }),
         });
@@ -172,6 +191,7 @@ export default function CreatePage() {
       }
     },
     onSubmit = async (data: NFTFormData) => {
+      console.log(nextID);
       if (!isConnected) {
         toast.error("Please connect your wallet first");
         return;
@@ -187,7 +207,7 @@ export default function CreatePage() {
       try {
         // Create NFT object
         const newNFT: _newNFT = {
-          id: Date.now().toString(),
+          id: nextID,
           title: data.title,
           description: data.description,
           creator: data.creator,
@@ -464,9 +484,11 @@ export default function CreatePage() {
                             </div>
 
                             <div>
-                              <Label htmlFor="price">Price (LSK) *</Label>
+                              <Label htmlFor="price">Price (ETH) *</Label>
                               <Input
                                 id="price"
+                                min={0.001}
+                                max={0.01}
                                 type="number"
                                 step="0.001"
                                 {...register("price", {
@@ -476,7 +498,7 @@ export default function CreatePage() {
                                     message: "Minimum price is 0.001 LSK",
                                   },
                                 })}
-                                placeholder="0.1"
+                                placeholder="0.001 - 0.01"
                                 className="bg-slate-800/50 border-slate-600 text-white"
                               />
                               {errors.price && (
