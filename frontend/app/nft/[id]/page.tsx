@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,12 +32,33 @@ export default function NFTDetailPage() {
     { isConnected, address } = useAccount(),
     chainId = useChainId(),
     { chains } = useConfig(),
+    { nfts, fetchNFTs } = useNFTStore(),
     currentChain = chains.find((c) => c.id === chainId),
     params = useParams(),
-    { nfts } = useNFTStore(),
     [isLiked, setIsLiked] = useState(false),
     [showPurchaseModal, setShowPurchaseModal] = useState(false),
-    nft = nfts.find((n) => n.id === params.id);
+    nft = nfts.find((n) => n.id === params.id),
+    handlePurchase = () => {
+      console.log(nft?.id, params.id);
+
+      if (!isConnected) {
+        toast.error("Please connect your wallet first");
+        return;
+      }
+      setShowPurchaseModal(true);
+    },
+    handleShare = () => {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("Link copied to clipboard!");
+    },
+    handleRefresh = async () => {
+      const freshNFTs = await fetchNFTs();
+      console.log("Got fresh NFTs:", freshNFTs);
+    };
+
+  useEffect(() => {
+    handleRefresh();
+  }, []);
 
   if (!nft) {
     return (
@@ -52,19 +73,6 @@ export default function NFTDetailPage() {
       </div>
     );
   }
-
-  const handlePurchase = () => {
-    if (!isConnected) {
-      toast.error("Please connect your wallet first");
-      return;
-    }
-    setShowPurchaseModal(true);
-  };
-
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast.success("Link copied to clipboard!");
-  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">

@@ -169,21 +169,27 @@ export default function CreatePage() {
         throw new Error("Failed to upload metadata to IPFS");
       }
     },
-    mintNFT = async (metadataHash: string): Promise<void> => {
+    mintNFT = async (metadataHash: string, price: number): Promise<void> => {
       try {
-        const toastId = toast.loading("Minting NFT on blockchain...");
-
-        const result = await writeContractAsync({
+        const //
+          toastId = toast.loading("Minting NFT on blockchain...");
+        await writeContractAsync({
           address: Cr8orAddress,
           abi: Cr8orAbi,
           functionName: "mintNFT",
           args: [
             address as `0x${string}`,
             `https://ipfs.io/ipfs/${metadataHash}`,
+            BigInt(Math.floor(price * 1e18)),
           ],
         });
+        await writeContractAsync({
+          address: Cr8orAddress,
+          abi: Cr8orAbi,
+          functionName: "setApprovalForAll",
+          args: [Cr8orAddress, true],
+        });
 
-        console.log("Transaction sent:", result);
         toast.dismiss(toastId);
       } catch (error) {
         console.error("Error minting NFT:", error);
@@ -240,7 +246,7 @@ export default function CreatePage() {
         const metadataHash = await pinMetadata(fileHashes, newNFT);
 
         // Mint NFT on blockchain
-        await mintNFT(metadataHash);
+        await mintNFT(metadataHash, newNFT.price);
 
         // Update local store
         addNFT({

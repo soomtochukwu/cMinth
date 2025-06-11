@@ -8,7 +8,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Heart, Play, Eye, Info } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { useRates } from "@/hooks/use-rates";
 import Rates from "./Rates";
 
 interface NFT {
@@ -30,8 +29,7 @@ interface NFTCardProps {
 export function NFTCard({ nft, viewMode = "grid" }: NFTCardProps) {
   const //
     [isLiked, setIsLiked] = useState(false),
-    [isHovered, setIsHovered] = useState(false),
-    { ethToDollar, lskToDollar, gettingRates, error } = useRates();
+    [isHovered, setIsHovered] = useState(false);
   if (viewMode === "list") {
     return (
       <motion.div

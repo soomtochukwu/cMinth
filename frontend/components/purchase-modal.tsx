@@ -46,7 +46,7 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
         abi: Cr8orAbi,
         functionName: "buy",
         args: [BigInt(nft.id)],
-        value: BigInt(nft.price * 1e18),
+        value: BigInt(Math.floor(nft.price * 1e18)),
       });
       try {
         // Simulate blockchain transaction
@@ -66,7 +66,7 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
     },
     platformFee = nft.price * 0.1,
     creatorEarnings = nft.price * 0.9,
-    gasEstimate = 0.005,
+    gasEstimate = 0.000005,
     //
     { ethToDollar, lskToDollar } = useRates();
 
@@ -162,7 +162,7 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
 
                   <div className="flex justify-between items-center">
                     <span className="text-slate-400">Estimated Gas</span>
-                    <span className="text-slate-400">{gasEstimate} LSK</span>
+                    <span className="text-slate-400">{gasEstimate} ETH</span>
                   </div>
 
                   <Separator className="bg-slate-600" />

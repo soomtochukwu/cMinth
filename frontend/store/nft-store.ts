@@ -10,12 +10,14 @@ import { Cr8orAbi, Cr8orAddress } from "@/lib/var"
 
 // Option 2: If you don't have a separate config file, create it inline
 import { createConfig, http } from 'wagmi'
-import { lisk, liskSepolia } from 'wagmi/chains' // adjust chains as needed
+import { lisk, liskSepolia, localhost } from 'wagmi/chains' // adjust chains as needed
 
 const config = createConfig({
-  chains: [liskSepolia], // adjust to your target chains
+  chains: [lisk, liskSepolia, localhost], // adjust to your target chains
   transports: {
     [liskSepolia.id]: http(),
+    [localhost.id]: http(),
+    [lisk.id]: http(),
   },
 })
 
@@ -75,14 +77,14 @@ export const useNFTStore = create<NFTState>((set, get) => ({
           (async () => {
             try {
               // Get tokenId (assuming 1-indexed tokens)
-              const tokenId = i + 1;
+              const tokenId = i;
 
               // 3. Get tokenURI
               const tokenURI = (await readContract(config, {
                 address: Cr8orAddress,
                 abi: Cr8orAbi,
                 functionName: "tokenURI",
-                args: [BigInt(tokenId - 1)],
+                args: [BigInt(tokenId)],
               })) as string
 
               if (!tokenURI) {
@@ -130,15 +132,15 @@ export const useNFTStore = create<NFTState>((set, get) => ({
               // 5. Return NFT object with fallback values
               return {
                 id: tokenId.toString(),
-                title: meta.name || meta.title || `Token #${tokenId}`,
+                title: meta.title,
                 description: meta.description || "",
                 creator: meta.creator || meta.artist || "",
                 price: meta.price || 0,
                 image: meta.image || "",
-                audio: meta.audio || meta.animation_url,
-                type: (meta.type as "audio" | "art") || (meta.audio || meta.animation_url ? "audio" : "art"),
-                tags: meta.attributes?.map((attr: any) => attr.value) || meta.tags || [],
-                createdAt: meta.createdAt || new Date().toISOString(),
+                audio: meta.audio,
+                type: meta.type,
+                tags: meta.tags || [],
+                createdAt: meta.createdAt,
                 tokenId,
                 owner,
               } as NFT
