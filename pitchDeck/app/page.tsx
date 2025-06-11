@@ -358,9 +358,12 @@ export default function Component() {
               </div>
               <h1 className="text-xl font-black tracking-tight bg-gradient-to-r from-purple-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
                 CR
-                <span className="text-2xl transform rotate-12 inline-block">
+                <span className="text-2xl font-black tracking-tight bg-gradient-to-r from-gray-300 via-gray-700 bg-clip-text text-transparent transform -rotate-12 inline-block relative">
                   8
                 </span>
+                {/* <span className="text-2xl transform rotate-12 inline-block">
+                  8
+                </span> */}
                 OR
               </h1>
             </motion.div>
@@ -613,16 +616,16 @@ function TitleSlide() {
             <h1 className="text-7xl md:text-9xl font-black tracking-tight bg-gradient-to-r from-purple-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent relative">
               CR
               <span
-                className="text-8xl md:text-[10rem] transform -rotate-12 inline-block relative"
-                style={{
-                  background: "linear-gradient(135deg, #a293ad, #8a97a2)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
+                className="text-8xl font-black tracking-tight bg-gradient-to-r from-gray-300 via-gray-700 bg-clip-text text-transparent md:text-[10rem] transform -rotate-12 inline-block relative"
+                // style={{
+                //   background: "linear-gradient(135deg, #a293ad, #8a97a2)",
+                //   WebkitBackgroundClip: "text",
+                //   WebkitTextFillColor: "",
+                // }}
               >
                 8
               </span>
-              OR
+              OR <span className="text-2xl font-mono">PITCH DECK</span>
               <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-cyan-400 to-purple-400 opacity-20 blur-3xl" />
             </h1>
           </motion.div>
