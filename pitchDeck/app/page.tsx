@@ -1613,7 +1613,7 @@ function TechStackSlide() {
             desc: "Decentralized file/metadata hosting",
             color: "pink",
             delay: 0.5,
-            icon: svg,
+            icon: Globe,
           },
           {
             title: "Security",
