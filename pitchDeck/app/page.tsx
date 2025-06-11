@@ -558,7 +558,7 @@ function TitleSlide() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative flex items-center justify-center gap-6"
+            className="relative flex max-md:flex-col items-center justify-center gap-6"
           >
             <div className="relative w-24 h-24">
               <svg className="w-full h-full" viewBox="0 0 80 80">
@@ -625,7 +625,7 @@ function TitleSlide() {
               >
                 8
               </span>
-              OR <span className="text-2xl font-mono">PITCH DECK</span>
+              OR <span className="text-xl font-mono ">PITCH DECK</span>
               <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-cyan-400 to-purple-400 opacity-20 blur-3xl" />
             </h1>
           </motion.div>
