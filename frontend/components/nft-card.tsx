@@ -55,7 +55,7 @@ export function NFTCard({ nft, viewMode = "grid" }: NFTCardProps) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h3 className="text-lg font-semibold text-white truncate">
+                    <h3 className=" text-wrap font-semibold text-white truncate">
                       {nft.title}
                     </h3>
                     <p className="text-slate-400 text-sm">by {nft.creator}</p>
