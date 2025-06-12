@@ -64,14 +64,12 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
         setIsPurchasing(false);
       }
     },
-    platformFee = nft.price * 0.1,
-    creatorEarnings = nft.price * 0.9,
     gasEstimate = 0.000005,
     //
     { ethToDollar, lskToDollar } = useRates();
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={onClose} clas>
       <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
@@ -121,7 +119,7 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-white truncate">
+                      <h3 className="font-semibold text-white text-wrap truncate">
                         {nft.title}
                       </h3>
                       <p className="text-slate-400 text-sm">by {nft.creator}</p>

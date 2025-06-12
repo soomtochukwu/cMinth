@@ -248,6 +248,11 @@ export default function CreatePage() {
         // Mint NFT on blockchain
         await mintNFT(metadataHash, newNFT.price);
 
+        toast.success("NFT minted successfully! 🎉");
+
+        // Reset form
+        setCurrentStep(1);
+        setUploadedFiles({});
         // Update local store
         addNFT({
           ...newNFT,
@@ -261,12 +266,6 @@ export default function CreatePage() {
               ? `https://ipfs.io/ipfs/${fileHashes[0]}`
               : undefined,
         });
-
-        toast.success("NFT minted successfully! 🎉");
-
-        // Reset form
-        setCurrentStep(1);
-        setUploadedFiles({});
       } catch (error) {
         console.error("Minting error:", error);
         toast.error(

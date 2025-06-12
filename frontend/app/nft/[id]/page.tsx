@@ -12,6 +12,7 @@ import {
   Share2,
   ExternalLink,
   Volume2,
+  User2,
   AlertCircle,
 } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -193,13 +194,10 @@ export default function NFTDetailPage() {
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
                     <Avatar className="w-12 h-12">
-                      <AvatarImage src="/placeholder.svg?height=48&width=48" />
-                      <AvatarFallback className="bg-purple-600 text-white">
-                        {nft.creator.charAt(0).toUpperCase()}
-                      </AvatarFallback>
+                      <User2 />
                     </Avatar>
                     <div>
-                      <p className="text-sm text-slate-400">Creator</p>
+                      <p className="text-sm text-slate-400">Current Owner</p>
                       <p className="font-semibold text-white">
                         <Link
                           target="_blank"
@@ -210,7 +208,11 @@ export default function NFTDetailPage() {
                             nft.owner
                           }
                         >
-                          {nft.creator} <ExternalLink className="w-3 h-3" />
+                          {nft.owner.replace(
+                            nft.owner.slice(5, nft.owner.length - 5),
+                            "..."
+                          )}{" "}
+                          <ExternalLink className="w-3 h-3" />
                         </Link>
                       </p>
                     </div>
