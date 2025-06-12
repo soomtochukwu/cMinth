@@ -69,7 +69,7 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
     { ethToDollar, lskToDollar } = useRates();
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose} clas>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
