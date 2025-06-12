@@ -20,7 +20,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="space-y-1">
             <div className="flex items-center">
-              {/* <span className="text-xl font-bold text-white">CreatorVerse</span> */}
+              {/* <span className="text-xl font-bold text-white"></span> */}
               <Wordmark size={35} />
             </div>
             <p className="text-slate-400 text-sm">
@@ -102,8 +102,8 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-slate-400 text-sm">
-            © 2024 CreatorVerse. All rights reserved.
+          <p className="text-slate-400 flex items-baseline space-x-2 text-sm">
+            <span> © 2025 </span> <Wordmark size={20} />. All rights reserved.
           </p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link

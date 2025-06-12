@@ -206,7 +206,12 @@ const Wordmark = ({ size = 48, className = "" }) => {
       }}
     >
       CR
-      <span className="text-5xl font-black tracking-tight bg-gradient-to-r from-gray-300 via-gray-700 bg-clip-text text-transparent transform -rotate-12 inline-block relative">
+      <span
+        style={{
+          fontSize: `${size + 11}px`,
+        }}
+        className=" font-black tracking-tight bg-gradient-to-r from-gray-300 via-gray-700 bg-clip-text text-transparent transform -rotate-12 inline-block relative"
+      >
         8
       </span>
       OR
