@@ -492,20 +492,45 @@ export default function CreatePage() {
                               <Label htmlFor="price">Price (ETH) *</Label>
                               <Input
                                 id="price"
+                                required
                                 min={0.001}
                                 max={0.01}
                                 type="number"
                                 step="0.001"
+                                inputMode="decimal"
+                                pattern="^\d*(\.\d{0,6})?$"
                                 {...register("price", {
                                   required: "Price is required",
                                   min: {
                                     value: 0.001,
                                     message: "Minimum price is 0.001 LSK",
                                   },
+                                  max: {
+                                    value: 0.01,
+                                    message: "Maximum price is 0.01 LSK",
+                                  },
+                                  validate: (value) =>
+                                    !isNaN(Number(value)) ||
+                                    "Price must be a valid number",
                                 })}
                                 placeholder="0.001 - 0.01"
                                 className="bg-slate-800/50 border-slate-600 text-white"
+                                onInput={(e) => {
+                                  const input = e.target as HTMLInputElement;
+                                  let val = parseFloat(input.value);
+                                  if (isNaN(val)) return;
+                                  val = Math.max(0.001, Math.min(0.01, val));
+                                  // Remove trailing zeros and limit to 6 decimals for display
+                                  input.value = val
+                                    .toFixed(6)
+                                    .replace(/\.?0+$/, "");
+                                }}
                               />
+                              {errors.price && (
+                                <p className="text-red-400 text-sm mt-1">
+                                  {errors.price.message}
+                                </p>
+                              )}
                               {errors.price && (
                                 <p className="text-red-400 text-sm mt-1">
                                   {errors.price.message}
