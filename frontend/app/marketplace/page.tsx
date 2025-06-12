@@ -220,7 +220,9 @@ export default function MarketplacePage() {
                 No NFTs found
               </h3>
               <p className="text-slate-400">
-                Try adjusting your search or filters
+                Try adjusting your search or filters, refreshing the page, or{" "}
+                <b className="text-white">connecting your wallet</b> if you
+                haven't yet.
               </p>
             </motion.div>
           )}
