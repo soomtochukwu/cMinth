@@ -11,6 +11,7 @@ import { useAccount } from "wagmi";
 import { web3Config } from "@/lib/config/web3.config";
 // import { ConnectKitButton } from "connectkit";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { PrimaryBrandLogo } from "./branding/Cr8orBranding";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
@@ -33,14 +34,13 @@ export function Navigation() {
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
       className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800"
     >
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+      <div className="max-w-7xl mx-auto h-fit px-4">
+        <div className="flex items-center justify-between h-fit">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">C</span>
-            </div>
-            <span className="text-xl font-bold text-white">Cr8or</span>
+          <Link href="/" className="flex items-center gap-2 h-fit">
+            <PrimaryBrandLogo />
+
+            {/* <span className="text-xl font-bold text-white">Cr8or</span> */}
             <Badge
               variant="secondary"
               className="bg-purple-500/20 text-purple-300 border-purple-500/30 text-xs"
@@ -81,7 +81,7 @@ export function Navigation() {
             <ConnectButton
               accountStatus={{
                 smallScreen: "avatar",
-                largeScreen: "address",
+                largeScreen: "avatar",
               }}
               chainStatus={{
                 smallScreen: "icon",
