@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useEffect, useRef, useState, useCallback } from "react";
 import CanvasToolbar from "./CanvasToolbar";
 import type { CanvasHistory, CanvasTool } from "@/types/canvas";
@@ -136,7 +135,7 @@ export default function CanvasDrawing({
   const [fontSize, setFontSize] = useState<number>(20);
   const [fontFamily, setFontFamily] = useState<string>("Arial");
 
-  // Initialize main canvas and temp canvas for previews
+  // Initialize main canvas and temp canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     const tempCanvas = tempCanvasRef.current;
@@ -147,45 +146,51 @@ export default function CanvasDrawing({
     const container = canvas.parentElement;
     if (container) {
       const { width, height } = container.getBoundingClientRect();
-      const newWidth = Math.min(width - 20, 1400);
-      const newHeight = Math.min(height - 80, 900);
+      const dpr = window.devicePixelRatio || 1;
+      const newWidth = Math.min(width - 20, 1400) * dpr;
+      const newHeight = Math.min(height - 80, 900) * dpr;
 
       setCanvasSize({
-        width: newWidth,
-        height: newHeight,
+        width: newWidth / dpr,
+        height: newHeight / dpr,
       });
 
       canvas.width = newWidth;
       canvas.height = newHeight;
       tempCanvas.width = newWidth;
       tempCanvas.height = newHeight;
+
+      // Set CSS size to match logical pixels
+      canvas.style.width = `${newWidth / dpr}px`;
+      canvas.style.height = `${newHeight / dpr}px`;
+      tempCanvas.style.width = `${newWidth / dpr}px`;
+      tempCanvas.style.height = `${newHeight / dpr}px`;
+
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      const tempContext = tempCanvas.getContext("2d", {
+        willReadFrequently: true,
+      });
+
+      if (context && tempContext) {
+        context.lineCap = "round";
+        context.lineJoin = "round";
+        context.strokeStyle = currentColor;
+        context.lineWidth = brushSize;
+
+        tempContext.lineCap = "round";
+        tempContext.lineJoin = "round";
+        tempContext.strokeStyle = currentColor;
+        tempContext.lineWidth = brushSize;
+
+        setCtx(context);
+        setTempCtx(tempContext);
+
+        // Save initial canvas state
+        const initialState = canvas.toDataURL("image/png");
+        setHistory([{ imageData: initialState }]);
+      }
     }
-
-    const context = canvas.getContext("2d", { willReadFrequently: true });
-    const tempContext = tempCanvas.getContext("2d", {
-      willReadFrequently: true,
-    });
-
-    if (context && tempContext) {
-      // Set up context properties
-      context.lineCap = "round";
-      context.lineJoin = "round";
-      context.strokeStyle = currentColor;
-      context.lineWidth = brushSize;
-
-      tempContext.lineCap = "round";
-      tempContext.lineJoin = "round";
-      tempContext.strokeStyle = currentColor;
-      tempContext.lineWidth = brushSize;
-
-      setCtx(context);
-      setTempCtx(tempContext);
-
-      // Save initial canvas state
-      const initialState = canvas.toDataURL("image/png");
-      setHistory([{ imageData: initialState }]);
-    }
-  }, []);
+  }, [currentColor, brushSize]);
 
   // Update canvas size on window resize
   useEffect(() => {
@@ -193,20 +198,21 @@ export default function CanvasDrawing({
       const canvas = canvasRef.current;
       const tempCanvas = tempCanvasRef.current;
 
-      if (!canvas || !tempCanvas) return;
+      if (!canvas || !tempCanvas || !ctx) return;
 
       const container = canvas.parentElement;
       if (container) {
+        const dpr = window.devicePixelRatio || 1;
         const { width, height } = container.getBoundingClientRect();
-        const newWidth = Math.min(width - 20, 1400);
-        const newHeight = Math.min(height - 80, 900);
+        const newWidth = Math.min(width - 20, 1400) * dpr;
+        const newHeight = Math.min(height - 80, 900) * dpr;
 
         setCanvasSize({
-          width: newWidth,
-          height: newHeight,
+          width: newWidth / dpr,
+          height: newHeight / dpr,
         });
 
-        // Preserve current drawing when resizing
+        // Preserve current drawing
         const currentDrawing = canvas.toDataURL();
 
         canvas.width = newWidth;
@@ -214,23 +220,26 @@ export default function CanvasDrawing({
         tempCanvas.width = newWidth;
         tempCanvas.height = newHeight;
 
-        // Restore the drawing after resize
-        if (ctx) {
-          const img = new Image();
-          img.crossOrigin = "anonymous";
-          img.src = currentDrawing;
-          img.onload = () => {
-            ctx.drawImage(img, 0, 0);
-          };
-        }
+        canvas.style.width = `${newWidth / dpr}px`;
+        canvas.style.height = `${newHeight / dpr}px`;
+        tempCanvas.style.width = `${newWidth / dpr}px`;
+        tempCanvas.style.height = `${newHeight / dpr}px`;
+
+        // Restore drawing
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = currentDrawing;
+        img.onload = () => {
+          ctx.drawImage(img, 0, 0, newWidth / dpr, newHeight / dpr);
+        };
       }
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [ctx]);
+  }, [ctx, tempCtx]);
 
-  // Update context when tool, color or size changes
+  // Update context when tool, color, or size changes
   useEffect(() => {
     if (!ctx || !tempCtx) return;
 
@@ -255,7 +264,6 @@ export default function CanvasDrawing({
     { enableOnFormTags: true }
   );
 
-  // Tool shortcuts
   useHotkeys("b", () => setCurrentTool("brush"), { enableOnFormTags: false });
   useHotkeys("e", () => setCurrentTool("eraser"), { enableOnFormTags: false });
   useHotkeys("l", () => setCurrentTool("line"), { enableOnFormTags: false });
@@ -281,7 +289,6 @@ export default function CanvasDrawing({
     const imageData = canvas.toDataURL("image/png");
 
     setHistory((prev) => {
-      // Limit history to 20 steps
       const newHistory = [...prev, { imageData }];
       if (newHistory.length > 20) {
         return newHistory.slice(newHistory.length - 20);
@@ -289,11 +296,10 @@ export default function CanvasDrawing({
       return newHistory;
     });
 
-    // Clear redo stack when new action is performed
     setRedoStack([]);
   }, []);
 
-  // Get mouse/touch position relative to canvas
+  // Get pointer position relative to canvas
   const getPointerPosition = useCallback(
     (
       e:
@@ -304,17 +310,17 @@ export default function CanvasDrawing({
     ) => {
       if (!canvasRef.current) return { x: 0, y: 0 };
 
-      const rect = canvasRef.current.getBoundingClientRect();
+      const canvas = canvasRef.current;
+      const rect = canvas.getBoundingClientRect();
       let x, y;
 
       if ("touches" in e) {
-        // Touch event
-        x = e.touches[0].clientX - rect.left;
-        y = e.touches[0].clientY - rect.top;
+        e.preventDefault(); // Prevent scrolling
+        x = (e.touches[0].clientX - rect.left) * (canvas.width / rect.width);
+        y = (e.touches[0].clientY - rect.top) * (canvas.height / rect.height);
       } else {
-        // Mouse event - all mouse event types have clientX/clientY
-        x = e.clientX - rect.left;
-        y = e.clientY - rect.top;
+        x = (e.clientX - rect.left) * (canvas.width / rect.width);
+        y = (e.clientY - rect.top) * (canvas.height / rect.height);
       }
 
       return { x, y };
@@ -347,21 +353,20 @@ export default function CanvasDrawing({
     (startX: number, startY: number, endX: number, endY: number) => {
       const dx = endX - startX;
       const dy = endY - startY;
-      const absDx = Math.abs(dx);
-      const absDy = Math.abs(dy);
+      const angle = Math.atan2(dy, dx);
+      const distance = Math.sqrt(dx * dx + dy * dy);
 
-      // If horizontal movement is greater, constrain to horizontal
-      if (absDx > absDy) {
-        return { x: endX, y: startY };
-      } else {
-        // Otherwise constrain to vertical
-        return { x: startX, y: endY };
-      }
+      // Snap to 0°, 45°, 90°, 135°, 180°, etc.
+      const snapAngle = Math.round(angle / (Math.PI / 4)) * (Math.PI / 4);
+      const newEndX = startX + distance * Math.cos(snapAngle);
+      const newEndY = startY + distance * Math.sin(snapAngle);
+
+      return { x: newEndX, y: newEndY };
     },
     []
   );
 
-  // Calculate constrained rectangle for shift key (perfect square)
+  // Calculate constrained rectangle for shift key
   const calculateConstrainedRect = useCallback(
     (startX: number, startY: number, endX: number, endY: number) => {
       const dx = endX - startX;
@@ -388,7 +393,6 @@ export default function CanvasDrawing({
       const { x, y } = getPointerPosition(e);
       const isShiftPressed = "shiftKey" in e && e.shiftKey;
 
-      // Handle different tools
       switch (currentTool) {
         case "brush":
           setIsDrawing(true);
@@ -411,6 +415,10 @@ export default function CanvasDrawing({
             isDrawing: true,
             shiftKey: isShiftPressed,
           });
+          tempCtx.strokeStyle = currentColor;
+          tempCtx.lineWidth = brushSize;
+          tempCtx.lineCap = "round";
+          tempCtx.lineJoin = "round";
           break;
 
         case "rectangle":
@@ -428,7 +436,6 @@ export default function CanvasDrawing({
 
         case "polygon":
           if (!polygonToolState.isDrawing) {
-            // Start a new polygon
             setPolygonToolState({
               points: [{ x, y }],
               isDrawing: true,
@@ -436,7 +443,6 @@ export default function CanvasDrawing({
               tempEndY: y,
             });
           } else {
-            // Add a point to the existing polygon
             setPolygonToolState((prev) => ({
               ...prev,
               points: [...prev.points, { x, y }],
@@ -467,7 +473,6 @@ export default function CanvasDrawing({
           break;
 
         case "selection":
-          // Start selection
           setSelectionToolState({
             startX: x,
             startY: y,
@@ -487,6 +492,7 @@ export default function CanvasDrawing({
       tempCtx,
       currentTool,
       currentColor,
+      brushSize,
       isFilled,
       polygonToolState,
       fontSize,
@@ -508,7 +514,6 @@ export default function CanvasDrawing({
       const { x, y } = getPointerPosition(e);
       const isShiftPressed = "shiftKey" in e && e.shiftKey;
 
-      // Handle different tools
       switch (currentTool) {
         case "brush":
           if (isDrawing) {
@@ -529,10 +534,9 @@ export default function CanvasDrawing({
 
         case "line":
           if (lineToolState.isDrawing) {
-            // Clear the temp canvas
             clearTempCanvas();
 
-            // Calculate end point (constrained if shift is pressed)
+            // Use direct pointer coordinates for preview
             let endX = x;
             let endY = y;
 
@@ -547,13 +551,13 @@ export default function CanvasDrawing({
               endY = constrained.y;
             }
 
-            // Draw the line preview
+            // Draw preview on temp canvas
             tempCtx.beginPath();
             tempCtx.moveTo(lineToolState.startX, lineToolState.startY);
             tempCtx.lineTo(endX, endY);
             tempCtx.stroke();
 
-            // Update line state
+            // Update state for reference, but don't rely on it for drawing
             setLineToolState((prev) => ({
               ...prev,
               endX,
@@ -565,10 +569,8 @@ export default function CanvasDrawing({
 
         case "rectangle":
           if (shapeToolState.isDrawing) {
-            // Clear the temp canvas
             clearTempCanvas();
 
-            // Calculate end point (constrained if shift is pressed)
             let endX = x;
             let endY = y;
 
@@ -583,11 +585,9 @@ export default function CanvasDrawing({
               endY = constrained.y;
             }
 
-            // Calculate rectangle dimensions
             const width = endX - shapeToolState.startX;
             const height = endY - shapeToolState.startY;
 
-            // Draw the rectangle preview
             tempCtx.beginPath();
             tempCtx.rect(
               shapeToolState.startX,
@@ -602,7 +602,6 @@ export default function CanvasDrawing({
               tempCtx.stroke();
             }
 
-            // Update shape state
             setShapeToolState((prev) => ({
               ...prev,
               endX,
@@ -614,10 +613,8 @@ export default function CanvasDrawing({
 
         case "circle":
           if (shapeToolState.isDrawing) {
-            // Clear the temp canvas
             clearTempCanvas();
 
-            // Calculate end point (constrained if shift is pressed)
             let endX = x;
             let endY = y;
 
@@ -632,7 +629,6 @@ export default function CanvasDrawing({
               endY = constrained.y;
             }
 
-            // Calculate radius
             const radiusX = Math.abs(endX - shapeToolState.startX) / 2;
             const radiusY = Math.abs(endY - shapeToolState.startY) / 2;
             const centerX =
@@ -640,7 +636,6 @@ export default function CanvasDrawing({
             const centerY =
               shapeToolState.startY + (endY - shapeToolState.startY) / 2;
 
-            // Draw the circle preview
             tempCtx.beginPath();
             tempCtx.ellipse(
               centerX,
@@ -658,7 +653,6 @@ export default function CanvasDrawing({
               tempCtx.stroke();
             }
 
-            // Update shape state
             setShapeToolState((prev) => ({
               ...prev,
               endX,
@@ -673,17 +667,14 @@ export default function CanvasDrawing({
             polygonToolState.isDrawing &&
             polygonToolState.points.length > 0
           ) {
-            // Clear the temp canvas
             clearTempCanvas();
 
-            // Draw the polygon preview
             tempCtx.beginPath();
             tempCtx.moveTo(
               polygonToolState.points[0].x,
               polygonToolState.points[0].y
             );
 
-            // Draw lines between all points
             for (let i = 1; i < polygonToolState.points.length; i++) {
               tempCtx.lineTo(
                 polygonToolState.points[i].x,
@@ -691,11 +682,9 @@ export default function CanvasDrawing({
               );
             }
 
-            // Draw line to current mouse position
             tempCtx.lineTo(x, y);
             tempCtx.stroke();
 
-            // Update polygon state
             setPolygonToolState((prev) => ({
               ...prev,
               tempEndX: x,
@@ -708,10 +697,8 @@ export default function CanvasDrawing({
           const selState = selectionToolState;
 
           if (selState.isSelecting) {
-            // Clear the temp canvas
             clearTempCanvas();
 
-            // Draw selection rectangle
             tempCtx.setLineDash([5, 5]);
             tempCtx.strokeStyle = "#ffffff";
             tempCtx.lineWidth = 1;
@@ -725,21 +712,17 @@ export default function CanvasDrawing({
             tempCtx.strokeStyle = currentColor;
             tempCtx.lineWidth = brushSize;
 
-            // Update selection state
             setSelectionToolState((prev) => ({
               ...prev,
               endX: x,
               endY: y,
             }));
           } else if (selState.isDragging && selState.selectedImageData) {
-            // Clear the temp canvas
             clearTempCanvas();
 
-            // Calculate the offset
             const offsetX = x - selState.dragStartX;
             const offsetY = y - selState.dragStartY;
 
-            // Draw the selected image at the new position
             tempCtx.putImageData(
               selState.selectedImageData,
               selState.startX + offsetX,
@@ -777,6 +760,7 @@ export default function CanvasDrawing({
       if (!ctx || !tempCtx || !canvasRef.current) return;
 
       const { x, y } = getPointerPosition(e);
+      const isShiftPressed = "shiftKey" in e && e.shiftKey;
 
       switch (currentTool) {
         case "brush":
@@ -790,31 +774,44 @@ export default function CanvasDrawing({
 
         case "line":
           if (lineToolState.isDrawing) {
-            // Calculate end point (constrained if shift key is pressed)
-            let endX = lineToolState.endX;
-            let endY = lineToolState.endY;
+            let endX = x;
+            let endY = y;
 
-            if (lineToolState.shiftKey) {
+            if (isShiftPressed || lineToolState.shiftKey) {
               const constrained = calculateConstrainedLine(
                 lineToolState.startX,
                 lineToolState.startY,
-                endX,
-                endY
+                x,
+                y
               );
               endX = constrained.x;
               endY = constrained.y;
             }
 
-            // Draw the final line on the main canvas
+            // Avoid drawing if start and end are the same
+            if (
+              Math.abs(lineToolState.startX - endX) < 1 &&
+              Math.abs(lineToolState.startY - endY) < 1
+            ) {
+              clearTempCanvas();
+              setLineToolState({
+                startX: 0,
+                startY: 0,
+                endX: 0,
+                endY: 0,
+                isDrawing: false,
+                shiftKey: false,
+              });
+              return;
+            }
+
             ctx.beginPath();
             ctx.moveTo(lineToolState.startX, lineToolState.startY);
             ctx.lineTo(endX, endY);
             ctx.stroke();
 
-            // Clear the temp canvas
             clearTempCanvas();
 
-            // Reset line state
             setLineToolState({
               startX: 0,
               startY: 0,
@@ -830,26 +827,23 @@ export default function CanvasDrawing({
 
         case "rectangle":
           if (shapeToolState.isDrawing) {
-            // Calculate end point (constrained if shift key is pressed)
-            let endX = shapeToolState.endX;
-            let endY = shapeToolState.endY;
+            let endX = x;
+            let endY = y;
 
-            if (shapeToolState.shiftKey) {
+            if (isShiftPressed || shapeToolState.shiftKey) {
               const constrained = calculateConstrainedRect(
                 shapeToolState.startX,
                 shapeToolState.startY,
-                endX,
-                endY
+                x,
+                y
               );
               endX = constrained.x;
               endY = constrained.y;
             }
 
-            // Calculate rectangle dimensions
             const width = endX - shapeToolState.startX;
             const height = endY - shapeToolState.startY;
 
-            // Draw the final rectangle on the main canvas
             ctx.beginPath();
             ctx.rect(
               shapeToolState.startX,
@@ -864,10 +858,8 @@ export default function CanvasDrawing({
               ctx.stroke();
             }
 
-            // Clear the temp canvas
             clearTempCanvas();
 
-            // Reset shape state
             setShapeToolState({
               startX: 0,
               startY: 0,
@@ -884,22 +876,20 @@ export default function CanvasDrawing({
 
         case "circle":
           if (shapeToolState.isDrawing) {
-            // Calculate end point (constrained if shift key is pressed)
-            let endX = shapeToolState.endX;
-            let endY = shapeToolState.endY;
+            let endX = x;
+            let endY = y;
 
-            if (shapeToolState.shiftKey) {
+            if (isShiftPressed || shapeToolState.shiftKey) {
               const constrained = calculateConstrainedRect(
                 shapeToolState.startX,
                 shapeToolState.startY,
-                endX,
-                endY
+                x,
+                y
               );
               endX = constrained.x;
               endY = constrained.y;
             }
 
-            // Calculate radius
             const radiusX = Math.abs(endX - shapeToolState.startX) / 2;
             const radiusY = Math.abs(endY - shapeToolState.startY) / 2;
             const centerX =
@@ -907,7 +897,6 @@ export default function CanvasDrawing({
             const centerY =
               shapeToolState.startY + (endY - shapeToolState.startY) / 2;
 
-            // Draw the final circle on the main canvas
             ctx.beginPath();
             ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
 
@@ -917,10 +906,8 @@ export default function CanvasDrawing({
               ctx.stroke();
             }
 
-            // Clear the temp canvas
             clearTempCanvas();
 
-            // Reset shape state
             setShapeToolState({
               startX: 0,
               startY: 0,
@@ -939,13 +926,11 @@ export default function CanvasDrawing({
           const selState = selectionToolState;
 
           if (selState.isSelecting) {
-            // Finalize selection
             const startX = Math.min(selState.startX, selState.endX);
             const startY = Math.min(selState.startY, selState.endY);
             const width = Math.abs(selState.endX - selState.startX);
             const height = Math.abs(selState.endY - selState.startY);
 
-            // Get the image data for the selection
             if (width > 0 && height > 0) {
               const imageData = ctx.getImageData(startX, startY, width, height);
 
@@ -962,13 +947,10 @@ export default function CanvasDrawing({
                 dragStartY: y,
               }));
 
-              // Clear the temp canvas
               clearTempCanvas();
 
-              // Draw the selection on the temp canvas
               tempCtx.putImageData(imageData, startX, startY);
 
-              // Draw selection border
               tempCtx.setLineDash([5, 5]);
               tempCtx.strokeStyle = "#ffffff";
               tempCtx.lineWidth = 1;
@@ -977,7 +959,6 @@ export default function CanvasDrawing({
               tempCtx.strokeStyle = currentColor;
               tempCtx.lineWidth = brushSize;
             } else {
-              // Reset selection if too small
               setSelectionToolState({
                 startX: 0,
                 startY: 0,
@@ -993,11 +974,9 @@ export default function CanvasDrawing({
               clearTempCanvas();
             }
           } else if (selState.isDragging && selState.selectedImageData) {
-            // Apply the dragged selection
             const offsetX = x - selState.dragStartX;
             const offsetY = y - selState.dragStartY;
 
-            // Clear the original selection area
             ctx.clearRect(
               selState.startX,
               selState.startY,
@@ -1005,17 +984,14 @@ export default function CanvasDrawing({
               selState.endY - selState.startY
             );
 
-            // Draw the selection at the new position
             ctx.putImageData(
               selState.selectedImageData,
               selState.startX + offsetX,
               selState.startY + offsetY
             );
 
-            // Clear the temp canvas
             clearTempCanvas();
 
-            // Reset selection state
             setSelectionToolState({
               startX: 0,
               startY: 0,
@@ -1052,7 +1028,7 @@ export default function CanvasDrawing({
     ]
   );
 
-  // Function to handle double click for completing polygons
+  // Handle double click for polygons
   const handleDoubleClick = useCallback(() => {
     if (
       !ctx ||
@@ -1063,16 +1039,13 @@ export default function CanvasDrawing({
       return;
 
     if (polygonToolState.points.length >= 3) {
-      // Draw the final polygon on the main canvas
       ctx.beginPath();
       ctx.moveTo(polygonToolState.points[0].x, polygonToolState.points[0].y);
 
-      // Draw lines between all points
       for (let i = 1; i < polygonToolState.points.length; i++) {
         ctx.lineTo(polygonToolState.points[i].x, polygonToolState.points[i].y);
       }
 
-      // Close the polygon
       ctx.closePath();
 
       if (isFilled) {
@@ -1081,10 +1054,8 @@ export default function CanvasDrawing({
         ctx.stroke();
       }
 
-      // Clear the temp canvas
       clearTempCanvas();
 
-      // Reset polygon state
       setPolygonToolState({
         points: [],
         isDrawing: false,
@@ -1103,20 +1074,17 @@ export default function CanvasDrawing({
     saveCanvasState,
   ]);
 
-  // Function to handle text input submission
+  // Handle text input submission
   const handleTextSubmit = useCallback(() => {
     if (!ctx || !canvasRef.current || !textToolState.isPlacing || !textInput)
       return;
 
-    // Set font properties
     ctx.font = `${textToolState.fontSize}px ${textToolState.fontFamily}`;
     ctx.fillStyle = currentColor;
     ctx.textBaseline = "top";
 
-    // Draw the text
     ctx.fillText(textInput, textToolState.x, textToolState.y);
 
-    // Reset text state
     setTextToolState({
       x: 0,
       y: 0,
@@ -1139,7 +1107,7 @@ export default function CanvasDrawing({
     saveCanvasState,
   ]);
 
-  // Function to pick a color from the canvas (eyedropper tool)
+  // Pick color from canvas
   const pickColor = useCallback(
     (x: number, y: number) => {
       if (!ctx || !canvasRef.current) return;
@@ -1147,16 +1115,14 @@ export default function CanvasDrawing({
       try {
         const pixel = ctx.getImageData(x, y, 1, 1).data;
 
-        // Skip transparent pixels
         if (pixel[3] === 0) return;
 
-        // Convert RGB to hex
         const color = `#${pixel[0].toString(16).padStart(2, "0")}${pixel[1]
           .toString(16)
           .padStart(2, "0")}${pixel[2].toString(16).padStart(2, "0")}`;
 
         setCurrentColor(color);
-        setCurrentTool("brush"); // Switch back to brush after picking a color
+        setCurrentTool("brush");
       } catch (error) {
         console.error("Error picking color:", error);
       }
@@ -1164,7 +1130,7 @@ export default function CanvasDrawing({
     [ctx, setCurrentColor, setCurrentTool]
   );
 
-  // Function to fill an area with color (flood fill algorithm)
+  // Flood fill
   const floodFill = useCallback(
     (startX: number, startY: number, fillColor: string) => {
       if (!ctx || !canvasRef.current) return;
@@ -1175,20 +1141,17 @@ export default function CanvasDrawing({
         const imageData = ctx.getImageData(0, 0, width, height);
         const data = imageData.data;
 
-        // Get the color at the start position
         const startPos = (Math.floor(startY) * width + Math.floor(startX)) * 4;
         const startR = data[startPos];
         const startG = data[startPos + 1];
         const startB = data[startPos + 2];
         const startA = data[startPos + 3];
 
-        // Convert fill color from hex to RGBA
         const fillR = Number.parseInt(fillColor.slice(1, 3), 16);
         const fillG = Number.parseInt(fillColor.slice(3, 5), 16);
         const fillB = Number.parseInt(fillColor.slice(5, 7), 16);
         const fillA = 255;
 
-        // Don't fill if the color is the same
         if (
           startR === fillR &&
           startG === fillG &&
@@ -1198,10 +1161,7 @@ export default function CanvasDrawing({
           return;
         }
 
-        // Color matching threshold
         const threshold = 10;
-
-        // Queue-based flood fill for better performance
         const pixelsToCheck = [
           { x: Math.floor(startX), y: Math.floor(startY) },
         ];
@@ -1211,12 +1171,10 @@ export default function CanvasDrawing({
           const { x, y } = pixelsToCheck.pop()!;
           const pos = (y * width + x) * 4;
 
-          // Skip if already visited
           const key = `${x},${y}`;
           if (visited.has(key)) continue;
           visited.add(key);
 
-          // Check if this pixel is within bounds and matches the start color
           if (
             x >= 0 &&
             x < width &&
@@ -1227,13 +1185,11 @@ export default function CanvasDrawing({
             Math.abs(data[pos + 2] - startB) <= threshold &&
             Math.abs(data[pos + 3] - startA) <= threshold
           ) {
-            // Set the color
             data[pos] = fillR;
             data[pos + 1] = fillG;
             data[pos + 2] = fillB;
             data[pos + 3] = fillA;
 
-            // Add adjacent pixels to check
             pixelsToCheck.push({ x: x + 1, y });
             pixelsToCheck.push({ x: x - 1, y });
             pixelsToCheck.push({ x, y: y + 1 });
@@ -1241,7 +1197,6 @@ export default function CanvasDrawing({
           }
         }
 
-        // Put the modified image data back
         ctx.putImageData(imageData, 0, 0);
         saveCanvasState();
       } catch (error) {
@@ -1251,7 +1206,7 @@ export default function CanvasDrawing({
     [ctx, saveCanvasState]
   );
 
-  // Add event listeners for double click to the canvas element
+  // Add double click listener
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -1268,7 +1223,7 @@ export default function CanvasDrawing({
     };
   }, [handleDoubleClick]);
 
-  // Handle key events for shift key
+  // Handle key events
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Shift") {
@@ -1281,7 +1236,6 @@ export default function CanvasDrawing({
           setShapeToolState((prev) => ({ ...prev, shiftKey: true }));
         }
       } else if (e.key === "Escape") {
-        // Cancel current operation
         if (currentTool === "polygon" && polygonToolState.isDrawing) {
           setPolygonToolState({
             points: [],
@@ -1413,13 +1367,11 @@ export default function CanvasDrawing({
   const clearCanvas = useCallback(() => {
     if (!ctx || !canvasRef.current) return;
 
-    // Save current state before clearing
     saveCanvasState();
 
     ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     setShowConfirmClear(false);
 
-    // Save cleared state
     saveCanvasState();
   }, [ctx, saveCanvasState]);
 
@@ -1428,14 +1380,13 @@ export default function CanvasDrawing({
     if (!canvasRef.current) return;
 
     const canvas = canvasRef.current;
+    const dpr = window.devicePixelRatio || 1;
 
-    // Create a high-resolution version for NFT
     const highResCanvas = document.createElement("canvas");
     const highResCtx = highResCanvas.getContext("2d", {
       willReadFrequently: true,
     });
 
-    // Set to 2x resolution for better quality
     highResCanvas.width = canvas.width * 2;
     highResCanvas.height = canvas.height * 2;
 
@@ -1443,7 +1394,6 @@ export default function CanvasDrawing({
       highResCtx.scale(2, 2);
       highResCtx.drawImage(canvas, 0, 0);
 
-      // Convert to blob
       highResCanvas.toBlob(
         (blob) => {
           if (blob) {
@@ -1463,7 +1413,6 @@ export default function CanvasDrawing({
   // Handle tool change
   const handleToolChange = useCallback(
     (tool: CanvasTool) => {
-      // Reset any active tool states
       setIsDrawing(false);
       clearTempCanvas();
 
@@ -1509,8 +1458,6 @@ export default function CanvasDrawing({
       polygonToolState.isDrawing,
       textToolState.isPlacing,
       selectionToolState.selectedImageData,
-      fontSize,
-      fontFamily,
       clearTempCanvas,
     ]
   );
@@ -1541,15 +1488,12 @@ export default function CanvasDrawing({
 
     if (!canvasRef.current) return;
 
-    // Apply background to canvas
     const canvas = canvasRef.current;
 
-    // Reset any previous background styles
     canvas.style.backgroundColor = "";
     canvas.style.backgroundImage = "";
     canvas.style.backgroundSize = "";
 
-    // Apply the selected background
     switch (background) {
       case "transparent":
         canvas.style.backgroundColor = "transparent";
@@ -1629,14 +1573,13 @@ export default function CanvasDrawing({
         canvas.style.backgroundSize = "20px 20px";
         break;
       default:
-        // If it starts with #, it's a custom color
         if (background.startsWith("#")) {
           canvas.style.backgroundColor = background;
         }
     }
   }, []);
 
-  // Update cursor based on current tool
+  // Update cursor
   useEffect(() => {
     if (!canvasRef.current) return;
 
@@ -1645,11 +1588,11 @@ export default function CanvasDrawing({
     switch (currentTool) {
       case "brush":
         canvas.style.cursor =
-          'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><circle cx="12" cy="12" r="3"/></svg>\') 12 12, auto';
+          'url("data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><circle cx="12" cy="12" r="3"/></svg>") 12 12, auto';
         break;
       case "eraser":
         canvas.style.cursor =
-          'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><rect x="8" y="8" width="8" height="8" rx="2"/></svg>\') 12 12, auto';
+          'url("data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><rect x="8" y="8" width="8" height="8" rx="2"/></svg>") 12 12, auto';
         break;
       case "line":
         canvas.style.cursor = "crosshair";
@@ -1666,11 +1609,11 @@ export default function CanvasDrawing({
         break;
       case "fill":
         canvas.style.cursor =
-          'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M19 11h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2z"/></svg>\') 12 12, auto';
+          'url("data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M19 11h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2z"/></svg>") 12 12, auto';
         break;
       case "eyedropper":
         canvas.style.cursor =
-          'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/></svg>\') 12 12, auto';
+          'url("data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/></svg>") 12 12, auto';
         break;
       case "selection":
         canvas.style.cursor = "default";
@@ -1722,10 +1665,8 @@ export default function CanvasDrawing({
         </div>
 
         <div className="relative flex-grow flex justify-center items-center bg-gray-950/50 rounded-lg border border-gray-800/50 overflow-hidden">
-          {/* Canvas grid background */}
           <div className="absolute inset-0 bg-[url('/scale.svg')] opacity-5"></div>
 
-          {/* Main canvas */}
           <canvas
             ref={canvasRef}
             width={canvasSize.width}
@@ -1740,18 +1681,12 @@ export default function CanvasDrawing({
             onTouchEnd={stopDrawing}
           />
 
-          {/* Temporary canvas for previews */}
           <canvas
             ref={tempCanvasRef}
             width={canvasSize.width}
             height={canvasSize.height}
             className="absolute z-20 touch-none pointer-events-none"
-            style={{
-              top: 0,
-              left: 0,
-              width: canvasSize.width,
-              height: canvasSize.height,
-            }}
+            style={{ top: 0, left: 0 }}
           />
         </div>
 
@@ -1774,7 +1709,6 @@ export default function CanvasDrawing({
         />
       </div>
 
-      {/* Text Input Modal */}
       {showTextInput && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-50">
           <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 max-w-sm w-full shadow-xl">
@@ -1844,7 +1778,6 @@ export default function CanvasDrawing({
         </div>
       )}
 
-      {/* Clear confirmation modal */}
       {showConfirmClear && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-50">
           <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 max-w-sm w-full shadow-xl">
