@@ -1,53 +1,60 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useWriteContract } from "wagmi"
-import { Minth_abi, Minth_address } from "@/utils/var"
-import { PinataSDK } from "pinata"
-import Progress from "@/components/Progress"
+import { useState } from "react";
+import { useWriteContract } from "wagmi";
+import { Minth_abi, Minth_address } from "@/utils/var";
+import { PinataSDK } from "pinata";
+import Progress from "@/components/Progress";
 
 interface MintButtonProps {
-  image: File | null
-  imageUrl: string | null
-  address: string | undefined
-  isConnected: boolean
-  onStageChange: (stage: string | null) => void
-  stage: string | null
+  image: File | null;
+  imageUrl: string | null;
+  address: string | undefined;
+  isConnected: boolean;
+  onStageChange: (stage: string | null) => void;
+  stage: string | null;
 }
 
-export default function MintButton({ image, imageUrl, address, isConnected, onStageChange, stage }: MintButtonProps) {
-  const { writeContractAsync, isPending } = useWriteContract()
-  const [isLoading, setIsLoading] = useState(false)
+export default function MintButton({
+  image,
+  imageUrl,
+  address,
+  isConnected,
+  onStageChange,
+  stage,
+}: MintButtonProps) {
+  const { writeContractAsync, isPending } = useWriteContract();
+  const [isLoading, setIsLoading] = useState(false);
 
   const pinata = new PinataSDK({
     pinataJwt: process.env.NEXT_PUBLIC_JWT,
     pinataGateway: process.env.NEXT_PUBLIC_gate,
-  })
+  });
 
   const pinImage = async () => {
     try {
-      onStageChange("pinning")
-      setIsLoading(true)
+      onStageChange("pinning");
+      setIsLoading(true);
 
       if (!image && imageUrl) {
         // Fetch image from URL if we only have a URL
-        const response = await fetch(imageUrl)
-        const blob = await response.blob()
-        const fileName = imageUrl.split("/").pop() || "image.png"
-        image = new File([blob], fileName, { type: blob.type })
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const fileName = imageUrl.split("/").pop() || "image.png";
+        image = new File([blob], fileName, { type: blob.type });
       }
 
       if (!image) {
-        throw new Error("No image to upload")
+        throw new Error("No image to upload");
       }
 
       // Upload the image to IPFS
       const NFT_image = await (async () => {
-        const pin = await pinata.upload.file(image as File)
-        onStageChange("1st stage")
-        console.log("Image pinned:", pin.IpfsHash)
-        return pin
-      })()
+        const pin = await pinata.upload.public.file(image as File);
+        onStageChange("1st stage");
+        console.log("Image pinned:", pin.cid);
+        return pin;
+      })();
 
       // Create and upload metadata
       const metadata = {
@@ -62,76 +69,80 @@ export default function MintButton({ image, imageUrl, address, isConnected, onSt
           },
         ],
         description: `Minted for ${address} by Minth`,
-        image: `ipfs://${NFT_image.IpfsHash}`,
+        image: `ipfs://${NFT_image.cid}`,
         name: address?.slice(0, 6),
-      }
+      };
 
       const metadataBlob = new Blob([JSON.stringify(metadata)], {
         type: "application/json",
-      })
+      });
 
-      const file2 = new File([metadataBlob], `metadata_${(image as File).name}.json`, {
-        type: "application/json",
-      })
+      const file2 = new File(
+        [metadataBlob],
+        `metadata_${(image as File).name}.json`,
+        {
+          type: "application/json",
+        }
+      );
 
       const NFT_image_Metadata = await (async () => {
-        const pin = await pinata.upload.file(file2)
-        onStageChange("2nd stage")
-        console.log("Metadata pinned:", pin.IpfsHash)
-        onStageChange("pinned")
-        return pin
-      })()
+        const pin = await pinata.upload.public.file(file2);
+        onStageChange("2nd stage");
+        console.log("Metadata pinned:", pin.cid);
+        onStageChange("pinned");
+        return pin;
+      })();
 
-      return NFT_image_Metadata
+      return NFT_image_Metadata;
     } catch (error: any) {
-      console.error("Error pinning to IPFS:", error)
-      throw error
+      console.error("Error pinning to IPFS:", error);
+      throw error;
     }
-  }
+  };
 
   const handleMint = async () => {
     if (!imageUrl && !image) {
-      alert("Please upload an image or enter a valid URL")
-      return
+      alert("Please upload an image or enter a valid URL");
+      return;
     }
 
     if (!isConnected || !address) {
-      alert("Please connect your wallet to mint an NFT")
-      return
+      alert("Please connect your wallet to mint an NFT");
+      return;
     }
 
     try {
-      setIsLoading(true)
-      onStageChange("minting")
+      setIsLoading(true);
+      onStageChange("minting");
 
-      const NFT = await pinImage()
+      const NFT = await pinImage();
 
       await writeContractAsync({
         abi: Minth_abi,
         address: Minth_address as `0x${string}`,
         functionName: "safeMint",
-        args: [`ipfs://${NFT.IpfsHash}`],
-      })
+        args: [`ipfs://${NFT.cid}`],
+      });
 
-      onStageChange("mining")
+      onStageChange("mining");
 
       // In a real app, we would listen for the transaction to be mined
       // For now, we'll simulate it with a timeout
       setTimeout(() => {
-        onStageChange("minted")
-        setIsLoading(false)
+        onStageChange("minted");
+        setIsLoading(false);
 
         setTimeout(() => {
-          onStageChange(null)
-        }, 3000)
-      }, 2000)
+          onStageChange(null);
+        }, 3000);
+      }, 2000);
     } catch (error: any) {
-      console.error("Minting error:", error)
-      alert(`Error minting NFT: ${error.message || error}`)
-      setIsLoading(false)
-      onStageChange(null)
+      console.error("Minting error:", error);
+      alert(`Error minting NFT: ${error.message || error}`);
+      setIsLoading(false);
+      onStageChange(null);
     }
-  }
+  };
 
   return (
     <div className="space-y-4">
@@ -152,7 +163,14 @@ export default function MintButton({ image, imageUrl, address, isConnected, onSt
               fill="none"
               viewBox="0 0 24 24"
             >
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
               <path
                 className="opacity-75"
                 fill="currentColor"
@@ -187,11 +205,19 @@ export default function MintButton({ image, imageUrl, address, isConnected, onSt
           <Progress
             progressBarBG="bg-gradient-to-r from-cyan-600 to-purple-600"
             color="text-white"
-            stages={["pinning", "1st stage", "2nd stage", "pinned", "minting", "mining", "minted"]}
+            stages={[
+              "pinning",
+              "1st stage",
+              "2nd stage",
+              "pinned",
+              "minting",
+              "mining",
+              "minted",
+            ]}
             currentStage={stage}
           />
         </div>
       )}
     </div>
-  )
+  );
 }

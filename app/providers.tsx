@@ -1,54 +1,66 @@
-"use client"
+"use client";
+import "@rainbow-me/rainbowkit/styles.css";
 
-import React from "react"
-import { RainbowKitProvider } from "@rainbow-me/rainbowkit"
-import { WagmiConfig, createConfig } from "wagmi"
-import { liskSepolia, lisk } from "wagmi/chains"
-import { http } from "wagmi"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import * as React from "react";
+import {
+  RainbowKitProvider,
+  getDefaultWallets,
+  getDefaultConfig,
+  lightTheme,
+  darkTheme,
+} from "@rainbow-me/rainbowkit";
+import {
+  metaMaskWallet,
+  okxWallet,
+  trustWallet,
+} from "@rainbow-me/rainbowkit/wallets";
+import { celo, celoAlfajores } from "wagmi/chains";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { WagmiProvider } from "wagmi";
 
-// Define chains to use
-const chains = [liskSepolia, lisk, ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [liskSepolia] : [])]
+const { wallets } = getDefaultWallets();
 
-// Create wagmi config using the http transport directly
-const wagmiConfig = createConfig({
-  chains,
-  transports: {
-    [lisk.id]: http(),
-    [liskSepolia.id]: http(),
-  },
-})
+const config = getDefaultConfig({
+  appName: "Minth",
+  projectId: "7b4405ad426eb6d4e981a8570a10337c",
+  wallets: [
+    {
+      groupName: "Other",
+      wallets: [metaMaskWallet, okxWallet, trustWallet],
+    },
+    ...wallets,
+    //
+  ],
+  chains: [
+    celoAlfajores,
+    celo,
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true"
+      ? [celoAlfajores]
+      : []),
+  ],
+  ssr: true,
+});
 
-// Create React Query client outside of component to avoid re-creation on render
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  // Use state to track if component is mounted
-  const [mounted, setMounted] = React.useState(false)
-
-  // Use useEffect to update mounted state after initial render
-  React.useEffect(() => {
-    setMounted(true)
-
-    // Cleanup function
-    return () => {
-      if (typeof window !== "undefined") {
-        window.localStorage.removeItem("walletconnect")
-      }
-    }
-  }, [])
-
-  // Don't render anything until mounted to prevent hydration issues
-  if (!mounted) {
-    return null
-  }
-
-  // Only render providers when mounted (client-side)
   return (
-    <WagmiConfig config={wagmiConfig}>
+    <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider chains={chains}>{children}</RainbowKitProvider>
+        <RainbowKitProvider
+          theme={darkTheme({
+            accentColor: "#005500",
+            accentColorForeground: "white",
+            fontStack: "system",
+            overlayBlur: "small",
+            borderRadius: "large",
+          })}
+          modalSize="compact"
+          initialChain={celoAlfajores}
+        >
+          {children}
+        </RainbowKitProvider>
       </QueryClientProvider>
-    </WagmiConfig>
-  )
+    </WagmiProvider>
+  );
 }
