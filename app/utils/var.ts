@@ -474,4 +474,4 @@ export const Minth_abi = [
   },
 ] as const;
 export const Minth_address =
-  "0xb6Aa4C69eA23585d402A390B610e0416a1473E82" as const;
+  "0x2D9b3d710C8c6626637684f5812Bf421a7B354a7" as const;

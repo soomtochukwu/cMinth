@@ -3,67 +3,91 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-
-  .dark {
-    background-color: black;
-    box-shadow: 0 5px 21px 5px rgb(34, 34, 34);
-  }
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  background-image: url("/scale.svg");
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-* {
-  transition: .4s;
-}
+/* RainbowKit Custom Styles */
+@layer components {
+  /* Rainbow Kit Button Styles */
+  .rainbow-button {
+    @apply rounded-lg border border-gray-800 bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800;
+  }
 
-.mh {
-  height: fit-content;
-  transition: .7s;
-  max-height: 700px;
-  /* transform: scale(1); */
-}
-
-.tr {
-  transition: .7s;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .rainbow-modal {
+    @apply rounded-xl border border-gray-800 bg-gray-900 shadow-xl;
   }
 }
 
-*,
-button,
-a {
-  cursor: url("/art0.png"), auto;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.art01 {
-  transition: .1s;
+::-webkit-scrollbar-track {
+  background: rgba(15, 15, 15, 0.2);
+  border-radius: 10px;
 }
 
-.art02 {
-  transition: .15s;
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.5);
+  border-radius: 10px;
 }
 
-.art03 {
-  transition: .2s;
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.8);
+}
+
+/* Canvas styles */
+.canvas-container {
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(15, 15, 15, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Neon effects */
+.neon-cyan {
+  text-shadow: 0 0 5px rgba(0, 245, 255, 0.8);
+}
+
+.neon-green {
+  text-shadow: 0 0 5px rgba(57, 255, 20, 0.8);
+}
+
+.neon-purple {
+  text-shadow: 0 0 5px rgba(157, 0, 255, 0.8);
+}
+
+/* Animations */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Grid pattern for backgrounds */
+.grid-pattern {
+  background-image: url("/grid-pattern.png");
+  background-size: 20px 20px;
 }

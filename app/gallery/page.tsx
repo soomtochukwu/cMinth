@@ -105,6 +105,12 @@ export default function GalleryPage() {
               href="/"
               className="px-4 py-2 bg-gray-800/50 hover:bg-gray-700/50 rounded-lg text-white transition-colors"
             >
+              Home
+            </Link>
+            <Link
+              href="/create"
+              className="px-4 py-2 bg-gray-800/50 hover:bg-gray-700/50 rounded-lg text-white transition-colors"
+            >
               Create NFT
             </Link>
             <ConnectButton />
@@ -168,7 +174,7 @@ export default function GalleryPage() {
             <h3 className="text-xl font-medium text-gray-300 mb-2">No NFTs Found</h3>
             <p className="text-gray-500 mb-6">Be the first to create an NFT with Minth!</p>
             <Link
-              href="/"
+              href="/create"
               className="px-6 py-3 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 rounded-lg text-white font-medium transition-all duration-300 shadow-lg shadow-purple-500/20"
             >
               Create NFT

@@ -1,20 +1,24 @@
-import type { Metadata } from "next";
-import Body from "./components/Body";
-import Footer from "./components/Footer";
+import type React from "react"
+import type { Metadata } from "next"
+import { Providers } from "./providers"
+import "./globals.css"
+
 export const metadata: Metadata = {
-  title: "Minth | For NFTs",
-  description: "Generate and Mint your NFTs",
-};
+  title: "Minth | Create & Mint NFTs",
+  description: "Create and mint your own NFT masterpieces with Minth",
+    generator: 'v0.dev'
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
-      <Body>{children}</Body>
-      <Footer></Footer>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
-  );
+  )
 }

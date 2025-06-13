@@ -16,7 +16,7 @@ const Footer = () => {
       <Link
         target="meetMe"
         className="flex"
-        href={"https://github.com/soomtochukwu/cMinth/"}
+        href={"http://github.com/soomtochukwu/"}
       >
         Github{"    "}
         <Image
@@ -29,7 +29,7 @@ const Footer = () => {
 
       <Link
         target="meetMe"
-        href={`https://celo-alfajores.blockscout.com/token/${Minth_address}`}
+        href={`https://sepolia-blockscout.lisk.com/address/${Minth_address}?tab=contract`}
       >
         The smart contract 🧩
       </Link>
