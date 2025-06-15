@@ -237,16 +237,24 @@ export default function NFTDetailPage() {
                       </p>
                     </div>
                   </div>
-
-                  <Button
-                    onClick={handlePurchase}
-                    className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white font-semibold py-3 text-lg"
-                    disabled={!isConnected}
-                  >
-                    {isConnected
+                    {nft.isUserMinted ? (
+                    <Button
+                      className="w-full bg-gray-600 text-white font-semibold py-3 text-lg cursor-not-allowed"
+                      disabled
+                    >
+                      You own this NFT
+                    </Button>
+                    ) : (
+                    <Button
+                      onClick={handlePurchase}
+                      className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white font-semibold py-3 text-lg"
+                      disabled={!isConnected}
+                    >
+                      {isConnected
                       ? "Purchase NFT"
                       : "Connect Wallet to Purchase"}
-                  </Button>
+                    </Button>
+                    )}
                 </CardContent>
               </Card>
 
