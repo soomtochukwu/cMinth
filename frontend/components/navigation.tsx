@@ -45,7 +45,7 @@ export function Navigation() {
               variant="secondary"
               className="bg-purple-500/20 text-purple-300 border-purple-500/30 text-xs"
             >
-              MVP
+              BETA
             </Badge>
           </Link>
 

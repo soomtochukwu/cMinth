@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Music, ImageIcon } from "lucide-react";
+import Rates from "./Rates";
 
 interface NFTPreviewProps {
   formData: any;
@@ -112,20 +113,7 @@ export function NFTPreview({
               </div>
 
               {/* Price */}
-              {formData.price && (
-                <div className="bg-slate-800/30 rounded-lg p-4">
-                  <p className="text-sm text-slate-400 mb-1">Price</p>
-                  <p className="text-2xl font-bold text-white">
-                    {formData.price} LSK
-                  </p>
-                  <p className="text-sm text-slate-400">
-                    ≈ $
-                    {(
-                      Number.parseFloat(formData.price || "0") * 0.42
-                    ).toLocaleString()}
-                  </p>
-                </div>
-              )}
+              {formData.price && <Rates nftPrice={Number(formData.price)} />}
 
               {/* Tags */}
               {formData.tags && (
