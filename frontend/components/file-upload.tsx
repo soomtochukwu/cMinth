@@ -6,7 +6,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Upload, File, ImageIcon, Music, X, CheckCircle } from "lucide-react";
+import {
+  Upload,
+  File,
+  ImageIcon,
+  Music,
+  X,
+  CheckCircle,
+  PenTool,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { CanvasDrawing } from "@maziofweb3/minth-canvas";
 import Modal from "./modal";
@@ -104,9 +112,11 @@ export function FileUpload({ onFilesUploaded }: FileUploadProps) {
       });
     },
     handleImageGenerated = (file: File, url: string) => {
+      setOpen(false);
       console.log("Image generated:", file, url);
-      simulateUpload(file, "artwork");
-      simulateUpload(file, "main");
+      simulateUpload(file, "artwork").then(() => {
+        simulateUpload(file, "main");
+      });
       // Example: Display the image
       // (document.getElementById("coverArt") as HTMLImageElement).src = url;
     },
@@ -216,7 +226,7 @@ export function FileUpload({ onFilesUploaded }: FileUploadProps) {
       <h3 className="text-lg font-semibold mb-3 text-white">
         2. Main Content *
       </h3>{" "}
-      <div className="flex space-x-4 ">
+      <div className="flex max-md:flex-col max-md:grid-flow-col  gap-6 ">
         {/* upload */}
         <div>
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -320,8 +330,11 @@ export function FileUpload({ onFilesUploaded }: FileUploadProps) {
         {/* on-the-go */}
         <div
           onClick={() => setOpen(true)}
-          className="h-inherit w-full flex flex-col items-center justify-center border-2 border-dashed transition-all duration-300 cursor-pointer border-slate-600 rounded-md "
+          className="h-inherit py-7 hover:scale-[1.02] hover:bg-[#a5a5a50d] hover:border-[#ffffff80] w-full flex flex-col items-center justify-center border-2 border-dashed transition-all duration-300 cursor-pointer border-slate-600 rounded-md "
         >
+          <div className="w-12 h-12 mx-auto mb-4 text-slate-300">
+            <PenTool size={45} />
+          </div>
           <h4 className="text-lg font-semibold text-white mb-2">
             On The Go{" "}
             <span
@@ -333,7 +346,7 @@ export function FileUpload({ onFilesUploaded }: FileUploadProps) {
               [Beta]
             </span>
           </h4>
-          <p className="text-slate-400 mb-4 text-center ">
+          <p className="text-slate-500 text-sm mb-4 text-center ">
             Click to draw with our canvas
           </p>
           <Modal isOpen={open} onClose={() => setOpen(false)}>

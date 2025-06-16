@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ExternalLink, X } from "lucide-react";
 import Link from "next/link";
 
@@ -25,13 +26,13 @@ export default function Modal({ isOpen, onClose, children }: Web3ModalProps) {
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || typeof window === "undefined") return null;
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm animate-fadeIn overflow-auto pt-10 text-white *:text-white"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm animate-fadeIn overflow-auto pt-10 text-white"
       onClick={onClose}
     >
       <div
@@ -51,6 +52,7 @@ export default function Modal({ isOpen, onClose, children }: Web3ModalProps) {
         </Link>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
