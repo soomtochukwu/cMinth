@@ -23,7 +23,7 @@ export default function RootLayout({
       <body>
         <Providers>
           <Navigation />
-          <main className="min-h-screen">{children}</main>
+          {children}
           <Toaster
             position="bottom-right"
             toastOptions={{
