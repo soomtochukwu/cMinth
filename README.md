@@ -1,9 +1,9 @@
 # CR8OR 🎨
-## Decentralized Creator Monetization Platform
+## Decentralised Creator Monetisation Platform
 
 **"Create, Own, Earn."**
 
-*Built for creators, by creators. Experience the future of digital content monetization.*
+*Built for creators, by creators. Experience the future of digital content monetisation.*
 
 ---
 
@@ -21,14 +21,14 @@
 
 ## 🎯 **Project Overview**
 
-CR8OR is a revolutionary decentralized NFT marketplace that empowers artists, musicians, and digital creators to monetize their content with unprecedented fairness and transparency. Built on the Lisk blockchain, our platform addresses the critical issue of creator exploitation in traditional platforms.
+CR8OR is a revolutionary decentralised NFT marketplace that empowers artists, musicians, and digital creators to monetise their content with unprecedented fairness and transparency. Built on the Lisk blockchain, our platform addresses the critical issue of creator exploitation in traditional platforms.
 
 ### ✨ **Key Features**
 
 🎵 **Multi-Format NFT Minting**
 - Music & Audio NFTs with built-in royalty distribution
 - Visual Art NFTs with provable ownership
-- Podcast and Digital Content tokenization
+- Podcast and Digital Content tokenisation
 
 💰 **Creator-First Economics**
 - **90% royalty retention** for creators (industry-leading)
@@ -55,7 +55,7 @@ CR8OR is a revolutionary decentralized NFT marketplace that empowers artists, mu
 1. **Web3 Wallet**
    - MetaMask (Recommended)
    - WalletConnect-compatible wallets
-   - Ensure wallet is configured for Lisk network
+   - Ensure the wallet is configured for the Lisk network
 
 2. **Lisk Network Configuration**
    - Network Name: `Lisk`
@@ -150,7 +150,7 @@ npx hardhat run scripts/deploy.js --network lisk
 - Hardhat (Smart contract development)
 - Next.js (Frontend framework)
 - Ethers.js (Blockchain interaction)
-- IPFS/Pinata (Decentralized storage)
+- IPFS/Pinata (Decentralised storage)
 - Tailwind CSS (Styling)
 
 **Optional Tools:**
@@ -166,8 +166,8 @@ npx hardhat run scripts/deploy.js --network lisk
 ### **User Acceptance Testing:**
 
 1. **Wallet Connection Testing**
-   - Connect MetaMask to Lisk network
-   - Verify wallet address display
+   - Connect MetaMask to the Lisk network
+   - Verify the wallet address display
    - Test network switching
 
 2. **NFT Minting Flow**
@@ -188,7 +188,7 @@ npx hardhat run scripts/deploy.js --network lisk
 ### **Performance Testing:**
 - File upload speed (various sizes)
 - IPFS storage verification
-- Smart contract gas optimization
+- Smart contract gas optimisation
 - Mobile responsiveness
 
 ---
@@ -198,19 +198,19 @@ npx hardhat run scripts/deploy.js --network lisk
 ### **Common Issues & Solutions:**
 
 **Wallet Connection Problems:**
-- Ensure MetaMask is updated to latest version
+- Ensure MetaMask is updated to the latest version
 - Clear browser cache and cookies
 - Verify Lisk network configuration
 
 **Transaction Failures:**
 - Check gas fees and wallet balance
-- Verify smart contract address
+- Verify the smart contract address
 - Ensure network connectivity
 
 **File Upload Issues:**
 - Verify file size limits (100MB max)
 - Check supported formats
-- Ensure stable internet connection
+- Ensure a stable internet connection
 
 **IPFS Access Problems:**
 - Try alternative IPFS gateways
@@ -229,7 +229,7 @@ npx hardhat run scripts/deploy.js --network lisk
 - **Creator-Centric Design**: Built based on actual creator feedback and needs
 
 ### **Technical Excellence:**
-- Gas-optimized smart contracts
+- Gas-optimised smart contracts
 - Progressive Web App (PWA) capabilities
 - Responsive, accessible design
 - Comprehensive testing suite
@@ -237,9 +237,9 @@ npx hardhat run scripts/deploy.js --network lisk
 
 ### **Social Impact:**
 - Empowering underrepresented creators
-- Democratizing digital content monetization
-- Building sustainable creator economy
-- Fostering global creative community
+- Democratising digital content monetisation
+- Building a sustainable creator economy
+- Fostering a global creative community
 
 ---
 
@@ -288,4 +288,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-*"Create, Own, Earn." - The future of creator monetization is here.*
+*"Create, Own, Earn." - The future of creator monetisation is here.*
