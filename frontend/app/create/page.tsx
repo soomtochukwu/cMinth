@@ -52,6 +52,7 @@ type _newNFT = {
   createdAt: string;
   tokenId: number;
   owner: string;
+  isUserMinted: boolean;
 };
 
 const steps = [
@@ -67,8 +68,8 @@ export default function CreatePage() {
     eventName: "NFTMinted",
     onLogs: () => {},
   });
-  const //
-    nextID = String(
+
+  const nextID = String(
       Number(
         useReadContract({
           address: Cr8orAddress,
@@ -171,8 +172,7 @@ export default function CreatePage() {
     },
     mintNFT = async (metadataHash: string, price: number): Promise<void> => {
       try {
-        const //
-          toastId = toast.loading("Minting NFT on blockchain...");
+        const toastId = toast.loading("Minting NFT on blockchain...");
         await writeContractAsync({
           address: Cr8orAddress,
           abi: Cr8orAbi,
@@ -233,6 +233,7 @@ export default function CreatePage() {
           createdAt: new Date().toISOString(),
           tokenId: Math.floor(Math.random() * 10000),
           owner: address || "0x0000...0000",
+          isUserMinted: true,
         };
 
         // Upload files to IPFS
@@ -347,8 +348,8 @@ export default function CreatePage() {
                           isActive
                             ? "border-purple-500 bg-purple-500/20 text-purple-300"
                             : isCompleted
-                            ? "border-emerald-500 bg-emerald-500/20 text-emerald-300"
-                            : "border-slate-600 bg-slate-800/50 text-slate-400"
+                              ? "border-emerald-500 bg-emerald-500/20 text-emerald-300"
+                              : "border-slate-600 bg-slate-800/50 text-slate-400"
                         }
                       `}
                           >
@@ -359,8 +360,8 @@ export default function CreatePage() {
                               isActive
                                 ? "text-purple-300"
                                 : isCompleted
-                                ? "text-emerald-300"
-                                : "text-slate-400"
+                                  ? "text-emerald-300"
+                                  : "text-slate-400"
                             }`}
                           >
                             {step.title}
@@ -489,37 +490,32 @@ export default function CreatePage() {
                             </div>
 
                             <div>
-                              <Label htmlFor="price">Price (ETH) *</Label>
+                              <Label htmlFor="price">Price (LSK) *</Label>
                               <Input
                                 id="price"
                                 required
-                                min={0.001}
-                                max={0.01}
-                                type="number"
+                                min={1}
+                                type="text"
                                 step="0.001"
                                 inputMode="decimal"
                                 pattern="^\d*(\.\d{0,6})?$"
                                 {...register("price", {
                                   required: "Price is required",
                                   min: {
-                                    value: 0.001,
-                                    message: "Minimum price is 0.001 LSK",
-                                  },
-                                  max: {
-                                    value: 0.01,
-                                    message: "Maximum price is 0.01 LSK",
+                                    value: 1,
+                                    message: "Minimum price is 1 LSK",
                                   },
                                   validate: (value) =>
                                     !isNaN(Number(value)) ||
                                     "Price must be a valid number",
                                 })}
-                                placeholder="0.001 - 0.01"
+                                placeholder="At least 1 LSK"
                                 className="bg-slate-800/50 border-slate-600 text-white"
                                 onInput={(e) => {
                                   const input = e.target as HTMLInputElement;
                                   let val = parseFloat(input.value);
                                   if (isNaN(val)) return;
-                                  val = Math.max(0.001, Math.min(0.01, val));
+                                  // val = Math.max(0.001, Math.min(0.01, val));
                                   // Remove trailing zeros and limit to 6 decimals for display
                                   input.value = val
                                     .toFixed(6)

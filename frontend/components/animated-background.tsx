@@ -46,8 +46,7 @@ export function AnimatedBackground() {
     }
 
     const animate = () => {
-      ctx.fillStyle = "rgba(2, 6, 23, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       particles.forEach((particle, index) => {
         particle.x += particle.vx;
