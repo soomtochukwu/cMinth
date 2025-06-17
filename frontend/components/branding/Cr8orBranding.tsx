@@ -194,7 +194,7 @@ const IconMark = ({ size = 100, className = "" }) => {
 // Wordmark Component
 const Wordmark = ({ size = 48, className = "" }) => {
   return (
-    <div
+    <span
       className={`font-black tracking-tight ${className}`}
       style={{
         fontSize: `${size}px`,
@@ -215,7 +215,7 @@ const Wordmark = ({ size = 48, className = "" }) => {
         8
       </span>
       OR
-    </div>
+    </span>
   );
 };
 
