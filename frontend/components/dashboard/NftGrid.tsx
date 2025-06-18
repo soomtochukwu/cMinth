@@ -12,9 +12,7 @@ interface NFT {
   description: string
   image: string
   price: string
-  status: "minted" | "listed" | "sold"
-  views: number
-  likes: number
+  status: "minted"
   royalty: number
   createdAt: string
 }
@@ -64,16 +62,6 @@ export function NFTGrid({ nfts, title }: NFTGridProps) {
                 <span className="text-sm text-muted-foreground">{nft.royalty}% royalty</span>
               </div>
               <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <Eye className="h-4 w-4" />
-                    {nft.views}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Heart className="h-4 w-4" />
-                    {nft.likes}
-                  </div>
-                </div>
                 <span>{new Date(nft.createdAt).toLocaleDateString()}</span>
               </div>
               <div className="flex gap-2">

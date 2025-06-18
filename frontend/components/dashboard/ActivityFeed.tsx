@@ -3,17 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Clock, ArrowUpRight, ArrowDownLeft, Palette, ShoppingCart } from "lucide-react"
-
-interface Activity {
-  id: string
-  type: "mint" | "purchase" | "sale" | "list" | "transfer"
-  title: string
-  description: string
-  amount?: string
-  timestamp: string
-  from?: string
-  to?: string
-}
+import { Activity } from "@/store/nft-store"
 
 interface ActivityFeedProps {
   activities: Activity[]
@@ -28,8 +18,6 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
         return <ArrowDownLeft className="h-4 w-4 text-green-500" />
       case "sale":
         return <ArrowUpRight className="h-4 w-4 text-purple-500" />
-      case "list":
-        return <ShoppingCart className="h-4 w-4 text-orange-500" />
       default:
         return <Clock className="h-4 w-4 text-gray-500" />
     }
@@ -43,12 +31,12 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
         return "bg-green-500"
       case "sale":
         return "bg-purple-500"
-      case "list":
-        return "bg-orange-500"
       default:
         return "bg-gray-500"
     }
   }
+
+  console.log(activities)
 
   return (
     <Card>
