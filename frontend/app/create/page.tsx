@@ -333,7 +333,7 @@ export default function CreatePage() {
                 className="mb-8"
               >
                 <div className="flex justify-center">
-                  <div className="flex items-center space-x-4">
+                  <div className="flex flex-wrap items-center ">
                     {steps.map((step, index) => {
                       const Icon = step.icon;
                       const isActive = currentStep === step.id;

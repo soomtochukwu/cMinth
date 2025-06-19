@@ -22,8 +22,8 @@ import { AudioPlayer } from "@/components/audio-player";
 import { AnimatedBackground } from "@/components/animated-background";
 import { PurchaseModal } from "@/components/purchase-modal";
 import toast from "react-hot-toast";
-import { useAccount, useChainId, useConfig } from "wagmi";
-import { Cr8orAddress } from "@/lib/var";
+import { useAccount, useChainId, useConfig, useWriteContract } from "wagmi";
+import { Cr8orAbi, Cr8orAddress } from "@/lib/var";
 import Link from "next/link";
 import Rates from "@/components/Rates";
 
@@ -32,6 +32,7 @@ export default function NFTDetailPage() {
     // const { isConnected } = useWalletStore();
     { isConnected, address } = useAccount(),
     chainId = useChainId(),
+    { writeContractAsync } = useWriteContract(),
     { chains } = useConfig(),
     { nfts, fetchNFTs } = useNFTStore(),
     currentChain = chains.find((c) => c.id === chainId),
@@ -39,8 +40,18 @@ export default function NFTDetailPage() {
     [isLiked, setIsLiked] = useState(false),
     [showPurchaseModal, setShowPurchaseModal] = useState(false),
     nft = nfts.find((n) => n.id === params.id),
-    handlePurchase = () => {
+    handlePurchase = async () => {
       console.log(nft?.id, params.id);
+
+      if (String(address) == String(nft?.owner)) {
+        // await writeContractAsync({
+        //   address: Cr8orAddress,
+        //   abi: Cr8orAbi,
+        //   functionName: "setPrice",
+        //   args: [BigInt(nft.id)],
+        //   value: BigInt(Math.floor(nft.price * 1e18)),
+        // });
+      }
 
       if (!isConnected) {
         toast.error("Please connect your wallet first");
