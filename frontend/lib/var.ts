@@ -2,7 +2,7 @@ export
     // 
     const
     // 
-    Cr8orAddress = "0x318750E1EB8a90a4193C45911C253ef862c125E8",
+    Cr8orAddress = "0xA80f2Ab39488786e46dA46bd70bE4eBfC9022e60",
     Cr8orAbi = [
         {
             "inputs": [
@@ -939,6 +939,24 @@ export
                 }
             ],
             "name": "setApprovalForAll",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "tokenId",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "price",
+                    "type": "uint256"
+                }
+            ],
+            "name": "setPrice",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"

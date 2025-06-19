@@ -169,11 +169,15 @@ export default function CreatePage() {
         throw new Error("Failed to upload metadata to IPFS");
       }
     },
-    mintNFT = async (metadataHash: string, price: number): Promise<void> => {
+    mintNFT = async (
+      id: string,
+      metadataHash: string,
+      price: number
+    ): Promise<void> => {
       try {
         const //
           toastId = toast.loading("Minting NFT on blockchain...");
-        await writeContractAsync({
+        const mintHash = await writeContractAsync({
           address: Cr8orAddress,
           abi: Cr8orAbi,
           functionName: "mintNFT",
@@ -183,18 +187,34 @@ export default function CreatePage() {
             BigInt(Math.floor(price * 1e18)),
           ],
         });
-        await writeContractAsync({
-          address: Cr8orAddress,
-          abi: Cr8orAbi,
-          functionName: "setApprovalForAll",
-          args: [Cr8orAddress, true],
-        });
 
         toast.dismiss(toastId);
+        await fetch("/api/txnHash", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: id, txnHash: mintHash }),
+        })
+          .then((res) => res.json())
+          .then((data) => console.log(data));
+
+        setApproval();
       } catch (error) {
         console.error("Error minting NFT:", error);
-        throw new Error("Failed to mint NFT on blockchain");
       }
+    },
+    setApproval = async () => {
+      const toastId = toast.loading("Put out for sale");
+
+      await writeContractAsync({
+        address: Cr8orAddress,
+        abi: Cr8orAbi,
+        functionName: "setApprovalForAll",
+        args: [Cr8orAddress, true],
+      });
+      toast.dismiss(toastId);
+      return;
     },
     onSubmit = async (data: NFTFormData) => {
       console.log(nextID);
@@ -246,7 +266,7 @@ export default function CreatePage() {
         const metadataHash = await pinMetadata(fileHashes, newNFT);
 
         // Mint NFT on blockchain
-        await mintNFT(metadataHash, newNFT.price);
+        await mintNFT(newNFT.id, metadataHash, newNFT.price);
 
         toast.success("NFT minted successfully! 🎉");
 
