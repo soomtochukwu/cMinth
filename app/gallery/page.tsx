@@ -1,88 +1,58 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useReadContract } from "wagmi"
-import { Minth_abi, Minth_address } from "@/utils/var"
-import Link from "next/link"
-import Image from "next/image"
-import { ConnectButton } from "@/components/ConnectButton"
-import ParticleBackground from "@/components/ParticleBackground"
+import { useState, useEffect } from "react";
+import { useReadContract } from "wagmi";
+import { Minth_abi, Minth_address } from "@/utils/var";
+import Link from "next/link";
+import Image from "next/image";
+import ParticleBackground from "@/components/ParticleBackground";
+import WalletConnectButton from "@/components/walletConnectButton";
+export interface NFTAttribute {
+  trait_type: string;
+  value: string;
+}
 
-interface NFT {
-  id: number
-  owner: string
-  uri: string
-  metadata?: {
-    name: string
-    description: string
-    image: string
-    attributes: Array<{
-      trait_type: string
-      value: string
-    }>
-  }
-  imageUrl: string
+export interface NFTMetadata {
+  name: string;
+  description: string;
+  image: string;
+  attributes: NFTAttribute[];
+}
+
+export interface NFT {
+  id: number;
+  owner: string;
+  uri: string;
+  metadata: NFTMetadata;
+  imageUrl: string;
 }
 
 export default function GalleryPage() {
-  const [nfts, setNfts] = useState<NFT[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  // Read total supply from contract
-  const { data: totalSupply } = useReadContract({
-    abi: Minth_abi,
-    address: Minth_address as `0x${string}`,
-    functionName: "totalSupply",
-  })
+  const //
+    [nfts, setNfts] = useState<NFT[]>([]),
+    [isLoading, setIsLoading] = useState(true),
+    [error, setError] = useState<string | null>(null),
+    // Read total supply from contract
+    { data: totalSupply } = useReadContract({
+      abi: Minth_abi,
+      address: Minth_address as `0x${string}`,
+      functionName: "totalSupply",
+    });
 
   // Fetch NFT data
   useEffect(() => {
-    const fetchNFTs = async () => {
-      try {
-        setIsLoading(true)
-        setError(null)
-
-        if (!totalSupply) return
-
-        const supply = Number(totalSupply)
-        const nftData: NFT[] = []
-
-        // For demo purposes, we'll just show some placeholder NFTs
-        // In a real app, you would fetch each token by ID
-        for (let i = 1; i <= Math.min(supply, 10); i++) {
-          // This would normally fetch from the contract
-          const placeholderNFT: NFT = {
-            id: i,
-            owner: `0x${i}23456789abcdef0123456789abcdef01234567`,
-            uri: `ipfs://placeholder${i}`,
-            metadata: {
-              name: `NFT #${i}`,
-              description: `A beautiful NFT created with Minth #${i}`,
-              image: `ipfs://placeholder${i}/image`,
-              attributes: [
-                {
-                  trait_type: "Creator",
-                  value: `Artist${i}`,
-                },
-              ],
-            },
-            imageUrl: `/placeholder.svg?height=400&width=400&text=NFT+%23${i}`,
-          }
-          nftData.push(placeholderNFT)
-        }
-
-        setNfts(nftData)
-      } catch (err) {
-        console.error("Error fetching NFTs:", err)
-        setError("Failed to load NFTs. Please try again later.")
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchNFTs()
-  }, [totalSupply])
+    fetch("/api/getMetadata")
+      .then((res) => res.json())
+      .then((data) => {
+        setNfts(data);
+        console.log(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load metadata:", err);
+        setIsLoading(false);
+      });
+  }, [totalSupply]);
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-black text-white">
@@ -113,7 +83,7 @@ export default function GalleryPage() {
             >
               Create NFT
             </Link>
-            <ConnectButton />
+            <WalletConnectButton />
           </div>
         </div>
       </header>
@@ -124,7 +94,8 @@ export default function GalleryPage() {
             NFT Gallery
           </h1>
           <p className="text-gray-400">
-            Explore all the NFTs created with Minth. Connect your wallet to see your own creations.
+            Explore all the NFTs created with Minth. Connect your wallet to see
+            your own creations.
           </p>
         </div>
 
@@ -148,7 +119,7 @@ export default function GalleryPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {nfts.map((nft) => (
-              <NFTCard key={nft.id} nft={nft} />
+              <NFTCard key={Math.random()} nft={nft} />
             ))}
           </div>
         )}
@@ -171,8 +142,12 @@ export default function GalleryPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-xl font-medium text-gray-300 mb-2">No NFTs Found</h3>
-            <p className="text-gray-500 mb-6">Be the first to create an NFT with Minth!</p>
+            <h3 className="text-xl font-medium text-gray-300 mb-2">
+              No NFTs Found
+            </h3>
+            <p className="text-gray-500 mb-6">
+              Be the first to create an NFT with Minth!
+            </p>
             <Link
               href="/create"
               className="px-6 py-3 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 rounded-lg text-white font-medium transition-all duration-300 shadow-lg shadow-purple-500/20"
@@ -186,7 +161,9 @@ export default function GalleryPage() {
       {/* Footer */}
       <footer className="relative z-10 border-t border-gray-800/50 backdrop-blur-md py-4">
         <div className="container mx-auto px-4 flex flex-wrap justify-center md:justify-between items-center gap-4">
-          <p className="text-sm text-gray-500">Use desktop for best experience</p>
+          <p className="text-sm text-gray-500">
+            Use desktop for best experience
+          </p>
 
           <div className="flex flex-wrap gap-4 items-center">
             <Link
@@ -203,7 +180,12 @@ export default function GalleryPage() {
               className="text-sm flex items-center gap-1 text-cyan-400 hover:text-cyan-300 transition-colors"
             >
               <span>GitHub</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
                 <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
               </svg>
             </Link>
@@ -219,33 +201,50 @@ export default function GalleryPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
 
 function NFTCard({ nft }: { nft: NFT }) {
   return (
-    <div className="bg-gray-900/60 backdrop-blur-md rounded-xl border border-gray-800/50 shadow-lg shadow-cyan-500/10 overflow-hidden transition-all duration-300 hover:shadow-cyan-500/20 hover:scale-[1.02]">
-      <div className="relative aspect-square overflow-hidden bg-black/50">
-        <Image
+    <div
+      key={Math.random()}
+      className="bg-gray-900/60 backdrop-blur-md rounded-xl border border-gray-800/50 shadow-lg shadow-cyan-500/10 overflow-hidden transition-all duration-300 hover:shadow-cyan-500/20 hover:scale-[1.02]"
+    >
+      <div className="relative aspect-square h-fit flex items-center justify-center overflow-hidden bg-black/50">
+        <img
           src={nft.imageUrl || "/placeholder.svg"}
           alt={nft.metadata?.name || `NFT #${nft.id}`}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover w-full p-2"
+          width={100}
+          height={100}
         />
       </div>
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-white mb-1">{nft.metadata?.name || `NFT #${nft.id}`}</h3>
-        <p className="text-gray-400 text-sm mb-3 line-clamp-2">
+        <h3 className="text-lg font-semibold text-white mb-1">
+          {nft.metadata?.name || `NFT #${nft.id}`}
+        </h3>
+        <p className="text-gray-400 text-wrap text-sm mb-3 line-clamp-2">
           {nft.metadata?.description || "A beautiful NFT created with Minth"}
         </p>
         <div className="flex justify-between items-center">
           <div className="text-xs text-gray-500">
-            Owner: {nft.owner.substring(0, 6)}...{nft.owner.substring(nft.owner.length - 4)}
+            Owner:{" "}
+            {String(nft?.owner).replace(
+              String(nft?.owner).slice(3, String(nft?.owner).length - 3),
+              "..."
+            )}
           </div>
-          <button className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors">View</button>
+          <button
+            title="coming soon"
+            className="text-sm bg-cyan-800 rounded-lg p-2  text-cyan-400 hover:text-cyan-300 transition-colors"
+            style={{
+              filter: "brightness(0.3)",
+            }}
+          >
+            View
+          </button>
         </div>
       </div>
     </div>
-  )
+  );
 }

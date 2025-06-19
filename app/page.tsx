@@ -1,22 +1,40 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { useAccount } from "wagmi"
-import { ConnectButton } from "@/components/ConnectButton"
-import ParticleBackground from "@/components/ParticleBackground"
-import { motion } from "framer-motion"
-import { Minth_address } from "@/utils/var"
-
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { useAccount } from "wagmi";
+import ParticleBackground from "@/components/ParticleBackground";
+import { motion } from "framer-motion";
+import { Minth_address } from "@/utils/var";
+import WalletConnectButton from "@/components/walletConnectButton";
 // Animation variants
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
+
+export interface NFTAttribute {
+  trait_type: string;
+  value: string;
 }
 
+export interface NFTMetadata {
+  name: string;
+  description: string;
+  image: string;
+  attributes: NFTAttribute[];
+}
+
+export interface NFT {
+  id: number;
+  owner: string;
+  uri: string;
+  metadata: NFTMetadata;
+  imageUrl: string;
+}
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
@@ -25,21 +43,36 @@ const staggerContainer = {
       staggerChildren: 0.2,
     },
   },
-}
+};
 
 export default function LandingPage() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { isConnected } = useAccount()
+  const //
+    [isScrolled, setIsScrolled] = useState(false),
+    [NFT, setNfts] = useState<NFT[]>([]),
+    [loading, setLoading] = useState<boolean>(true);
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isConnected } = useAccount();
 
   // Handle scroll events for navbar styling
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+
+    fetch("/api/getMetadata")
+      .then((res) => res.json())
+      .then((data) => {
+        setNfts(data);
+        console.log(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load metadata:", err);
+      });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Animation variants
 
@@ -52,7 +85,9 @@ export default function LandingPage() {
       {/* Navigation */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? "py-2 bg-black/80 backdrop-blur-lg shadow-lg shadow-cyan-500/10" : "py-4 bg-transparent"
+          isScrolled
+            ? "py-2 bg-black/80 backdrop-blur-lg shadow-lg shadow-cyan-500/10"
+            : "py-4 bg-transparent"
         }`}
       >
         <div className="container mx-auto px-4 flex justify-between items-center">
@@ -75,7 +110,7 @@ export default function LandingPage() {
 
           {/* Connect Wallet Button (Desktop) */}
           <div className="hidden md:block">
-            <ConnectButton />
+            <WalletConnectButton />
           </div>
 
           {/* Mobile Menu Button */}
@@ -91,9 +126,19 @@ export default function LandingPage() {
               stroke="currentColor"
             >
               {isMobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               )}
             </svg>
           </button>
@@ -102,17 +147,39 @@ export default function LandingPage() {
         {/* Mobile Navigation */}
         <div
           className={`md:hidden absolute w-full bg-gray-900/95 backdrop-blur-lg transition-all duration-300 ease-in-out border-b border-gray-800/50 ${
-            isMobileMenuOpen ? "max-h-96 py-4" : "max-h-0 py-0 overflow-hidden border-none"
+            isMobileMenuOpen
+              ? "max-h-96 py-4"
+              : "max-h-0 py-0 overflow-hidden border-none"
           }`}
         >
           <div className="container mx-auto px-4 flex flex-col space-y-4">
-            <MobileNavLink href="/" label="Home" onClick={() => setIsMobileMenuOpen(false)} />
-            <MobileNavLink href="/#features" label="Features" onClick={() => setIsMobileMenuOpen(false)} />
-            <MobileNavLink href="/#how-it-works" label="How It Works" onClick={() => setIsMobileMenuOpen(false)} />
-            <MobileNavLink href="/gallery" label="Gallery" onClick={() => setIsMobileMenuOpen(false)} />
-            <MobileNavLink href="/#contact" label="Contact" onClick={() => setIsMobileMenuOpen(false)} />
+            <MobileNavLink
+              href="/"
+              label="Home"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <MobileNavLink
+              href="/#features"
+              label="Features"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <MobileNavLink
+              href="/#how-it-works"
+              label="How It Works"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <MobileNavLink
+              href="/gallery"
+              label="Gallery"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <MobileNavLink
+              href="/#contact"
+              label="Contact"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
             <div className="py-2">
-              <ConnectButton />
+              <WalletConnectButton />
             </div>
           </div>
         </div>
@@ -121,7 +188,12 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-32">
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
-          <motion.div className="md:w-1/2 mb-12 md:mb-0" initial="hidden" animate="visible" variants={fadeIn}>
+          <motion.div
+            className="md:w-1/2 mb-12 md:mb-0"
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+          >
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
               <span className="bg-gradient-to-r from-cyan-400 to-purple-600 text-transparent bg-clip-text">
                 Transform Your Art
@@ -130,7 +202,8 @@ export default function LandingPage() {
               Into Digital Assets
             </h1>
             <p className="text-gray-300 text-lg md:text-xl mb-8 max-w-lg">
-              Create, mint, and trade unique NFTs with our intuitive canvas tools. Your imagination is the only limit.
+              Create, mint, and trade unique NFTs with our intuitive canvas
+              tools. Your imagination is the only limit.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
@@ -148,21 +221,36 @@ export default function LandingPage() {
             </div>
           </motion.div>
 
-          <motion.div className="md:w-1/2 relative" initial="hidden" animate="visible" variants={fadeIn}>
+          <motion.div
+            className="md:w-1/2 relative"
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+          >
             <div className="relative w-full aspect-square max-w-md mx-auto">
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-lg blur-xl -z-10"></div>
               <div className="w-full h-full rounded-lg overflow-hidden border border-gray-800/50 shadow-xl shadow-cyan-500/10">
-                <Image
-                  src="/placeholder.svg?height=500&width=500&text=NFT+Canvas"
-                  alt="NFT Canvas Preview"
-                  width={500}
-                  height={500}
-                  className="w-full h-full object-cover"
-                />
+                {loading ? (
+                  <div className="p-4 rounded-full border-2 border-violet-700 animate-spin "></div>
+                ) : (
+                  <img
+                    src={NFT[NFT?.length - 1]?.imageUrl}
+                    alt="NFT Canvas Preview"
+                    width={500}
+                    height={500}
+                    className="w-full h-full object-cover"
+                  />
+                )}
+
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
                   <div>
-                    <h3 className="text-xl font-bold text-white mb-2">Cyber Punk #4269</h3>
-                    <p className="text-cyan-400 text-sm">Created with Minth Canvas</p>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      {NFT[NFT?.length - 1]?.metadata.name} #
+                      {NFT[NFT?.length - 1]?.id}
+                    </h3>
+                    <p className="text-cyan-400 text-sm">
+                      Created with Minth Canvas
+                    </p>
                   </div>
                 </div>
               </div>
@@ -185,7 +273,8 @@ export default function LandingPage() {
               Powerful Features
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Everything you need to create stunning NFTs and join the digital art revolution.
+              Everything you need to create stunning NFTs and join the digital
+              art revolution.
             </p>
           </motion.div>
 
@@ -335,7 +424,8 @@ export default function LandingPage() {
               How It Works
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Creating and minting your NFTs has never been easier. Follow these simple steps to get started.
+              Creating and minting your NFTs has never been easier. Follow these
+              simple steps to get started.
             </p>
           </motion.div>
 
@@ -445,7 +535,8 @@ export default function LandingPage() {
               Featured Creations
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Explore some of the amazing NFTs created by our community using Minth.
+              Explore some of the amazing NFTs created by our community using
+              Minth.
             </p>
           </motion.div>
 
@@ -456,26 +547,14 @@ export default function LandingPage() {
             viewport={{ once: true }}
             variants={staggerContainer}
           >
-            <NFTCard
-              image="/placeholder.svg?height=400&width=400&text=Cyber+Punk"
-              title="Cyber Punk #4269"
-              creator="0x1234...5678"
-            />
-            <NFTCard
-              image="/placeholder.svg?height=400&width=400&text=Neon+Dreams"
-              title="Neon Dreams"
-              creator="0xabcd...efgh"
-            />
-            <NFTCard
-              image="/placeholder.svg?height=400&width=400&text=Digital+Soul"
-              title="Digital Soul"
-              creator="0x9876...5432"
-            />
-            <NFTCard
-              image="/placeholder.svg?height=400&width=400&text=Metaverse+Portal"
-              title="Metaverse Portal"
-              creator="0xijkl...mnop"
-            />
+            {NFT.slice(-4).map((nft, index) => (
+              <NFTCard
+                key={index}
+                image={nft.imageUrl}
+                title={nft.metadata.name}
+                creator={nft.owner}
+              />
+            ))}
           </motion.div>
 
           <motion.div
@@ -526,7 +605,8 @@ export default function LandingPage() {
               </span>
             </h2>
             <p className="text-gray-300 text-lg mb-8">
-              Join thousands of artists who have already minted their NFTs with Minth. Start creating today!
+              Join thousands of artists who have already minted their NFTs with
+              Minth. Start creating today!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -537,7 +617,7 @@ export default function LandingPage() {
               </Link>
               {!isConnected && (
                 <div className="py-1">
-                  <ConnectButton />
+                  <WalletConnectButton />
                 </div>
               )}
             </div>
@@ -558,7 +638,9 @@ export default function LandingPage() {
             <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-600 text-transparent bg-clip-text inline-block">
               Get In Touch
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">Have questions or feedback? We'd love to hear from you.</p>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Have questions or feedback? We'd love to hear from you.
+            </p>
           </motion.div>
 
           <motion.div
@@ -572,7 +654,10 @@ export default function LandingPage() {
               <form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-2">
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-gray-400 mb-2"
+                    >
                       Name
                     </label>
                     <input
@@ -583,7 +668,10 @@ export default function LandingPage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-2">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-400 mb-2"
+                    >
                       Email
                     </label>
                     <input
@@ -595,7 +683,10 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-400 mb-2">
+                  <label
+                    htmlFor="subject"
+                    className="block text-sm font-medium text-gray-400 mb-2"
+                  >
                     Subject
                   </label>
                   <input
@@ -606,7 +697,10 @@ export default function LandingPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-400 mb-2">
+                  <label
+                    htmlFor="message"
+                    className="block text-sm font-medium text-gray-400 mb-2"
+                  >
                     Message
                   </label>
                   <textarea
@@ -640,7 +734,9 @@ export default function LandingPage() {
                   MINTH
                 </h1>
               </Link>
-              <p className="text-gray-400 mb-4">Create, mint, and trade unique NFTs with our intuitive platform.</p>
+              <p className="text-gray-400 mb-4">
+                Create, mint, and trade unique NFTs with our intuitive platform.
+              </p>
               <div className="flex space-x-4">
                 <SocialIcon href="#" icon="twitter" />
                 <SocialIcon href="#" icon="discord" />
@@ -681,15 +777,20 @@ export default function LandingPage() {
                 {Minth_address}
               </Link>
               <p className="text-gray-400 mt-4 text-sm">
-                Deployed on Lisk Sepolia Testnet. View the contract details and transactions.
+                Deployed on Lisk Sepolia Testnet. View the contract details and
+                transactions.
               </p>
             </div>
           </div>
 
           <div className="mt-12 pt-8 border-t border-gray-800/50 text-center">
             <p className="text-gray-500 text-sm">
-              © {new Date().getFullYear()} Minth. All rights reserved. Created with 💙 by{" "}
-              <Link href="https://somtochukwu-ko.vercel.app/" className="text-cyan-400 hover:text-cyan-300">
+              © {new Date().getFullYear()} Minth. All rights reserved. Created
+              with 💙 by{" "}
+              <Link
+                href="https://somtochukwu-ko.vercel.app/"
+                className="text-cyan-400 hover:text-cyan-300"
+              >
                 Somtochukwu
               </Link>
             </p>
@@ -697,30 +798,53 @@ export default function LandingPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
 
 // Navigation Link Component
 function NavLink({ href, label }: { href: string; label: string }) {
   return (
-    <Link href={href} className="text-gray-300 hover:text-white transition-colors relative group">
+    <Link
+      href={href}
+      className="text-gray-300 hover:text-white transition-colors relative group"
+    >
       {label}
       <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
     </Link>
-  )
+  );
 }
 
 // Mobile Navigation Link Component
-function MobileNavLink({ href, label, onClick }: { href: string; label: string; onClick: () => void }) {
+function MobileNavLink({
+  href,
+  label,
+  onClick,
+}: {
+  href: string;
+  label: string;
+  onClick: () => void;
+}) {
   return (
-    <Link href={href} className="text-gray-300 hover:text-white transition-colors py-2 block" onClick={onClick}>
+    <Link
+      href={href}
+      className="text-gray-300 hover:text-white transition-colors py-2 block"
+      onClick={onClick}
+    >
       {label}
     </Link>
-  )
+  );
 }
 
 // Feature Card Component
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+function FeatureCard({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
   return (
     <motion.div
       className="bg-gray-900/60 backdrop-blur-md rounded-xl border border-gray-800/50 shadow-lg shadow-cyan-500/10 p-6 transition-all duration-300 hover:shadow-cyan-500/20 hover:border-gray-700/70 group"
@@ -732,7 +856,7 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
       <h3 className="text-xl font-semibold mb-3">{title}</h3>
       <p className="text-gray-400">{description}</p>
     </motion.div>
-  )
+  );
 }
 
 // Step Card Component
@@ -742,10 +866,10 @@ function StepCard({
   description,
   icon,
 }: {
-  number: string
-  title: string
-  description: string
-  icon: React.ReactNode
+  number: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
 }) {
   return (
     <motion.div className="relative" variants={fadeIn}>
@@ -760,16 +884,24 @@ function StepCard({
         <p className="text-gray-400 text-center">{description}</p>
       </div>
     </motion.div>
-  )
+  );
 }
 
 // NFT Card Component
-function NFTCard({ image, title, creator }: { image: string; title: string; creator: string }) {
+function NFTCard({
+  image,
+  title,
+  creator,
+}: {
+  image: string;
+  title: string;
+  creator: string;
+}) {
   return (
     <motion.div className="group" variants={fadeIn}>
       <div className="bg-gray-900/60 backdrop-blur-md rounded-xl border border-gray-800/50 shadow-lg shadow-cyan-500/10 overflow-hidden transition-all duration-300 hover:shadow-cyan-500/20 hover:border-gray-700/70">
         <div className="relative aspect-square">
-          <Image
+          <img
             src={image || "/placeholder.svg"}
             alt={title}
             width={400}
@@ -785,44 +917,64 @@ function NFTCard({ image, title, creator }: { image: string; title: string; crea
         </div>
       </div>
     </motion.div>
-  )
+  );
 }
 
 // Social Icon Component
 function SocialIcon({ href, icon }: { href: string; icon: string }) {
-  let iconSvg
+  let iconSvg;
 
   switch (icon) {
     case "twitter":
       iconSvg = (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
         </svg>
-      )
-      break
+      );
+      break;
     case "discord":
       iconSvg = (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" />
         </svg>
-      )
-      break
+      );
+      break;
     case "github":
       iconSvg = (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
         </svg>
-      )
-      break
+      );
+      break;
     case "telegram":
       iconSvg = (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path d="M9.417 15.181l-.397 5.584c.568 0 .814-.244 1.109-.537l2.663-2.545 5.518 4.041c1.012.564 1.725.267 1.998-.931l3.622-16.972.001-.001c.321-1.496-.541-2.081-1.527-1.714l-21.29 8.151c-1.453.564-1.431 1.374-.247 1.741l5.443 1.693 12.643-7.911c.595-.394 1.136-.176.691.218l-10.226 9.183z" />
         </svg>
-      )
-      break
+      );
+      break;
     default:
-      iconSvg = null
+      iconSvg = null;
   }
 
   return (
@@ -834,16 +986,19 @@ function SocialIcon({ href, icon }: { href: string; icon: string }) {
     >
       {iconSvg}
     </a>
-  )
+  );
 }
 
 // Footer Link Component
 function FooterLink({ href, label }: { href: string; label: string }) {
   return (
     <li>
-      <Link href={href} className="text-gray-400 hover:text-cyan-400 transition-colors">
+      <Link
+        href={href}
+        className="text-gray-400 hover:text-cyan-400 transition-colors"
+      >
         {label}
       </Link>
     </li>
-  )
+  );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useWriteContract } from "wagmi";
+import { useWriteContract, useReadContract } from "wagmi";
 import { Minth_abi, Minth_address } from "@/utils/var";
 import { PinataSDK } from "pinata";
 import Progress from "@/components/Progress";
@@ -23,82 +23,92 @@ export default function MintButton({
   onStageChange,
   stage,
 }: MintButtonProps) {
-  const { writeContractAsync, isPending } = useWriteContract();
-  const [isLoading, setIsLoading] = useState(false);
+  const //
+    totalSupply = Number(
+      useReadContract({
+        abi: Minth_abi,
+        address: Minth_address,
+        functionName: "totalSupply",
+      }).data
+    ),
+    { writeContractAsync, isPending } = useWriteContract(),
+    [isLoading, setIsLoading] = useState(false),
+    pinata = new PinataSDK({
+      pinataJwt: process.env.NEXT_PUBLIC_JWT,
+      pinataGateway: process.env.NEXT_PUBLIC_gate,
+    }),
+    pinImage = async () => {
+      try {
+        onStageChange("pinning");
+        setIsLoading(true);
 
-  const pinata = new PinataSDK({
-    pinataJwt: process.env.NEXT_PUBLIC_JWT,
-    pinataGateway: process.env.NEXT_PUBLIC_gate,
-  });
-
-  const pinImage = async () => {
-    try {
-      onStageChange("pinning");
-      setIsLoading(true);
-
-      if (!image && imageUrl) {
-        // Fetch image from URL if we only have a URL
-        const response = await fetch(imageUrl);
-        const blob = await response.blob();
-        const fileName = imageUrl.split("/").pop() || "image.png";
-        image = new File([blob], fileName, { type: blob.type });
-      }
-
-      if (!image) {
-        throw new Error("No image to upload");
-      }
-
-      // Upload the image to IPFS
-      const NFT_image = await (async () => {
-        const pin = await pinata.upload.public.file(image as File);
-        onStageChange("1st stage");
-        console.log("Image pinned:", pin.cid);
-        return pin;
-      })();
-
-      // Create and upload metadata
-      const metadata = {
-        attributes: [
-          {
-            trait_type: "Name",
-            value: `${(image as File).name}`,
-          },
-          {
-            trait_type: "Owner",
-            value: address,
-          },
-        ],
-        description: `Minted for ${address} by Minth`,
-        image: `ipfs://${NFT_image.cid}`,
-        name: address?.slice(0, 6),
-      };
-
-      const metadataBlob = new Blob([JSON.stringify(metadata)], {
-        type: "application/json",
-      });
-
-      const file2 = new File(
-        [metadataBlob],
-        `metadata_${(image as File).name}.json`,
-        {
-          type: "application/json",
+        if (!image && imageUrl) {
+          // Fetch image from URL if we only have a URL
+          const response = await fetch(imageUrl);
+          const blob = await response.blob();
+          const fileName = imageUrl.split("/").pop() || "image.png";
+          image = new File([blob], fileName, { type: blob.type });
         }
-      );
 
-      const NFT_image_Metadata = await (async () => {
-        const pin = await pinata.upload.public.file(file2);
-        onStageChange("2nd stage");
-        console.log("Metadata pinned:", pin.cid);
-        onStageChange("pinned");
-        return pin;
-      })();
+        if (!image) {
+          throw new Error("No image to upload");
+        }
 
-      return NFT_image_Metadata;
-    } catch (error: any) {
-      console.error("Error pinning to IPFS:", error);
-      throw error;
-    }
-  };
+        // Upload the image to IPFS
+        const NFT_image = await (async () => {
+            const pin = await pinata.upload.public.file(image as File);
+            onStageChange("1st stage");
+            console.log("Image pinned:", pin.cid);
+            return pin;
+          })(),
+          _name = (image as File).name,
+          _name_ = _name.replace(_name.slice(_name.indexOf(".")), ""),
+          // Create and upload metadata
+          metadata = {
+            id: totalSupply,
+            owner: address,
+            uri: `https://ipfs.io/ipfs/${NFT_image.cid}`,
+            metadata: {
+              name: _name_,
+              description: `Created with Minth...`,
+              image: `https://ipfs.io/ipfs/${NFT_image.cid}`,
+              attributes: [
+                {
+                  trait_type: "Name",
+                  value: _name_,
+                },
+                {
+                  trait_type: "Owner",
+                  value: address,
+                },
+              ],
+            },
+            imageUrl: `https://ipfs.io/ipfs/${NFT_image.cid}`,
+          },
+          metadataBlob = new Blob([JSON.stringify(metadata)], {
+            type: "application/json",
+          }),
+          file2 = new File(
+            [metadataBlob],
+            `metadata_${(image as File).name}.json`,
+            {
+              type: "application/json",
+            }
+          ),
+          NFT_image_Metadata = await (async () => {
+            const pin = await pinata.upload.public.file(file2);
+            onStageChange("2nd stage");
+            console.log("Metadata pinned:", pin.cid);
+            onStageChange("pinned");
+            return pin;
+          })();
+
+        return NFT_image_Metadata;
+      } catch (error: any) {
+        console.error("Error pinning to IPFS:", error);
+        throw error;
+      }
+    };
 
   const handleMint = async () => {
     if (!imageUrl && !image) {
@@ -121,7 +131,7 @@ export default function MintButton({
         abi: Minth_abi,
         address: Minth_address as `0x${string}`,
         functionName: "safeMint",
-        args: [`ipfs://${NFT.cid}`],
+        args: [`https://ipfs.io/ipfs/${NFT.cid}`],
       });
 
       onStageChange("mining");

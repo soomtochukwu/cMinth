@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
+import { useState, useEffect } from "react";
+import Image from "next/image";
 
 interface NFTPreviewProps {
-  imageUrl: string | null
+  imageUrl: string | null;
 }
 
 export default function NFTPreview({ imageUrl }: NFTPreviewProps) {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (imageUrl) {
-      setIsLoading(true)
+      setIsLoading(true);
     }
-  }, [imageUrl])
+  }, [imageUrl]);
 
   return (
     <div className="w-full lg:w-1/2">
@@ -45,8 +45,12 @@ export default function NFTPreview({ imageUrl }: NFTPreviewProps) {
                   />
                 </svg>
               </div>
-              <p className="text-gray-400 text-sm">Your NFT preview will appear here</p>
-              <p className="text-gray-600 text-xs mt-2">Upload or draw an image to see a preview</p>
+              <p className="text-gray-400 text-sm">
+                Your NFT preview will appear here
+              </p>
+              <p className="text-gray-600 text-xs mt-2">
+                Upload or draw an image to see a preview
+              </p>
             </div>
           ) : (
             <div className="relative w-full h-full flex items-center justify-center">
@@ -54,13 +58,15 @@ export default function NFTPreview({ imageUrl }: NFTPreviewProps) {
                 <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
                   <div className="flex flex-col items-center">
                     <div className="w-12 h-12 border-4 border-t-cyan-500 border-r-transparent border-b-purple-500 border-l-transparent rounded-full animate-spin"></div>
-                    <p className="mt-4 text-sm text-gray-300">Loading preview...</p>
+                    <p className="mt-4 text-sm text-gray-300">
+                      Loading preview...
+                    </p>
                   </div>
                 </div>
               )}
 
               <div className="relative max-w-full max-h-full p-4">
-                <Image
+                <img
                   src={imageUrl || "/placeholder.svg"}
                   alt="NFT Preview"
                   width={400}
@@ -78,5 +84,5 @@ export default function NFTPreview({ imageUrl }: NFTPreviewProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
