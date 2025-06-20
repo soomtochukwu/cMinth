@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useAccount } from "wagmi";
 import ParticleBackground from "@/components/ParticleBackground";
 import { motion } from "framer-motion";
-import { Minth_address } from "@/utils/var";
+import { Minth_address, Minth_address_lisk } from "@/utils/var";
 import WalletConnectButton from "@/components/walletConnectButton";
 // Animation variants
 const fadeIn = {
@@ -767,18 +767,34 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            <div>
+            <div className="flex flex-col">
               <h3 className="text-lg font-semibold mb-4">Smart Contract</h3>
               <Link
-                href={`https://sepolia-blockscout.lisk.com/address/${Minth_address}?tab=contract`}
+                href={`https://celo-alfajores.blockscout.com/address/${Minth_address}?tab=contract`}
                 target="_blank"
                 className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors break-all"
               >
-                {Minth_address}
+                Alfajores:{" "}
+                {Minth_address.replace(
+                  Minth_address.slice(3, Minth_address.length - 3),
+                  "..."
+                )}
               </Link>
+              <Link
+                href={`https://sepolia-blockscout.lisk.com/address/${Minth_address_lisk}?tab=contract`}
+                target="_blank"
+                className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors break-all"
+              >
+                Lisk Sepolia:{" "}
+                {Minth_address_lisk.replace(
+                  Minth_address_lisk.slice(3, Minth_address_lisk.length - 3),
+                  "..."
+                )}
+              </Link>
+
               <p className="text-gray-400 mt-4 text-sm">
-                Deployed on Lisk Sepolia Testnet. View the contract details and
-                transactions.
+                Deployed on Alfajores and Lisk Sepolia Testnet. View the
+                contract details and transactions.
               </p>
             </div>
           </div>

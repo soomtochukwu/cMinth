@@ -2,6 +2,8 @@
 export const Minth_address =
   "0x2115BbF22546fa362AE58Bf47A52d70a66596624" as const;
 
+export const Minth_address_lisk =
+  "0x2D9b3d710C8c6626637684f5812Bf421a7B354a7" as const
 export const Minth_abi = [
   {
     "inputs": [],

@@ -10,7 +10,7 @@ const Footer = () => {
 
       <div>Meet me {"  -->"}</div>
 
-      <Link target="meetMe" href={"https://somtochukwu-ko.vercel.app/"}>
+      <Link target="meetMe" href={"https://somtochukwu-k.vercel.app/"}>
         Portfolio 🛄
       </Link>
       <Link
