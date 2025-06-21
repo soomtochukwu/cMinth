@@ -3,7 +3,7 @@ export const Minth_address =
   "0xD4D70A0aea02D8E49f9986B79523C7758326551f" as const;
 
 export const Minth_address_lisk =
-  "0xD345815F4d3Be69e34d136f6c26111A530DBaF44" as const;
+  "0x2D9b3d710C8c6626637684f5812Bf421a7B354a7" as const;
 export const Minth_abi = [
   {
     inputs: [],
