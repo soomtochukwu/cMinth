@@ -16,7 +16,7 @@ const Rates = ({ nftPrice }: RatesProps) => {
 
   return (
     <div>
-      <p className="text-2xl text-inherit font-bold text-white">
+      <div className="text-2xl text-inherit font-bold text-white">
         {gettingRates ? (
           <Spinner />
         ) : (
@@ -25,19 +25,19 @@ const Rates = ({ nftPrice }: RatesProps) => {
           ).toLocaleString()
         )}{" "}
         LSK
-      </p>
+      </div>
       <div className="flex items-center space-x-4">
-        <p className="text-slate-400 text-sm">
+        <div className="text-slate-400 text-sm">
           {gettingRates ? (
             <Spinner />
           ) : (
             `$${(nftPrice * Number(ethToDollar)).toFixed(1).toLocaleString()}`
           )}
-        </p>
-        <p className="text-slate-400 text-sm">
+        </div>
+        <div className="text-slate-400 text-sm">
           {gettingRates ? <Spinner /> : roundDownDynamically(nftPrice) + " ETH"}
-        </p>
-        <p
+        </div>
+        <div
           data-tooltip="Price data from CoinGecko API"
           className="relative group cursor-help inline-flex 
       before:content-[attr(data-tooltip)] before:absolute before:bottom-full before:left-1/2 
@@ -48,7 +48,7 @@ const Rates = ({ nftPrice }: RatesProps) => {
       before:whitespace-nowrap before:z-10"
         >
           <Info className="text-slate-400" size={15} />
-        </p>
+        </div>
       </div>
     </div>
   );

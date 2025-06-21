@@ -27,7 +27,6 @@ interface NFT {
   createdAt: string;
   tokenId: number;
   owner: string;
-  isUserMinted: boolean;
 }
 
 export interface Activity {
@@ -175,8 +174,7 @@ export const useNFTStore = create<NFTState>((set, get) => ({
                 createdAt: meta.createdAt,
                 tokenId,
                 owner,
-                isUserMinted: false,
-              } as NFT;
+              } as NFT
             } catch (tokenError) {
               console.error(`Failed to fetch token ${i + 1}:`, tokenError);
               return null;

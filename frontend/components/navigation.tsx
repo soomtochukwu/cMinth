@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, Home, Search, Plus, UserPen } from "lucide-react";
+import { Menu, X, Home, Search, Plus } from "lucide-react";
 import { useAccount } from "wagmi";
 import { web3Config } from "@/lib/config/web3.config";
 // import { ConnectKitButton } from "connectkit";
@@ -17,7 +17,6 @@ const navItems = [
   { href: "/", label: "Home", icon: Home },
   { href: "/marketplace", label: "Marketplace", icon: Search },
   { href: "/create", label: "Create", icon: Plus },
-  { href: "/dashboard", label: "Dashboard", icon: UserPen },
 ];
 
 export function Navigation() {
