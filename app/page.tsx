@@ -550,9 +550,9 @@ export default function LandingPage() {
             {NFT.slice(-4).map((nft, index) => (
               <NFTCard
                 key={index}
-                image={nft.imageUrl}
-                title={nft.metadata.name}
-                creator={nft.owner}
+                image={nft?.imageUrl}
+                title={nft?.metadata?.name}
+                creator={nft?.owner}
               />
             ))}
           </motion.div>
