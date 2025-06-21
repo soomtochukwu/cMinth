@@ -38,6 +38,7 @@ export default function NFTDetailPage() {
     currentChain = chains.find((c) => c.id === chainId),
     params = useParams(),
     [isLiked, setIsLiked] = useState(false),
+    [txnHash, setTxnHash] = useState<string>(""),
     [showPurchaseModal, setShowPurchaseModal] = useState(false),
     nft = nfts.find((n) => n.id === params.id),
     handlePurchase = async () => {
@@ -70,6 +71,12 @@ export default function NFTDetailPage() {
 
   useEffect(() => {
     handleRefresh();
+    fetch(`/api/txnHash?id=${params.id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setTxnHash(data?.txnHash);
+      });
   }, []);
 
   if (!nft) {
@@ -322,6 +329,39 @@ export default function NFTDetailPage() {
                     Contract Details
                   </h3>
                   <div className="space-y-3 text-sm">
+                    <div
+                      className="flex justify-between items-center"
+                      style={{
+                        background: "linear-gradient(135deg, #99aa99, #00aa00)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        filter: "drop-shadow(0 0 20px rgba(139, 92, 246, 0.4))",
+                      }}
+                    >
+                      <span className="text-slate-400">Transaction Hash</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-slate-300">
+                          {txnHash?.replace(
+                            txnHash?.slice(5, txnHash?.length - 5),
+                            "..."
+                          )}
+                        </span>
+                        <Button variant="ghost" size="sm" className="p-1">
+                          <Link
+                            target="_blank"
+                            className="p-1"
+                            href={
+                              currentChain?.blockExplorers?.default.url +
+                              "/tx/" +
+                              txnHash
+                            }
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-400">Contract Address</span>
                       <div className="flex items-center gap-2">
