@@ -2695,6 +2695,9 @@ function RisksSlide() {
 
 
 
+
+
+
 function TeamSlide() {
   const teamMembers = [
     {
@@ -2703,8 +2706,8 @@ function TeamSlide() {
       role: "Smart contract dev., frontend integrator",
       email: "onwuajuesesomtochukwu@gmail.com",
       telegram: "@MaziOfWeb3",
-      x: "N/A",
-      image: "/deck-2.jpg",
+      x: "@tweetSomto",
+      image: "/mazi.jpeg",
       icon: <Shield className="w-8 h-8 text-purple-400" />,
       glow: "from-purple-500/10 to-blue-500/10",
       border: "border-purple-500/20",
@@ -2715,7 +2718,7 @@ function TeamSlide() {
       role: "Smart contract dev.",
       email: "ndukwe100805043@gmail.com",
       telegram: "@thischisom",
-      x: "N/A",
+      x: "@thischisom",
       image: "/chisom.jpeg",
       icon: <Globe className="w-8 h-8 text-blue-400" />,
       glow: "from-blue-500/10 to-cyan-500/10",
@@ -2739,8 +2742,8 @@ function TeamSlide() {
       role: "Smart contract dev.",
       email: "robbertabimbola21@gmail.com",
       telegram: "@robertocarlous",
-      x: "N/A",
-      image: "/robert.jpeg",
+      x: "@robertocalous",
+      image: "/roberto.jpeg",
       icon: <Zap className="w-8 h-8 text-indigo-400" />,
       glow: "from-indigo-500/10 to-purple-500/10",
       border: "border-indigo-500/20",
@@ -2751,7 +2754,7 @@ function TeamSlide() {
       role: "Frontend dev.",
       email: "Olamideiyanda18@gmail.com",
       telegram: "@Lansa18",
-      x: "N/A",
+      x: "@Lansa_18",
       image: "/mapelujo.jpeg",
       icon: <Cpu className="w-8 h-8 text-green-400" />,
       glow: "from-green-500/10 to-emerald-500/10",
@@ -2799,28 +2802,6 @@ function TeamSlide() {
 
 
 
-{/* <div className="w-full aspect-square overflow-hidden border border-slate-300 dark:border-slate-700 rounded-lg mx-auto">
-  <img
-    src={member.image}
-    alt={member.name}
-    className="w-full h-full object-cover object-center"
-  />
-</div> */}
-
-            {/* <div className="relative w-26 h-30 mx-auto mb-4">
-              <img
-                src={member.image}
-                alt={member.name}
-                className="w-full h-full  object-cover object-center "
-              />
-            </div> */}
-            {/* <div className="w-full aspect-square overflow-hidden border border-slate-300 dark:border-slate-700 mx-auto">
-  <img
-    src={member.image}
-    alt={member.name}
-    className="w-full h-full object-cover object-center _70%"
-  />
-</div> */}
 
             <h3 className="text-xl font-semibold text-white">{member.name}</h3>
             <p className="text-sm text-slate-400">{member.position}</p>
