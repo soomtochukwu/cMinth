@@ -18,8 +18,6 @@ import {
 } from "lucide-react";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import { NFTGrid } from "@/components/dashboard/NftGrid";
-import { EarningsChart } from "@/components/dashboard/EarningsChart";
-import { StatsCard } from "@/components/dashboard/DashboardStats";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatedBackground } from "@/components/animated-background";
@@ -29,6 +27,8 @@ import useDashboardStats from "@/hooks/use-dashboard-stats";
 import useUserNFTs from "@/hooks/use-user-nfts";
 import useUserActivities from "@/hooks/use-user-activities";
 import { Card, CardContent } from "@/components/ui/card";
+import { StatsCard } from "@/components/dashboard/DashboardStats";
+import { EarningsChart } from "@/components/dashboard/EarningsChart";
 
 // Mock data - replace with real API calls
 const mockStats = {
@@ -142,8 +142,9 @@ export default function Dashboard() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen pt-24 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="min-h-screen pt-24 bg-slate-950">
         <AnimatedBackground />
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -166,10 +167,10 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen pt-24 bg-gradient-to-br via-purple-900 to-slate-900">
+    <div className="min-h-screen pt-24 text-white bg-slate-950">
       <AnimatedBackground />
 
-      <div className="container mx-auto px-4 pb-8">
+      <div className="relative container mx-auto px-4 pb-8">
         <Tabs
           value={activeTab}
           onValueChange={setActiveTab}
