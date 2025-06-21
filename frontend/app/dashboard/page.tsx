@@ -2,24 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Palette,
-  ShoppingBag,
-  TrendingUp,
-  Users,
-  Plus,
-  Settings,
-  Bell,
-  Home,
-  Search,
-  Sparkles,
-} from "lucide-react";
+import { Palette, ShoppingBag, TrendingUp, Sparkles } from "lucide-react";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import { NFTGrid } from "@/components/dashboard/NftGrid";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { AnimatedBackground } from "@/components/animated-background";
 import { useAccount } from "wagmi";
 import { useNFTStore } from "@/store/nft-store";

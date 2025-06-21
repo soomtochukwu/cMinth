@@ -1,10 +1,7 @@
 import type React from "react";
 import type { Metadata } from "next";
 import "./globals.css";
-import { Navigation } from "@/components/navigation";
-import { Toaster } from "react-hot-toast";
-import Footer from "@/components/Footer";
-import { Providers } from "./providers";
+import Body from "@/components/layout/Body";
 
 export const metadata: Metadata = {
   title: "Cr8or - Decentralized Creator Monetization",
@@ -19,23 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <Providers>
-          <Navigation />
-          {children}
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              style: {
-                background: "#1e293b",
-                color: "#fff",
-                border: "1px solid #475569",
-              },
-            }}
-          />
-          <Footer />
-        </Providers>
-      </body>
+      <Body children={children}></Body>
     </html>
   );
 }
