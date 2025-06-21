@@ -1,6 +1,6 @@
 // Define and export the Minth_address constant
 export const Minth_address =
-  "0xE1B9C4055Cdf7A0a4cbb1A7e11d3277f46b79D5f" as const;
+  "0xD4D70A0aea02D8E49f9986B79523C7758326551f" as const;
 
 export const Minth_address_lisk =
   "0xD345815F4d3Be69e34d136f6c26111A530DBaF44" as const;

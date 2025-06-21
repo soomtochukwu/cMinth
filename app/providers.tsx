@@ -13,7 +13,7 @@ import {
   okxWallet,
   trustWallet,
 } from "@rainbow-me/rainbowkit/wallets";
-import { celo, celoAlfajores } from "wagmi/chains";
+import { celo, lisk, liskSepolia, celoAlfajores } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 
@@ -55,7 +55,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             borderRadius: "large",
           })}
           modalSize="compact"
-          initialChain={celoAlfajores}
+          initialChain={celo}
         >
           {children}
         </RainbowKitProvider>
