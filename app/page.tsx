@@ -774,7 +774,7 @@ export default function LandingPage() {
                 target="_blank"
                 className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors break-all"
               >
-                Alfajores:{" "}
+                Celo:{" "}
                 {Minth_address.replace(
                   Minth_address.slice(3, Minth_address.length - 3),
                   "..."
