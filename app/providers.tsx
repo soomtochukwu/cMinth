@@ -6,7 +6,6 @@ import {
   RainbowKitProvider,
   getDefaultWallets,
   getDefaultConfig,
-  lightTheme,
   darkTheme,
 } from "@rainbow-me/rainbowkit";
 import {
@@ -45,8 +44,8 @@ const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <WagmiProvider config={config}>
         <RainbowKitProvider
           theme={darkTheme({
             accentColor: "#005500",
@@ -60,7 +59,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         >
           {children}
         </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+      </WagmiProvider>
+    </QueryClientProvider>
   );
 }
