@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Navigation } from "@/components/navigation";
 import { Toaster } from "react-hot-toast";
-import Web3Provider from "./web3.providers";
 import Footer from "@/components/Footer";
 import { Providers } from "./providers";
 
