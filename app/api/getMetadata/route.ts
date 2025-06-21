@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import { Minth_address } from "@/utils/var";
 
 // Replace with your preferred Alfajores RPC endpoint (e.g., from https://docs.celo.org)
-const CELO_RPC = "https://alfajores-forno.celo-testnet.org";
+const CELO_RPC = "https://forno.celo.org";
 const CONTRACT_ADDRESS = Minth_address as string;
 
 const abi = [

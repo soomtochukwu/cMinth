@@ -49,8 +49,7 @@ export default function LandingPage() {
   const //
     [isScrolled, setIsScrolled] = useState(false),
     [NFT, setNfts] = useState<NFT[]>([]),
-    [loading, setLoading] = useState<boolean>(true),
-    [fetched, setFetched] = useState<boolean>(false);
+    [loading, setLoading] = useState<boolean>(true);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isConnected } = useAccount();
@@ -67,11 +66,7 @@ export default function LandingPage() {
       .then((data) => {
         setNfts(data);
         console.log(data);
-        if (data.error.length) {
-          setFetched(false);
-        }
         setLoading(false);
-        setFetched(true);
       })
       .catch((err) => {
         console.error("Failed to load metadata:", err);
@@ -552,7 +547,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
             variants={staggerContainer}
           >
-            {loading || fetched ? (
+            {loading ? (
               <div className="h-4 w-4 rounded-full animate-spin border-r-2"></div>
             ) : (
               NFT?.slice(-4).map((nft, index) => (
