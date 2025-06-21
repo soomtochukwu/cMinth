@@ -8,7 +8,8 @@ body {
 
 @layer utilities {
   .text-balance {
-    text-wrap: balance;
+    text-align: justify; /* fallback for unsupported browsers */
+    /* text-wrap: balance; removed for compatibility */
   }
 }
 
@@ -90,5 +91,34 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .glow-path {
+    filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.6));
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from {
+      filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.3));
+    }
+    to {
+      filter: drop-shadow(0 0 30px rgba(139, 92, 246, 0.8));
+    }
+  }
+
+  .pulse-dot {
+    animation: pulse 1s infinite;
+  }
+  .pulse-dot-delay-1 { animation-delay: 0.2s; }
+  .pulse-dot-delay-2 { animation-delay: 0.4s; }
+  .pulse-dot-delay-3 { animation-delay: 0.6s; }
+  .pulse-dot-delay-4 { animation-delay: 0.8s; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 }

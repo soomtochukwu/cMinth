@@ -483,6 +483,7 @@ export default function Component() {
             <button
               key={index}
               onClick={() => goToSlide(index)}
+              title={slides[index].title}
               className={`w-2 h-2 rounded-full transition-all ${
                 index === currentSlide ? "bg-cyan-400" : "bg-slate-600"
               }`}
@@ -2455,110 +2456,385 @@ function RisksSlide() {
   );
 }
 
+// function TeamSlide() {
+//   return (
+//     <div className="space-y-8">
+//       <motion.h2
+//         initial={{ opacity: 0, y: -20 }}
+//         animate={{ opacity: 1, y: 0 }}
+//         transition={{ duration: 0.5 }}
+//         className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent"
+//       >
+//         Team
+//       </motion.h2>
+
+//       <motion.div
+//         initial={{ opacity: 0, scale: 0.9 }}
+//         animate={{ opacity: 1, scale: 1 }}
+//         transition={{ duration: 0.5, delay: 0.2 }}
+//       >
+//         <Web3Card className="bg-gradient-to-r from-purple-500/10 to-blue-500/10">
+//           <CardHeader>
+//             <CardTitle className="text-purple-400 text-center text-2xl flex items-center justify-center gap-2">
+//               <svg className="w-6 h-6" viewBox="0 0 80 80">
+//                 <path
+//                   d="M20 40 C20 25, 35 25, 40 40 C45 55, 60 55, 60 40 C60 25, 45 25, 40 40 C35 55, 20 55, 20 40 Z"
+//                   fill="currentColor"
+//                 />
+//               </svg>
+//               Team 3
+//             </CardTitle>
+//           </CardHeader>
+//           <CardContent className="space-y-6">
+//             <div className="text-center space-y-4">
+//               <motion.div
+//                 initial={{ opacity: 0, scale: 0.8 }}
+//                 animate={{ opacity: 1, scale: 1 }}
+//                 transition={{ delay: 0.4, type: "spring" }}
+//                 className="relative w-24 h-24 mx-auto"
+//               >
+//                 <div className="w-24 h-24 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full flex items-center justify-center relative">
+//                   <Users className="w-12 h-12 text-white" />
+//                   <div className="absolute inset-0 bg-gradient-to-r from-purple-400/30 to-cyan-400/30 rounded-full animate-ping" />
+//                 </div>
+//               </motion.div>
+//               <motion.p
+//                 initial={{ opacity: 0 }}
+//                 animate={{ opacity: 1 }}
+//                 transition={{ delay: 0.5 }}
+//                 className="text-slate-300 text-lg"
+//               >
+//                 Skilled development team with expertise in Solidity, Next.js,
+//                 and Web3 integrations
+//               </motion.p>
+//             </div>
+
+//             <div className="grid md:grid-cols-3 gap-6">
+//               <motion.div
+//                 initial={{ opacity: 0, y: 20 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 transition={{ delay: 0.6 }}
+//                 className="text-center space-y-3 p-4 bg-blue-500/10 rounded-lg border border-blue-500/20"
+//               >
+//                 <div className="w-16 h-16 bg-blue-500/20 rounded-full mx-auto flex items-center justify-center relative">
+//                   <Shield className="w-8 h-8 text-blue-400" />
+//                   <div className="absolute inset-0 bg-blue-400/20 rounded-full blur-sm" />
+//                 </div>
+//                 <h4 className="font-semibold text-white">Blockchain</h4>
+//                 <p className="text-sm text-slate-300">
+//                   Solidity, Smart Contracts, Web3
+//                 </p>
+//               </motion.div>
+//               <motion.div
+//                 initial={{ opacity: 0, y: 20 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 transition={{ delay: 0.7 }}
+//                 className="text-center space-y-3 p-4 bg-green-500/10 rounded-lg border border-green-500/20"
+//               >
+//                 <div className="w-16 h-16 bg-green-500/20 rounded-full mx-auto flex items-center justify-center relative">
+//                   <Globe className="w-8 h-8 text-green-400" />
+//                   <div className="absolute inset-0 bg-green-400/20 rounded-full blur-sm" />
+//                 </div>
+//                 <h4 className="font-semibold text-white">Frontend</h4>
+//                 <p className="text-sm text-slate-300">
+//                   Next.js, React, TypeScript
+//                 </p>
+//               </motion.div>
+//               <motion.div
+//                 initial={{ opacity: 0, y: 20 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 transition={{ delay: 0.8 }}
+//                 className="text-center space-y-3 p-4 bg-purple-500/10 rounded-lg border border-purple-500/20"
+//               >
+//                 <div className="w-16 h-16 bg-purple-500/20 rounded-full mx-auto flex items-center justify-center relative">
+//                   <Network className="w-8 h-8 text-purple-400" />
+//                   <div className="absolute inset-0 bg-purple-400/20 rounded-full blur-sm" />
+//                 </div>
+//                 <h4 className="font-semibold text-white">Integration</h4>
+//                 <p className="text-sm text-slate-300">
+//                   RainbowKit, WagmiJS, IPFS
+//                 </p>
+//               </motion.div>
+//             </div>
+//           </CardContent>
+//         </Web3Card>
+//       </motion.div>
+
+//       <div className="grid md:grid-cols-2 gap-8">
+//         <motion.div
+//           initial={{ opacity: 0, x: -30 }}
+//           animate={{ opacity: 1, x: 0 }}
+//           transition={{ delay: 0.9 }}
+//         >
+//           <Web3Card glowColor="pink">
+//             <CardHeader>
+//               <CardTitle className="text-pink-400 flex items-center gap-2">
+//                 <Target className="w-5 h-5" />
+//                 Our Mission
+//               </CardTitle>
+//             </CardHeader>
+//             <CardContent className="space-y-3 text-slate-300">
+//               <motion.p
+//                 initial={{ opacity: 0 }}
+//                 animate={{ opacity: 1 }}
+//                 transition={{ delay: 1 }}
+//               >
+//                 Passionate about creator empowerment and Web3 development
+//               </motion.p>
+//               <motion.p
+//                 initial={{ opacity: 0 }}
+//                 animate={{ opacity: 1 }}
+//                 transition={{ delay: 1.1 }}
+//               >
+//                 Building Cr8or as a portfolio project to showcase full-stack and
+//                 blockchain expertise
+//               </motion.p>
+//               <motion.p
+//                 initial={{ opacity: 0 }}
+//                 animate={{ opacity: 1 }}
+//                 transition={{ delay: 1.2 }}
+//               >
+//                 Committed to fair creator monetization in the digital economy
+//               </motion.p>
+//             </CardContent>
+//           </Web3Card>
+//         </motion.div>
+
+//         <motion.div
+//           initial={{ opacity: 0, x: 30 }}
+//           animate={{ opacity: 1, x: 0 }}
+//           transition={{ delay: 0.9 }}
+//         >
+//           <Web3Card glowColor="orange">
+//             <CardHeader>
+//               <CardTitle className="text-orange-400 flex items-center gap-2">
+//                 <Users className="w-5 h-5" />
+//                 Seeking Advisors
+//               </CardTitle>
+//             </CardHeader>
+//             <CardContent className="space-y-3 text-slate-300">
+//               <motion.div
+//                 initial={{ opacity: 0, y: 10 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 transition={{ delay: 1 }}
+//                 className="flex items-center gap-3 p-2 rounded-lg bg-orange-500/10 border border-orange-500/20"
+//               >
+//                 <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+//                 <span>Web3 and blockchain experts</span>
+//               </motion.div>
+//               <motion.div
+//                 initial={{ opacity: 0, y: 10 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 transition={{ delay: 1.1 }}
+//                 className="flex items-center gap-3 p-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20"
+//               >
+//                 <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+//                 <span>Creator economy specialists</span>
+//               </motion.div>
+//               <motion.div
+//                 initial={{ opacity: 0, y: 10 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 transition={{ delay: 1.2 }}
+//                 className="flex items-center gap-3 p-2 rounded-lg bg-red-500/10 border border-red-500/20"
+//               >
+//                 <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+//                 <span>NFT marketplace veterans</span>
+//               </motion.div>
+//             </CardContent>
+//           </Web3Card>
+//         </motion.div>
+//       </div>
+
+//       <motion.div
+//         initial={{ opacity: 0, y: 50 }}
+//         animate={{ opacity: 1, y: 0 }}
+//         transition={{ duration: 0.5, delay: 1.3 }}
+//       >
+//         <Web3Card className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10">
+//           <CardContent className="pt-6">
+//             <div className="text-center space-y-4">
+//               <motion.h3
+//                 initial={{ opacity: 0 }}
+//                 animate={{ opacity: 1 }}
+//                 transition={{ delay: 1.4 }}
+//                 className="text-2xl font-semibold text-indigo-400 flex items-center justify-center gap-2"
+//               >
+//                 <Cpu className="w-6 h-6" />
+//                 Why We're Building Cr8or
+//               </motion.h3>
+//               <motion.p
+//                 initial={{ opacity: 0 }}
+//                 animate={{ opacity: 1 }}
+//                 transition={{ delay: 1.5 }}
+//                 className="text-slate-300 max-w-3xl mx-auto"
+//               >
+//                 We believe creators deserve fair compensation and true ownership
+//                 of their work. Cr8or represents our commitment to building a
+//                 more equitable creator economy through decentralized technology
+//                 and user-centric design.
+//               </motion.p>
+//             </div>
+//           </CardContent>
+//         </Web3Card>
+//       </motion.div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function TeamSlide() {
+  const teamMembers = [
+    {
+      name: "Somtochukwu Kelechi Onwuajuese",
+      position: "Team Lead",
+      role: "Smart contract dev., frontend integrator",
+      email: "onwuajuesesomtochukwu@gmail.com",
+      telegram: "@MaziOfWeb3",
+      x: "N/A",
+      image: "/deck-2.jpg",
+      icon: <Shield className="w-8 h-8 text-purple-400" />,
+      glow: "from-purple-500/10 to-blue-500/10",
+      border: "border-purple-500/20",
+    },
+    {
+      name: "Ruth Chisom Obidike",
+      position: "Team Member",
+      role: "Smart contract dev.",
+      email: "ndukwe100805043@gmail.com",
+      telegram: "@thischisom",
+      x: "N/A",
+      image: "/chisom.jpeg",
+      icon: <Globe className="w-8 h-8 text-blue-400" />,
+      glow: "from-blue-500/10 to-cyan-500/10",
+      border: "border-blue-500/20",
+    },
+    {
+      name: "Omega Judith",
+      position: "Team Member",
+      role: "Frontend dev., Backend dev.",
+      email: "omegajudith@gmail.com",
+      telegram: "@omegajudith",
+      x: "@j1omega",
+      image: "/judith.jpeg",
+      icon: <Network className="w-8 h-8 text-pink-400" />,
+      glow: "from-pink-500/10 to-fuchsia-500/10",
+      border: "border-pink-500/20",
+    },
+    {
+      name: "Robbert Abimbola",
+      position: "Team Member",
+      role: "Smart contract dev.",
+      email: "robbertabimbola21@gmail.com",
+      telegram: "@robertocarlous",
+      x: "N/A",
+      image: "/robert.jpeg",
+      icon: <Zap className="w-8 h-8 text-indigo-400" />,
+      glow: "from-indigo-500/10 to-purple-500/10",
+      border: "border-indigo-500/20",
+    },
+    {
+      name: "Mapelujo Abdulkareem",
+      position: "Team Member",
+      role: "Frontend dev.",
+      email: "Olamideiyanda18@gmail.com",
+      telegram: "@Lansa18",
+      x: "N/A",
+      image: "/mapelujo.jpeg",
+      icon: <Cpu className="w-8 h-8 text-green-400" />,
+      glow: "from-green-500/10 to-emerald-500/10",
+      border: "border-green-500/20",
+    },
+  ];
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-12 py-12 bg-[--background]/50 backdrop-blur-sm">
       <motion.h2
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent"
+        className="text-5xl font-extrabold text-center mb-12 bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent drop-shadow-lg"
       >
-        Team
+        Meet the Team
       </motion.h2>
 
+      {/* Team Cards */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto px-4"
       >
-        <Web3Card className="bg-gradient-to-r from-purple-500/10 to-blue-500/10">
-          <CardHeader>
-            <CardTitle className="text-purple-400 text-center text-2xl flex items-center justify-center gap-2">
-              <svg className="w-6 h-6" viewBox="0 0 80 80">
-                <path
-                  d="M20 40 C20 25, 35 25, 40 40 C45 55, 60 55, 60 40 C60 25, 45 25, 40 40 C35 55, 20 55, 20 40 Z"
-                  fill="currentColor"
-                />
-              </svg>
-              Team 3
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="text-center space-y-4">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4, type: "spring" }}
-                className="relative w-24 h-24 mx-auto"
-              >
-                <div className="w-24 h-24 bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full flex items-center justify-center relative">
-                  <Users className="w-12 h-12 text-white" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-400/30 to-cyan-400/30 rounded-full animate-ping" />
-                </div>
-              </motion.div>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="text-slate-300 text-lg"
-              >
-                Skilled development team with expertise in Solidity, Next.js,
-                and Web3 integrations
-              </motion.p>
-            </div>
+        {teamMembers.map((member, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 + i * 0.1 }}
+            className={`p-6 rounded-xl ${member.border} border bg-gradient-to-r ${member.glow} shadow-lg text-center`}
+          >
 
-            <div className="grid md:grid-cols-3 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="text-center space-y-3 p-4 bg-blue-500/10 rounded-lg border border-blue-500/20"
-              >
-                <div className="w-16 h-16 bg-blue-500/20 rounded-full mx-auto flex items-center justify-center relative">
-                  <Shield className="w-8 h-8 text-blue-400" />
-                  <div className="absolute inset-0 bg-blue-400/20 rounded-full blur-sm" />
-                </div>
-                <h4 className="font-semibold text-white">Blockchain</h4>
-                <p className="text-sm text-slate-300">
-                  Solidity, Smart Contracts, Web3
-                </p>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
-                className="text-center space-y-3 p-4 bg-green-500/10 rounded-lg border border-green-500/20"
-              >
-                <div className="w-16 h-16 bg-green-500/20 rounded-full mx-auto flex items-center justify-center relative">
-                  <Globe className="w-8 h-8 text-green-400" />
-                  <div className="absolute inset-0 bg-green-400/20 rounded-full blur-sm" />
-                </div>
-                <h4 className="font-semibold text-white">Frontend</h4>
-                <p className="text-sm text-slate-300">
-                  Next.js, React, TypeScript
-                </p>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                className="text-center space-y-3 p-4 bg-purple-500/10 rounded-lg border border-purple-500/20"
-              >
-                <div className="w-16 h-16 bg-purple-500/20 rounded-full mx-auto flex items-center justify-center relative">
-                  <Network className="w-8 h-8 text-purple-400" />
-                  <div className="absolute inset-0 bg-purple-400/20 rounded-full blur-sm" />
-                </div>
-                <h4 className="font-semibold text-white">Integration</h4>
-                <p className="text-sm text-slate-300">
-                  RainbowKit, WagmiJS, IPFS
-                </p>
-              </motion.div>
+
+<div className="w-full aspect-square overflow-hidden border border-slate-300 dark:border-slate-700 mx-auto">
+  <img
+    src={member.image}
+    alt={member.name}
+    className="w-full h-auto object-cover"
+    style={{ marginTop: "-12%", minHeight: "120%", objectPosition: "top center" }}
+  />
+</div>
+
+
+
+
+{/* <div className="w-full aspect-square overflow-hidden border border-slate-300 dark:border-slate-700 rounded-lg mx-auto">
+  <img
+    src={member.image}
+    alt={member.name}
+    className="w-full h-full object-cover object-center"
+  />
+</div> */}
+
+            {/* <div className="relative w-26 h-30 mx-auto mb-4">
+              <img
+                src={member.image}
+                alt={member.name}
+                className="w-full h-full  object-cover object-center "
+              />
+            </div> */}
+            {/* <div className="w-full aspect-square overflow-hidden border border-slate-300 dark:border-slate-700 mx-auto">
+  <img
+    src={member.image}
+    alt={member.name}
+    className="w-full h-full object-cover object-center _70%"
+  />
+</div> */}
+
+            <h3 className="text-xl font-semibold text-white">{member.name}</h3>
+            <p className="text-sm text-slate-400">{member.position}</p>
+            <p className="text-sm text-slate-300">{member.role}</p>
+            <div className="mt-3 text-xs text-slate-400 space-y-1">
+              <p><strong>Email:</strong> {member.email}</p>
+              <p><strong>Telegram:</strong> {member.telegram}</p>
+              <p><strong>X:</strong> {member.x}</p>
             </div>
-          </CardContent>
-        </Web3Card>
+          </motion.div>
+        ))}
       </motion.div>
 
+      {/* Mission & Advisors */}
       <div className="grid md:grid-cols-2 gap-8">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
@@ -2573,28 +2849,9 @@ function TeamSlide() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-slate-300">
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1 }}
-              >
-                Passionate about creator empowerment and Web3 development
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.1 }}
-              >
-                Building Cr8or as a portfolio project to showcase full-stack and
-                blockchain expertise
-              </motion.p>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.2 }}
-              >
-                Committed to fair creator monetization in the digital economy
-              </motion.p>
+              <p>Passionate about creator empowerment and Web3 development</p>
+              <p>Building Cr8or as a portfolio project to showcase full-stack and blockchain expertise</p>
+              <p>Committed to fair creator monetization in the digital economy</p>
             </CardContent>
           </Web3Card>
         </motion.div>
@@ -2612,38 +2869,24 @@ function TeamSlide() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-slate-300">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 }}
-                className="flex items-center gap-3 p-2 rounded-lg bg-orange-500/10 border border-orange-500/20"
-              >
+              <div className="flex items-center gap-3 p-2 rounded-lg bg-orange-500/10 border border-orange-500/20">
                 <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
                 <span>Web3 and blockchain experts</span>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.1 }}
-                className="flex items-center gap-3 p-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20"
-              >
+              </div>
+              <div className="flex items-center gap-3 p-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
                 <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
                 <span>Creator economy specialists</span>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2 }}
-                className="flex items-center gap-3 p-2 rounded-lg bg-red-500/10 border border-red-500/20"
-              >
+              </div>
+              <div className="flex items-center gap-3 p-2 rounded-lg bg-red-500/10 border border-red-500/20">
                 <div className="w-2 h-2 bg-red-400 rounded-full"></div>
                 <span>NFT marketplace veterans</span>
-              </motion.div>
+              </div>
             </CardContent>
           </Web3Card>
         </motion.div>
       </div>
 
+      {/* Why We’re Building Cr8or */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -2652,26 +2895,13 @@ function TeamSlide() {
         <Web3Card className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10">
           <CardContent className="pt-6">
             <div className="text-center space-y-4">
-              <motion.h3
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.4 }}
-                className="text-2xl font-semibold text-indigo-400 flex items-center justify-center gap-2"
-              >
+              <h3 className="text-2xl font-semibold text-indigo-400 flex items-center justify-center gap-2">
                 <Cpu className="w-6 h-6" />
                 Why We're Building Cr8or
-              </motion.h3>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5 }}
-                className="text-slate-300 max-w-3xl mx-auto"
-              >
-                We believe creators deserve fair compensation and true ownership
-                of their work. Cr8or represents our commitment to building a
-                more equitable creator economy through decentralized technology
-                and user-centric design.
-              </motion.p>
+              </h3>
+              <p className="text-slate-300 max-w-3xl mx-auto">
+                We believe creators deserve fair compensation and true ownership of their work. Cr8or represents our commitment to building a more equitable creator economy through decentralized technology and user-centric design.
+              </p>
             </div>
           </CardContent>
         </Web3Card>
@@ -2679,6 +2909,30 @@ function TeamSlide() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function AskSlide() {
   return (
