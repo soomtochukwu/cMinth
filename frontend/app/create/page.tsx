@@ -52,6 +52,7 @@ type _newNFT = {
   createdAt: string;
   tokenId: number;
   owner: string;
+  isUserMinted: boolean;
 };
 
 const steps = [
@@ -253,6 +254,7 @@ export default function CreatePage() {
           createdAt: new Date().toISOString(),
           tokenId: Math.floor(Math.random() * 10000),
           owner: address || "0x0000...0000",
+          isUserMinted: true,
         };
 
         // Upload files to IPFS
@@ -285,6 +287,7 @@ export default function CreatePage() {
             newNFT.type === "audio"
               ? `https://ipfs.io/ipfs/${fileHashes[0]}`
               : undefined,
+          isUserMinted: true,
         });
       } catch (error) {
         console.error("Minting error:", error);
@@ -367,8 +370,8 @@ export default function CreatePage() {
                           isActive
                             ? "border-purple-500 bg-purple-500/20 text-purple-300"
                             : isCompleted
-                            ? "border-emerald-500 bg-emerald-500/20 text-emerald-300"
-                            : "border-slate-600 bg-slate-800/50 text-slate-400"
+                              ? "border-emerald-500 bg-emerald-500/20 text-emerald-300"
+                              : "border-slate-600 bg-slate-800/50 text-slate-400"
                         }
                       `}
                           >
@@ -379,8 +382,8 @@ export default function CreatePage() {
                               isActive
                                 ? "text-purple-300"
                                 : isCompleted
-                                ? "text-emerald-300"
-                                : "text-slate-400"
+                                  ? "text-emerald-300"
+                                  : "text-slate-400"
                             }`}
                           >
                             {step.title}

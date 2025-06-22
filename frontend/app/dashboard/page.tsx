@@ -16,52 +16,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { StatsCard } from "@/components/dashboard/DashboardStats";
 import { EarningsChart } from "@/components/dashboard/EarningsChart";
 
-// Mock data - replace with real API calls
-const mockStats = {
-  nftsCreated: 24,
-  nftsPurchased: 12,
-  totalEarnings: "15.7",
-};
-
-const mockNFTs = [
-  {
-    id: "1",
-    title: "Digital Harmony #001",
-    description: "Abstract digital art with vibrant colors",
-    image: "/placeholder.svg?height=200&width=300",
-    price: "2.5",
-    status: "listed" as const,
-    views: 234,
-    likes: 45,
-    royalty: 10,
-    createdAt: "2024-01-15",
-  },
-  {
-    id: "2",
-    title: "Cosmic Dreams",
-    description: "Space-themed generative art",
-    image: "/placeholder.svg?height=200&width=300",
-    price: "1.8",
-    status: "sold" as const,
-    views: 567,
-    likes: 89,
-    royalty: 15,
-    createdAt: "2024-01-10",
-  },
-  {
-    id: "3",
-    title: "Urban Pulse",
-    description: "City-inspired audio-visual NFT",
-    image: "/placeholder.svg?height=200&width=300",
-    price: "3.2",
-    status: "minted" as const,
-    views: 123,
-    likes: 23,
-    royalty: 12,
-    createdAt: "2024-01-20",
-  },
-];
-
 const mockEarningsData = [
   { month: "Dec", primary: 0, royalties: 0 },
   { month: "Jan", primary: 0, royalties: 0 },
