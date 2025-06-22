@@ -74,8 +74,8 @@ export default function NFTDetailPage() {
     fetch(`/api/txnHash?id=${params.id}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        setTxnHash(data?.txnHash);
+        console.log(data.txn);
+        setTxnHash(data.txn);
       });
   }, []);
 
@@ -181,11 +181,10 @@ export default function NFTDetailPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => setIsLiked(!isLiked)}
-                      className={`p-2 ${
-                        isLiked
-                          ? "text-red-400 border-red-400"
-                          : "text-slate-400 border-slate-600"
-                      }`}
+                      className={`p-2 ${isLiked
+                        ? "text-red-400 border-red-400"
+                        : "text-slate-400 border-slate-600"
+                        }`}
                     >
                       <Heart
                         className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`}

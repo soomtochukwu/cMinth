@@ -1,79 +1,71 @@
-import { NextResponse } from 'next/server';
-import { readFileSync, writeFileSync } from 'fs';
-import path from 'path';
+// app/api/txnHash/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "@/utils/supabaseClient";
 
-const txnHashStorePath = path.join(process.cwd(), 'app/api/txnHash/MintTxHashes.json');
+// GET /api/txnHash?id=2
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const idParam = searchParams.get("id");
 
-// Handle GET requests
-export async function GET(request: Request) {
-    try {
-        const { searchParams } = new URL(request.url);
-        const idParam = searchParams.get('id');
-
-        if (!idParam) {
-            return NextResponse.json({ error: 'Missing id parameter' }, { status: 400 });
-        }
-
-        const id = Number(idParam);
-        const fileContent = readFileSync(txnHashStorePath, 'utf-8');
-        const data = JSON.parse(fileContent);
-
-        const txnHash = data[id];
-
-        if (!txnHash) {
-            return NextResponse.json({ error: 'Invalid id' }, { status: 404 });
-        }
-
-        return NextResponse.json({ txnHash });
-    } catch (error) {
-        return NextResponse.json({ error: 'Internal Server Error', details: String(error) }, { status: 500 });
+    if (!idParam) {
+      return NextResponse.json(
+        { error: "Missing id parameter" },
+        { status: 400 }
+      );
     }
+
+    // Find record where key `idParam` exists in the `data` JSON object
+    const { data, error } = await supabase.from("txnhashes").select("data");
+    //   .filter(`data->>${idParam}`, "not.is", null); // JSON path filter
+    console.log(data);
+    const txn =
+      data?.find((row) => row.data.id === idParam)?.data.txnHash || "omo";
+
+    console.log(txn);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    if (!data || data.length === 0) {
+      return NextResponse.json({ error: "Invalid id" }, { status: 404 });
+    }
+
+    const txnHash = data[0].data[idParam];
+
+    return NextResponse.json({ txn });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Internal Server Error", details: String(error) },
+      { status: 500 }
+    );
+  }
 }
 
-// Handle POST requests
+// POST /api/txnHash (body: { "2": "0xcc...xqw" })
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
 
-export async function POST(request: Request) {
-    try {
-        const body = await request.json();
-
-        // Validate that body has only one key-value pair
-        const keys = Object.keys(body);
-        // if (keys.length !== 1) {
-        //     return NextResponse.json(
-        //         { error: 'Request body must contain exactly one { id: txnHash } pair' },
-        //         { status: 400 }
-        //     );
-        // }
-        // "Error: ENOENT: no such file or directory, open '/home/maziofweb3/cds/ps/LISK_Africa_Bootcamp/Final Project/Cr8or-frontend/frontend/api/txnHash/MinttxnHashes.json'"
-
-        const
-            // 
-            _id = keys[0],
-            _txnHash = keys[1],
-            id = body[_id],
-            txnHash = body[_txnHash];
-        /* 
-
-        const id = keys[0];
-        const txnHash = body[id];
-         */
-
-        if (typeof txnHash !== 'string') {
-            return NextResponse.json({ error: 'txnHash must be a string' }, { status: 400 });
-        }
-
-        // Read and parse the existing file
-        const fileContent = readFileSync(txnHashStorePath, 'utf-8');
-        const data = JSON.parse(fileContent);
-
-        // Add or overwrite the entry
-        data[id] = txnHash;
-
-        // Save updated file
-        writeFileSync(txnHashStorePath, JSON.stringify(data, null, 2));
-
-        return NextResponse.json({ message: 'txnHash saved successfully', [id]: txnHash });
-    } catch (error) {
-        return NextResponse.json({ error: 'Internal Server Error', details: String(error) }, { status: 500 });
+    if (typeof body !== "object" || Array.isArray(body)) {
+      return NextResponse.json(
+        { error: "Body must be a key-value object" },
+        { status: 400 }
+      );
     }
+
+    const { error } = await supabase.from("txnhashes").insert([{ data: body }]);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Internal Server Error", details: String(error) },
+      { status: 500 }
+    );
+  }
 }
