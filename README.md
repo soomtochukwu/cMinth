@@ -2,9 +2,7 @@
 
 > **Create, mint, and trade unique NFTs with our intuitive canvas tools. Your imagination is the only limit.**
 
-[![Website](https://img.shields.io/badge/Website-minth.xyz-blue)](https://www.minth.xyz/)
-[![GitHub](https://img.shields.io/badge/GitHub-v2-green)](https://github.com/soomtochukwu/cminth)
-[![Celo](https://img.shields.io/badge/Built%20on-Celo-yellow)](https://celo.org/)
+[![Website](https://ipfs.io/ipfs/bafkreidteulna53kyizn2a6qkc46v3ujt2iznvli6inwvcivawffauimiq)](https://www.minth.xyz/)
 
 ## 🌟 Overview
 
