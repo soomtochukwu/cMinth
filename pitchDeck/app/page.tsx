@@ -19,10 +19,15 @@ import {
   ExternalLink,
   Network,
   Cpu,
+  MailIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+
+import { FaTelegram, FaTwitter, FaMailBulk } from "react-icons/fa";
+import { AiFillMail } from "react-icons/ai";
+import Link from "next/link";
 
 const slides = [
   { id: 1, title: "Title", component: "TitleSlide" },
@@ -386,9 +391,8 @@ export default function Component() {
               variant="ghost"
               size="sm"
               onClick={() => setIsAutoPlay(!isAutoPlay)}
-              className={`text-white hover:bg-cyan-500/10 transition-colors border border-cyan-500/20 ${
-                isAutoPlay ? "bg-cyan-500/20 text-cyan-300" : ""
-              }`}
+              className={`text-white hover:bg-cyan-500/10 transition-colors border border-cyan-500/20 ${isAutoPlay ? "bg-cyan-500/20 text-cyan-300" : ""
+                }`}
             >
               <Play
                 className={`w-4 h-4 ${isAutoPlay ? "text-cyan-300" : ""}`}
@@ -437,11 +441,10 @@ export default function Component() {
               onClick={() => goToSlide(index)}
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
-              className={`w-3 h-3 rounded-full transition-all relative ${
-                index === currentSlide
-                  ? "bg-cyan-400 scale-125 shadow-lg shadow-cyan-400/50"
-                  : "bg-slate-600 hover:bg-cyan-500/50"
-              }`}
+              className={`w-3 h-3 rounded-full transition-all relative ${index === currentSlide
+                ? "bg-cyan-400 scale-125 shadow-lg shadow-cyan-400/50"
+                : "bg-slate-600 hover:bg-cyan-500/50"
+                }`}
               title={slide.title}
             >
               {index === currentSlide && (
@@ -484,9 +487,8 @@ export default function Component() {
               key={index}
               onClick={() => goToSlide(index)}
               title={slides[index].title}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === currentSlide ? "bg-cyan-400" : "bg-slate-600"
-              }`}
+              className={`w-2 h-2 rounded-full transition-all ${index === currentSlide ? "bg-cyan-400" : "bg-slate-600"
+                }`}
             />
           ))}
         </div>
@@ -618,11 +620,11 @@ function TitleSlide() {
               CR
               <span
                 className="text-8xl font-black tracking-tight bg-gradient-to-r from-gray-300 via-gray-700 bg-clip-text text-transparent md:text-[10rem] transform -rotate-12 inline-block relative"
-                // style={{
-                //   background: "linear-gradient(135deg, #a293ad, #8a97a2)",
-                //   WebkitBackgroundClip: "text",
-                //   WebkitTextFillColor: "",
-                // }}
+              // style={{
+              //   background: "linear-gradient(135deg, #a293ad, #8a97a2)",
+              //   WebkitBackgroundClip: "text",
+              //   WebkitTextFillColor: "",
+              // }}
               >
                 8
               </span>
@@ -2681,32 +2683,15 @@ function RisksSlide() {
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function TeamSlide() {
   const teamMembers = [
     {
-      name: "Somtochukwu Kelechi Onwuajuese",
+      name: "Somtochukwu K. Onwuajuese",
       position: "Team Lead",
-      role: "Smart contract dev., frontend integrator",
+      role: "Frontend integrator, Smart contract dev., Backend dev.",
       email: "onwuajuesesomtochukwu@gmail.com",
-      telegram: "@MaziOfWeb3",
-      x: "@tweetSomto",
+      telegram: "MaziOfWeb3",
+      x: "tweetSomto",
       image: "/mazi.jpeg",
       icon: <Shield className="w-8 h-8 text-purple-400" />,
       glow: "from-purple-500/10 to-blue-500/10",
@@ -2717,8 +2702,8 @@ function TeamSlide() {
       position: "Team Member",
       role: "Smart contract dev.",
       email: "ndukwe100805043@gmail.com",
-      telegram: "@thischisom",
-      x: "@thischisom",
+      telegram: "thischisom",
+      x: "thischisom",
       image: "/chisom.jpeg",
       icon: <Globe className="w-8 h-8 text-blue-400" />,
       glow: "from-blue-500/10 to-cyan-500/10",
@@ -2727,10 +2712,10 @@ function TeamSlide() {
     {
       name: "Omega Judith",
       position: "Team Member",
-      role: "Frontend dev., Backend dev.",
+      role: "Frontend dev.",
       email: "omegajudith@gmail.com",
-      telegram: "@omegajudith",
-      x: "@j1omega",
+      telegram: "omegajudith",
+      x: "j1omega",
       image: "/judith.jpeg",
       icon: <Network className="w-8 h-8 text-pink-400" />,
       glow: "from-pink-500/10 to-fuchsia-500/10",
@@ -2741,8 +2726,8 @@ function TeamSlide() {
       position: "Team Member",
       role: "Smart contract dev.",
       email: "robbertabimbola21@gmail.com",
-      telegram: "@robertocarlous",
-      x: "@robertocalous",
+      telegram: "robertocarlous",
+      x: "robertocalous",
       image: "/roberto.jpeg",
       icon: <Zap className="w-8 h-8 text-indigo-400" />,
       glow: "from-indigo-500/10 to-purple-500/10",
@@ -2753,8 +2738,8 @@ function TeamSlide() {
       position: "Team Member",
       role: "Frontend dev.",
       email: "Olamideiyanda18@gmail.com",
-      telegram: "@Lansa18",
-      x: "@Lansa_18",
+      telegram: "Lansa18",
+      x: "Lansa_18",
       image: "/mapelujo.jpeg",
       icon: <Cpu className="w-8 h-8 text-green-400" />,
       glow: "from-green-500/10 to-emerald-500/10",
@@ -2778,7 +2763,7 @@ function TeamSlide() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto px-4"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-4"
       >
         {teamMembers.map((member, i) => (
           <motion.div
@@ -2786,30 +2771,43 @@ function TeamSlide() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 + i * 0.1 }}
-            className={`p-6 rounded-xl ${member.border} border bg-gradient-to-r ${member.glow} shadow-lg text-center`}
+            className={`p-6 rounded-xl ${member.border} border space-y-2 bg-gradient-to-r ${member.glow} shadow-lg text-center`}
           >
+            <div className="flex flex-col h-full items-center justify-between border-inherit ">
 
+              <div className="w-full aspect-square overflow-hidden border border-slate-300 dark:border-slate-700 mx-auto">
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  className="w-full h-auto object-cover"
+                  style={{
+                    marginTop: "-12%",
+                    minHeight: "120%",
+                    objectPosition: "top center",
+                  }}
+                />
+              </div>
 
-<div className="w-full aspect-square overflow-hidden border border-slate-300 dark:border-slate-700 mx-auto">
-  <img
-    src={member.image}
-    alt={member.name}
-    className="w-full h-auto object-cover"
-    style={{ marginTop: "-12%", minHeight: "120%", objectPosition: "top center" }}
-  />
-</div>
+              <h3 className="text-xl font-semibold text-white">{member.name}</h3>
+              <p className="p-2 font-bold text-purple-400">{member.position}</p>
+              <div className="text-sm flex items-center border-inherit ">{
+                member.role.split(",").map((played, index) => {
+                  return <div className="p-2 border-l-4 border-inherit rounded-lg" key={index}>{played}</div>
+                })
+              }</div>
+              <div className="mt-3 text-xs text-slate-400 flex items-center justify-center gap-7">
 
+                <Link target={member.email} href={`mailto:${member.email}`} >
+                  <MailIcon size={30} />
+                </Link>
+                <Link target={member.telegram} href={`https://t.me/${member.telegram}`} >
+                  <FaTelegram size={30} />
+                </Link>
 
-
-
-
-            <h3 className="text-xl font-semibold text-white">{member.name}</h3>
-            <p className="text-sm text-slate-400">{member.position}</p>
-            <p className="text-sm text-slate-300">{member.role}</p>
-            <div className="mt-3 text-xs text-slate-400 space-y-1">
-              <p><strong>Email:</strong> {member.email}</p>
-              <p><strong>Telegram:</strong> {member.telegram}</p>
-              <p><strong>X:</strong> {member.x}</p>
+                <Link target={member.x} href={`https://x.com/${member.x}`} >
+                  <FaTwitter size={30} />
+                </Link>
+              </div>
             </div>
           </motion.div>
         ))}
@@ -2831,8 +2829,13 @@ function TeamSlide() {
             </CardHeader>
             <CardContent className="space-y-3 text-slate-300">
               <p>Passionate about creator empowerment and Web3 development</p>
-              <p>Building Cr8or as a portfolio project to showcase full-stack and blockchain expertise</p>
-              <p>Committed to fair creator monetization in the digital economy</p>
+              <p>
+                Building Cr8or as a portfolio project to showcase full-stack and
+                blockchain expertise
+              </p>
+              <p>
+                Committed to fair creator monetization in the digital economy
+              </p>
             </CardContent>
           </Web3Card>
         </motion.div>
@@ -2881,7 +2884,10 @@ function TeamSlide() {
                 Why We're Building Cr8or
               </h3>
               <p className="text-slate-300 max-w-3xl mx-auto">
-                We believe creators deserve fair compensation and true ownership of their work. Cr8or represents our commitment to building a more equitable creator economy through decentralized technology and user-centric design.
+                We believe creators deserve fair compensation and true ownership
+                of their work. Cr8or represents our commitment to building a
+                more equitable creator economy through decentralized technology
+                and user-centric design.
               </p>
             </div>
           </CardContent>
@@ -2890,30 +2896,6 @@ function TeamSlide() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function AskSlide() {
   return (
