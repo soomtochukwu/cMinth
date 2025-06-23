@@ -198,9 +198,11 @@ export default function CreatePage() {
           body: JSON.stringify({ id: id, txnHash: mintHash }),
         })
           .then((res) => res.json())
-          .then((data) => console.log(data));
+          .then((data) => {
+            console.log(data)
+            setApproval();
+          });
 
-        setApproval();
       } catch (error) {
         console.error("Error minting NFT:", error);
       }
@@ -378,10 +380,10 @@ export default function CreatePage() {
                           </div>
                           <span
                             className={`ml-2 font-medium ${isActive
-                                ? "text-purple-300"
-                                : isCompleted
-                                  ? "text-emerald-300"
-                                  : "text-slate-400"
+                              ? "text-purple-300"
+                              : isCompleted
+                                ? "text-emerald-300"
+                                : "text-slate-400"
 
                               }`}
                           >
