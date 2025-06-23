@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Eye, Heart, Share2, MoreHorizontal } from "lucide-react"
 import Image from "next/image"
+import Rates from "../Rates"
 
 interface NFT {
   id: string
@@ -57,22 +58,7 @@ export function NFTGrid({ nfts, title }: NFTGridProps) {
               <CardDescription className="text-sm">{nft.description}</CardDescription>
             </CardHeader>
             <CardContent className="pt-0">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-lg font-bold text-purple-400">{nft.price} ETH</span>
-                <span className="text-sm text-muted-foreground">{nft.royalty}% royalty</span>
-              </div>
-              <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
-                <span>{new Date(nft.createdAt).toLocaleDateString()}</span>
-              </div>
-              <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="flex-1">
-                  <Share2 className="h-4 w-4 mr-1" />
-                  Share
-                </Button>
-                <Button size="sm" variant="outline">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </div>
+              <Rates nftPrice={Number(nft.price)} />
             </CardContent>
           </Card>
         ))}

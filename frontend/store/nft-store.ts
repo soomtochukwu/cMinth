@@ -19,6 +19,7 @@ interface NFT {
   title: string;
   description: string;
   creator: string;
+  creatorAddress?: string;
   price: number;
   image: string;
   audio?: string;
@@ -27,6 +28,7 @@ interface NFT {
   createdAt: string;
   tokenId: number;
   owner: string;
+  isUserMinted: boolean;
 }
 
 export interface Activity {
@@ -143,8 +145,8 @@ export const useNFTStore = create<NFTState>((set, get) => ({
               }
 
               const meta = await response.json();
+              console.log(meta);
 
-              // Get owner of the token
               let owner = "";
               try {
                 owner = (await readContract(config, {
@@ -160,12 +162,16 @@ export const useNFTStore = create<NFTState>((set, get) => ({
                 );
               }
 
+              let creatorAddress = meta.owner;
+              let creator = meta.creator;
+
               // 5. Return NFT object with fallback values
               return {
                 id: tokenId.toString(),
                 title: meta.title,
                 description: meta.description || "",
-                creator: meta.creator || meta.artist || "",
+                creator,
+                creatorAddress,
                 price: meta.price || 0,
                 image: meta.image || "",
                 audio: meta.audio,
@@ -174,7 +180,8 @@ export const useNFTStore = create<NFTState>((set, get) => ({
                 createdAt: meta.createdAt,
                 tokenId,
                 owner,
-              } as NFT
+                isUserMinted: false,
+              } as NFT;
             } catch (tokenError) {
               console.error(`Failed to fetch token ${i + 1}:`, tokenError);
               return null;
@@ -215,17 +222,29 @@ export const useNFTStore = create<NFTState>((set, get) => ({
       if (nfts.length === 0) {
         nfts = await get().fetchNFTs();
       }
+      console.log("User address:", userAddress);
+      console.log(
+        "All NFTs:",
+        nfts.map((nft) => ({
+          tokenId: nft.tokenId,
+          creator: nft.creator,
+          owner: nft.owner,
+          isUserMinted: nft.owner.toLowerCase() === userAddress.toLowerCase(),
+          creatorAddress: nft.creatorAddress,
+        }))
+      );
 
-      // Calculating the NFTs created by the user
+      // Calculating the NFTs purchased by the user
+
       const nftsCreated = nfts.filter(
-        (nft) => nft.creator.toLowerCase() === userAddress.toLowerCase()
+        (nft) => nft.creatorAddress?.toLowerCase() === userAddress.toLowerCase()
       ).length;
 
       // Calculating the NFTs purchased by the user
       const nftsPurchased = nfts.filter(
         (nft) =>
           nft.owner.toLowerCase() === userAddress.toLowerCase() &&
-          nft.creator.toLowerCase() !== userAddress.toLowerCase()
+          nft.creatorAddress?.toLowerCase() !== userAddress.toLowerCase()
       ).length;
 
       // Getting creator earnings from contract
@@ -275,7 +294,7 @@ export const useNFTStore = create<NFTState>((set, get) => ({
 
       // Getting user's created NFTs for mint activities
       const userCreatedNFTs = nfts.filter(
-        (nft) => nft.creator.toLowerCase() === userAddress.toLowerCase()
+        (nft) => nft.creatorAddress?.toLowerCase() === userAddress.toLowerCase()
       );
 
       // Adding the mint activities
@@ -294,7 +313,7 @@ export const useNFTStore = create<NFTState>((set, get) => ({
       const userPurchasedNFTs = nfts.filter(
         (nft) =>
           nft.owner.toLowerCase() === userAddress.toLowerCase() &&
-          nft.creator.toLowerCase() !== userAddress.toLowerCase()
+          nft.creatorAddress?.toLowerCase() !== userAddress.toLowerCase()
       );
 
       userPurchasedNFTs.forEach((nft) => {

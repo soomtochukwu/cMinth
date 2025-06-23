@@ -52,6 +52,7 @@ type _newNFT = {
   createdAt: string;
   tokenId: number;
   owner: string;
+  isUserMinted: boolean;
 };
 
 const steps = [
@@ -253,6 +254,7 @@ export default function CreatePage() {
           createdAt: new Date().toISOString(),
           tokenId: Math.floor(Math.random() * 10000),
           owner: address || "0x0000...0000",
+          isUserMinted: true,
         };
 
         // Upload files to IPFS
@@ -285,6 +287,7 @@ export default function CreatePage() {
             newNFT.type === "audio"
               ? `https://ipfs.io/ipfs/${fileHashes[0]}`
               : undefined,
+          isUserMinted: true,
         });
       } catch (error) {
         console.error("Minting error:", error);
@@ -379,6 +382,7 @@ export default function CreatePage() {
                                 : isCompleted
                                   ? "text-emerald-300"
                                   : "text-slate-400"
+
                               }`}
                           >
                             {step.title}
