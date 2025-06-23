@@ -66,7 +66,7 @@ export default function CreatePage() {
     abi: Cr8orAbi,
     address: Cr8orAddress,
     eventName: "NFTMinted",
-    onLogs: () => {},
+    onLogs: () => { },
   });
   const //
     nextID = String(
@@ -366,33 +366,31 @@ export default function CreatePage() {
                           <div
                             className={`
                         flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300
-                        ${
-                          isActive
-                            ? "border-purple-500 bg-purple-500/20 text-purple-300"
-                            : isCompleted
-                              ? "border-emerald-500 bg-emerald-500/20 text-emerald-300"
-                              : "border-slate-600 bg-slate-800/50 text-slate-400"
-                        }
+                        ${isActive
+                                ? "border-purple-500 bg-purple-500/20 text-purple-300"
+                                : isCompleted
+                                  ? "border-emerald-500 bg-emerald-500/20 text-emerald-300"
+                                  : "border-slate-600 bg-slate-800/50 text-slate-400"
+                              }
                       `}
                           >
                             <Icon className="w-5 h-5" />
                           </div>
                           <span
-                            className={`ml-2 font-medium ${
-                              isActive
+                            className={`ml-2 font-medium ${isActive
                                 ? "text-purple-300"
                                 : isCompleted
                                   ? "text-emerald-300"
                                   : "text-slate-400"
-                            }`}
+
+                              }`}
                           >
                             {step.title}
                           </span>
                           {index < steps.length - 1 && (
                             <div
-                              className={`w-8 h-0.5 mx-4 ${
-                                isCompleted ? "bg-emerald-500" : "bg-slate-600"
-                              }`}
+                              className={`w-8 h-0.5 mx-4 ${isCompleted ? "bg-emerald-500" : "bg-slate-600"
+                                }`}
                             />
                           )}
                         </div>
