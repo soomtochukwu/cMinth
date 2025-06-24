@@ -145,7 +145,7 @@ export const useNFTStore = create<NFTState>((set, get) => ({
               }
 
               const meta = await response.json();
-              console.log(meta);
+              // console.log(meta);
 
               let owner = "";
               try {
@@ -321,7 +321,10 @@ export const useNFTStore = create<NFTState>((set, get) => ({
           id: `purchase-${nft.tokenId}`,
           type: "purchase",
           title: `${nft.title} purchased`,
-          description: `Added to your collection from ${nft.creator.slice(0, 6)}...${nft.creator.slice(-4)}`,
+          description: `Added to your collection from ${nft.creator.slice(
+            0,
+            6
+          )}...${nft.creator.slice(-4)}`,
           timestamp: new Date().toISOString(), // get the actual purchase date later
           tokenId: nft.tokenId.toString(),
           amount: nft.price > 0 ? `${nft.price} ETH` : undefined,

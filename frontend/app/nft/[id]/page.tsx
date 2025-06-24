@@ -25,14 +25,14 @@ import toast from "react-hot-toast";
 import { useAccount, useChainId, useConfig, useWriteContract } from "wagmi";
 import { Cr8orAbi, Cr8orAddress } from "@/lib/var";
 import Link from "next/link";
-import Rates from "@/components/Rates";
+import Rates, { Spinner } from "@/components/Rates";
 
 export default function NFTDetailPage() {
   const //
     // const { isConnected } = useWalletStore();
     { isConnected, address } = useAccount(),
     chainId = useChainId(),
-    { writeContractAsync } = useWriteContract(),
+    // { writeContractAsync } = useWriteContract(),
     { chains } = useConfig(),
     { nfts, fetchNFTs } = useNFTStore(),
     currentChain = chains.find((c) => c.id === chainId),
@@ -42,7 +42,7 @@ export default function NFTDetailPage() {
     [showPurchaseModal, setShowPurchaseModal] = useState(false),
     nft = nfts.find((n) => n.id === params.id),
     handlePurchase = async () => {
-      console.log(nft?.id, params.id);
+      // console.log(nft?.id, params.id);
 
       if (String(address) == String(nft?.owner)) {
         // await writeContractAsync({
@@ -66,7 +66,7 @@ export default function NFTDetailPage() {
     },
     handleRefresh = async () => {
       const freshNFTs = await fetchNFTs();
-      console.log("Got fresh NFTs:", freshNFTs);
+      // console.log("Got fresh NFTs:", freshNFTs);
     };
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function NFTDetailPage() {
     fetch(`/api/txnHash?id=${params.id}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.txn);
+        // console.log(data.txn);
         setTxnHash(data.txn);
       });
   }, []);
@@ -341,10 +341,10 @@ export default function NFTDetailPage() {
                       <span className="text-slate-400">Transaction Hash</span>
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-slate-300">
-                          {txnHash?.replace(
+                          {txnHash.length > 0 ? txnHash?.replace(
                             txnHash?.slice(5, txnHash?.length - 5),
                             "..."
-                          )}
+                          ) : <Spinner />}
                         </span>
                         <Button variant="ghost" size="sm" className="p-1">
                           <Link
