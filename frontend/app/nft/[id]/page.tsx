@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import {
   Heart,
   Share2,
   ExternalLink,
   Volume2,
-  User2,
+  UserCheck2Icon,
   AlertCircle,
 } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -219,9 +219,7 @@ export default function NFTDetailPage() {
               <Card className="bg-slate-900/50 backdrop-blur-sm border-slate-700/50">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
-                    <Avatar className="w-12 h-12">
-                      <User2 />
-                    </Avatar>
+                    <UserCheck2Icon className="text-yellow-600" size={40} />
                     <div>
                       <p className="text-sm text-slate-400">Current Owner</p>
                       <p className="font-semibold text-white">

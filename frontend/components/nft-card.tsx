@@ -4,8 +4,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, Play, Eye, Info } from "lucide-react";
+import { Heart, Play, Eye, UserCheck2Icon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import Rates from "./Rates";
@@ -18,6 +17,7 @@ interface NFT {
   image: string;
   audio?: string;
   type: "audio" | "art";
+  owner: string;
   tags?: string[];
 }
 
@@ -76,11 +76,10 @@ export function NFTCard({ nft, viewMode = "grid" }: NFTCardProps) {
                       variant="outline"
                       size="sm"
                       onClick={() => setIsLiked(!isLiked)}
-                      className={`p-2 ${
-                        isLiked
-                          ? "text-red-400 border-red-400"
-                          : "text-slate-400 border-slate-600"
-                      }`}
+                      className={`p-2 ${isLiked
+                        ? "text-red-400 border-red-400"
+                        : "text-slate-400 border-slate-600"
+                        }`}
                     >
                       <Heart
                         className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`}
@@ -149,11 +148,10 @@ export function NFTCard({ nft, viewMode = "grid" }: NFTCardProps) {
                   e.preventDefault();
                   setIsLiked(!isLiked);
                 }}
-                className={`p-2 backdrop-blur-sm ${
-                  isLiked
-                    ? "text-red-400 border-red-400 bg-red-400/10"
-                    : "text-slate-400 border-slate-600 bg-slate-900/50"
-                }`}
+                className={`p-2 backdrop-blur-sm ${isLiked
+                  ? "text-red-400 border-red-400 bg-red-400/10"
+                  : "text-slate-400 border-slate-600 bg-slate-900/50"
+                  }`}
               >
                 <Heart className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`} />
               </Button>
@@ -174,23 +172,17 @@ export function NFTCard({ nft, viewMode = "grid" }: NFTCardProps) {
             </motion.div>
           </div>
 
-          <div className="p-6">
-            <div className="flex items-start justify-between mb-3">
-              <div className="min-w-0 flex-1">
-                <h3 className="text-lg font-semibold text-white truncate">
-                  {nft.title}
-                </h3>
-                <div className="flex items-center gap-2 mt-1">
-                  <Avatar className="w-5 h-5">
-                    <AvatarImage src="/placeholder.svg?height=20&width=20" />
-                    <AvatarFallback className="bg-purple-600 text-white text-xs">
-                      {nft.creator.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <p className="text-slate-400 text-sm truncate">
-                    {nft.creator}
-                  </p>
-                </div>
+          <div className="p-6 space-y-4">
+            <div className="min-w-0 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-purple-300 truncate">
+                {nft.title}
+              </h3>
+
+              <div title="Owner" className="flex items-center gap-2 mt-1">
+                <UserCheck2Icon size={20} className="text-yellow-600" />
+                <p className="text-slate-400 text-sm truncate">
+                  {nft.owner.replace(nft.owner.slice(5, nft.owner.length), "...")}
+                </p>
               </div>
             </div>
 

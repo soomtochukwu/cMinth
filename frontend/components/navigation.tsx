@@ -6,13 +6,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, Home, Search, Plus, User } from "lucide-react";
+import { Menu, X, Home, GalleryHorizontalEndIcon, Plus, User } from "lucide-react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { PrimaryBrandLogo } from "./branding/Cr8orBranding";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/marketplace", label: "Marketplace", icon: Search },
+  { href: "/gallery", label: "Gallery", icon: GalleryHorizontalEndIcon },
   { href: "/create", label: "Create", icon: Plus },
   { href: "/dashboard", label: "Dashboard", icon: User },
 ];
@@ -55,10 +55,9 @@ export function Navigation() {
                     variant={isActive ? "default" : "ghost"}
                     className={`
                       flex items-center gap-2 transition-all duration-200
-                      ${
-                        isActive
-                          ? "bg-gradient-to-r from-purple-600 to-cyan-600 text-white"
-                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      ${isActive
+                        ? "bg-gradient-to-r from-purple-600 to-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
                       }
                     `}
                   >
@@ -124,10 +123,9 @@ export function Navigation() {
                     variant={isActive ? "default" : "ghost"}
                     className={`
                       w-full justify-start gap-2
-                      ${
-                        isActive
-                          ? "bg-gradient-to-r from-purple-600 to-cyan-600 text-white"
-                          : "text-slate-300 hover:text-white hover:bg-slate-800"
+                      ${isActive
+                        ? "bg-gradient-to-r from-purple-600 to-cyan-600 text-white"
+                        : "text-slate-300 hover:text-white hover:bg-slate-800"
                       }
                     `}
                     onClick={() => setIsMobileMenuOpen(false)}
