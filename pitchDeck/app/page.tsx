@@ -28,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { FaTelegram, FaTwitter, FaMailBulk } from "react-icons/fa";
 import { AiFillMail } from "react-icons/ai";
 import Link from "next/link";
+import Image from "next/image";
 
 const slides = [
   { id: 1, title: "Title", component: "TitleSlide" },
@@ -2773,18 +2774,20 @@ function TeamSlide() {
             transition={{ delay: 0.3 + i * 0.1 }}
             className={`p-6 rounded-xl ${member.border} border space-y-2 bg-gradient-to-r ${member.glow} shadow-lg text-center`}
           >
-            <div className="flex flex-col h-full items-center justify-between border-inherit ">
+            <div className="flex flex-col h-full items-center justify-between border-inherit hover:scale-105 transition-all">
 
-              <div className="w-full aspect-square overflow-hidden border border-slate-300 dark:border-slate-700 mx-auto">
-                <img
+              <div className="w-full rounded-lg aspect-square overflow-hidden border border-slate-700 dark:border-slate-700 mx-auto">
+                <Image
                   src={member.image}
                   alt={member.name}
-                  className="w-full h-auto object-cover"
+                  className="w-full h-auto hover:scale-105 transition-all object-cover"
                   style={{
                     marginTop: "-12%",
                     minHeight: "120%",
                     objectPosition: "top center",
                   }}
+                  width={100}
+                  height={100}
                 />
               </div>
 
