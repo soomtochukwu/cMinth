@@ -22,10 +22,12 @@ import { AudioPlayer } from "@/components/audio-player";
 import { AnimatedBackground } from "@/components/animated-background";
 import { PurchaseModal } from "@/components/purchase-modal";
 import toast from "react-hot-toast";
-import { useAccount, useChainId, useConfig, useWriteContract } from "wagmi";
+import { useAccount, useChainId, useConfig, useReadContract, useWriteContract } from "wagmi";
 import { Cr8orAbi, Cr8orAddress } from "@/lib/var";
 import Link from "next/link";
 import Rates, { Spinner } from "@/components/Rates";
+
+
 
 export default function NFTDetailPage() {
   const //
@@ -41,6 +43,13 @@ export default function NFTDetailPage() {
     [txnHash, setTxnHash] = useState<string>(""),
     [showPurchaseModal, setShowPurchaseModal] = useState(false),
     nft = nfts.find((n) => n.id === params.id),
+    currentPrice = useReadContract({
+      abi: Cr8orAbi,
+      address: Cr8orAddress,
+      functionName: "tokenPrices",
+      args: [BigInt(Number(params.id))]
+    }).data,
+    forSale = Number(currentPrice) > 0,
     handlePurchase = async () => {
       // console.log(nft?.id, params.id);
 
@@ -259,14 +268,16 @@ export default function NFTDetailPage() {
                     onClick={handlePurchase}
                     className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white font-semibold py-3 text-lg"
                     disabled={
-                      !isConnected || String(address) == String(nft.owner)
+                      !isConnected || String(address) == String(nft.owner) || !forSale
                     }
                   >
-                    {isConnected
-                      ? String(address) == String(nft.owner)
-                        ? "Put out for sale (coming soon)"
-                        : "Purchase NFT"
-                      : "Connect Wallet to Purchase"}
+                    {forSale ?
+                      isConnected
+                        ? String(address) == String(nft.owner)
+                          ? "Put out for sale (coming soon)"
+                          : "Purchase NFT"
+                        : "Connect Wallet to Purchase" : "Currently Not for Sale"}
+
                   </Button>
                 </CardContent>
               </Card>
