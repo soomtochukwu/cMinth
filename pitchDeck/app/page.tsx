@@ -3322,18 +3322,6 @@ function ClosingSlide() {
             className="flex flex-col sm:flex-row items-center justify-center gap-6 text-slate-300"
           >
             <motion.a
-              href="mailto:email@example.com"
-              className="flex items-center gap-2 hover:text-cyan-400 transition-colors border border-cyan-500/30 rounded-full px-4 py-2 backdrop-blur-sm"
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 0 20px rgba(34, 211, 238, 0.3)",
-              }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <DollarSign className="w-5 h-5" />
-              email@example.com
-            </motion.a>
-            <motion.a
               href="https://cr8or.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
@@ -3346,20 +3334,6 @@ function ClosingSlide() {
             >
               <Globe className="w-5 h-5" />
               cr8or.vercel.app
-            </motion.a>
-            <motion.a
-              href="https://twitter.com/Cr8orNFT"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:text-cyan-400 transition-colors border border-cyan-500/30 rounded-full px-4 py-2 backdrop-blur-sm"
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 0 20px rgba(34, 211, 238, 0.3)",
-              }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <TrendingUp className="w-5 h-5" />
-              @Cr8orNFT
             </motion.a>
           </motion.div>
         </motion.div>
