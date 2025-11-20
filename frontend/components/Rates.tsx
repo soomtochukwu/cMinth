@@ -8,7 +8,7 @@ interface RatesProps {
 
 const Rates = ({ nftPrice }: RatesProps) => {
   const //
-    { error, ethToDollar, gettingRates, lskToDollar } = useRates(),
+    { error, ethToDollar, gettingRates, celoToDollar } = useRates(),
     roundDownDynamically = function (num: number) {
       if (num === 0) return "0";
       return parseFloat(num.toFixed(18)).toString();
@@ -21,10 +21,10 @@ const Rates = ({ nftPrice }: RatesProps) => {
           <Spinner />
         ) : (
           Math.floor(
-            (nftPrice * Number(ethToDollar)) / Number(lskToDollar)
+            (nftPrice * Number(ethToDollar)) / Number(celoToDollar)
           ).toLocaleString()
         )}{" "}
-        LSK
+        CELO
       </div>
       <div className="flex items-center space-x-4">
         <div className="text-slate-400 text-sm">

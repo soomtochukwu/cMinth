@@ -66,7 +66,7 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
     },
     gasEstimate = 0.000005,
     //
-    { ethToDollar, lskToDollar } = useRates();
+    { ethToDollar, celoToDollar } = useRates();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -207,9 +207,9 @@ export function PurchaseModal({ nft, isOpen, onClose }: PurchaseModalProps) {
                     Purchase for{" "}
                     {Math.floor(
                       ((nft.price + gasEstimate) * Number(ethToDollar)) /
-                        Number(lskToDollar)
+                      Number(celoToDollar)
                     ).toLocaleString()}{" "}
-                    LSK
+                    CELO
                   </>
                 )}
               </Button>

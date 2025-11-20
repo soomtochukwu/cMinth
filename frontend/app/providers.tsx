@@ -13,7 +13,7 @@ import {
   okxWallet,
   trustWallet,
 } from "@rainbow-me/rainbowkit/wallets";
-import { lisk, liskSepolia, localhost } from "wagmi/chains";
+import { celo } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 
@@ -30,7 +30,7 @@ const config = getDefaultConfig({
     ...wallets,
     //
   ],
-  chains: [lisk, liskSepolia, localhost],
+  chains: [celo],
   ssr: true,
 });
 
@@ -48,7 +48,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             borderRadius: "large",
           })}
           modalSize="compact"
-          initialChain={liskSepolia}
+          initialChain={celo}
         >
           {children}
         </RainbowKitProvider>

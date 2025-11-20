@@ -2,15 +2,13 @@ import { create } from "zustand";
 import { readContract } from "@wagmi/core";
 import { Cr8orAbi, Cr8orAddress } from "@/lib/var";
 import { createConfig, http } from "wagmi";
-import { lisk, liskSepolia, localhost } from "wagmi/chains";
+import { celo } from "wagmi/chains";
 import { formatEther } from "viem";
 
 const config = createConfig({
-  chains: [lisk, liskSepolia, localhost],
+  chains: [celo],
   transports: {
-    [liskSepolia.id]: http(),
-    [localhost.id]: http(),
-    [lisk.id]: http(),
+    [celo.id]: http(),
   },
 });
 
