@@ -1,25 +1,31 @@
 {
-    "name": "Minth Art",
-    "short_name": "Minth",
-    "description": "The first decentralized platform where creators mint NFTs of their audio and art content with built-in royalty splits.",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#020617",
-    "theme_color": "#9333ea",
-    "icons": [
-        {
-            "src": "/icon-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/icon-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ],
-    "farcaster": {
-        "embedded_client_notification_id": "minth-art-notification-id"
+    "frame": {
+        "name": "cr8or",
+        "version": "1",
+        "iconUrl": "https://minth.art/icon.png",
+        "homeUrl": "https://minth.art",
+        "imageUrl": "https://minth.art/hero.png",
+        "buttonTitle": "Creating and Earn",
+        "splashImageUrl": "https://minth.art/icon.png",
+        "splashBackgroundColor": "#8162f4",
+        "webhookUrl": "https://minth.art/api/webhook",
+        "subtitle": "🎵 Decentralized Creator Economy 🎭",
+        "description": "The first decentralized platform where creators mint NFTs of their audio and art content with built-in royalty splits. Own your creativity, monetize your passion.",
+        "primaryCategory": "art-creativity",
+        "screenshotUrls": [
+            "https://minth.art/screenshot1.png"
+        ],
+        "heroImageUrl": "https://minth.art/hero.png",
+        "tags": [
+            "nft",
+            "art",
+            "creat",
+            "draw"
+        ],
+        "tagline": "Mint. Share. Earn.",
+        "ogTitle": "Cr8or",
+        "ogDescription": "Decentralized Creator Economy",
+        "castShareUrl": "https://minth.art/social.png"
     },
     "accountAssociation": {
         "header": "eyJmaWQiOjEwNzk5OTksInR5cGUiOiJhdXRoIiwia2V5IjoiMHgwOTIwMzZmNUFENDAxMDY4ZTZFMTAyNDRjNmUwRWRCN2M0NEQyMDdBIn0",
