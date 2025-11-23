@@ -36,7 +36,13 @@ const config = getDefaultConfig({
 
 const queryClient = new QueryClient();
 
+import sdk from "@farcaster/miniapp-sdk";
+
 export function Providers({ children }: { children: React.ReactNode }) {
+  React.useEffect(() => {
+    sdk.actions.ready();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiProvider config={config}>

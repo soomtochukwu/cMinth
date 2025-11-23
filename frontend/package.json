@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
+    "@farcaster/miniapp-sdk": "^0.2.1",
     "@hookform/resolvers": "^3.9.1",
     "@maziofweb3/minth-canvas": "^1.5.3",
     "@radix-ui/react-accordion": "1.2.2",
