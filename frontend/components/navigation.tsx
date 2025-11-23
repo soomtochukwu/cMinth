@@ -12,7 +12,7 @@ import { PrimaryBrandLogo } from "./branding/Cr8orBranding";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/gallery", label: "Gallery", icon: GalleryHorizontalEndIcon },
+  { href: "/marketplace", label: "Marketplace", icon: GalleryHorizontalEndIcon },
   { href: "/create", label: "Create", icon: Plus },
   { href: "/dashboard", label: "Dashboard", icon: User },
 ];
