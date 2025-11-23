@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   other: {
     "fc:miniapp": JSON.stringify({
       version: "1",
-      imageUrl: "https://www.minth.art/screenshot1.png",
+      imageUrl: "https://www.minth.art/hero.png",
       button: {
         title: "Launch App",
         action: {
