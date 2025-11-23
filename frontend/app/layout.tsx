@@ -11,14 +11,14 @@ export const metadata: Metadata = {
   other: {
     "fc:miniapp": JSON.stringify({
       version: "1",
-      imageUrl: "https://www.minth.art/OT.png",
+      imageUrl: "https://www.minth.art/screenshot1.png",
       button: {
         title: "Launch App",
         action: {
           type: "launch_frame",
           name: "Minth Art",
           url: "https://www.minth.art/",
-          splashImageUrl: "https://www.minth.art/OT.png",
+          splashImageUrl: "https://minth.art/icon.png",
           splashBackgroundColor: "#020617",
         },
       },
