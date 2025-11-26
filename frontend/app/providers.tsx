@@ -44,8 +44,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <WagmiProvider config={config}>
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
         <RainbowKitProvider
           theme={darkTheme({
             accentColorForeground: "white",
@@ -58,7 +58,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         >
           {children}
         </RainbowKitProvider>
-      </WagmiProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }
