@@ -28,8 +28,8 @@
         "castShareUrl": "https://minth.art/social.png"
     },
     "accountAssociation": {
-        "header": "eyJmaWQiOjEwNzk5OTksInR5cGUiOiJhdXRoIiwia2V5IjoiMHgwOTIwMzZmNUFENDAxMDY4ZTZFMTAyNDRjNmUwRWRCN2M0NEQyMDdBIn0",
-        "payload": "eyJkb21haW4iOiJtaW50aC5hcnQifQ",
-        "signature": "cedt6njSV3G5tVGEfTXPcE/rKGpSaOV3gZP0mseEUClPR2j8AJ9fb4AmWl19TaG3mAluQbeXAX4BtrtdScV5Pxw="
+        "header": "eyJmaWQiOjEwNzk5OTksInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHhiODAzZEY5MjZDNWVFMTE1MUE5NjRBNjdFNDAwRjIwQzk4OWNBZTlDIn0",
+        "payload": "eyJkb21haW4iOiJ3d3cubWludGguYXJ0In0",
+        "signature": "oXbocU2bbVs/JmOFD6cJOfq2KgVYaNsgBmRzSzz4btoVVfdOaNHgrhx0NTK21nRPVi55poxfi14dQ8bjDYrC+hw="
     }
 }
